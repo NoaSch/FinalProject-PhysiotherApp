@@ -1,0 +1,66 @@
+<head>
+    <link rel="stylesheet" type="text/css" href="styleReg.css">
+    <link rel="stylesheet" ng-href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css">
+    <link rel="stylesheet" ng-href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<label class="labelClassLeft">Login Page</label>
+<br>
+<br>
+<div ng-controller="loginController as loginCtrl">
+    <form name="loginForm" ng-submit="loginCtrl.login()" role="form" novalidate>
+        ID :
+        <input type="text"
+               name="Id"
+               ng-model="loginCtrl.Id"
+               class="form-control"
+               placeholder="Your ID"
+               required
+               ng-change="loginCtrl.message=''">
+        <span class="error-mes" ng-show="loginForm.Id.$dirty && loginForm.Id.$error.required" class="help-block">Field required</span>
+        <br>
+        Password :
+        <input type="password"
+               ng-required="true"
+               name="Password"
+               ng-model="loginCtrl.Password"
+               class="form-control"
+               placeholder="Your Password"
+               ng-change="loginCtrl.message=''">
+        <span class="error-mes" ng-show="loginForm.Password.$dirty && loginForm.Password.$error.required" class="help-block">Password is required</span>
+        <br>
+        <button type="submit" ng-disabled="loginForm.$invalid" class="btn btn-primary">Login</button>
+        <br>
+        <span class="error-mes"> {{loginCtrl.message}}</span>
+    </form>
+    <button ng-disabled="loginForm.Id.$error.required" ng-click="loginCtrl.ForgetPassword()" class="btn btn-primary">Forget Password</button>
+    <br>
+    <span class="error-mes"> {{loginCtrl.message3}}</span>
+    <br>
+    <form ng-hide="loginCtrl.hide" name="RestorePasswordForm" ng-submit="loginCtrl.RestorePassword()" role="form" novalidate>
+        <br>
+        <div ng-show="loginCtrl.Forget">
+            <span>{{loginCtrl.q1}} </span>
+            <br>
+            <input type="text"
+                   ng-required="true"
+                   name="ans1"
+                   ng-model="loginCtrl.ans1"
+                   class="form-control">
+            <span ng-show="RestorePasswordForm.ans1.$dirty && RestorePasswordForm.ans1.$error.required" class="help-block">Field required</span>
+            <br>
+            <span>{{loginCtrl.q2}} </span>
+            <br>
+            <input type="text"
+                   ng-required="true"
+                   name="ans2"
+                   ng-model="loginCtrl.ans2"
+                   class="form-control">
+            <span ng-show="RestorePasswordForm.ans2.$dirty && RestorePasswordForm.ans2.$error.required" class="help-block">Field required</span>
+            <br>
+            <button  ng-disabled="RestorePasswordForm.$invalid" class="btn btn-primary">Restore Password</button>
+            <br>
+            <span> {{loginCtrl.message2}}</span>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,27 @@
+.labelLogin {
+    color: #000000;
+    font-weight: bold;
+    display: block;
+    width: 200px;
+    margin-left: 3em;
+    display:inline-block;
+}
+
+.error-mes {
+    color: red;
+    font-weight: bold;
+}
+/*
+span.button {
+    display: block;
+    text-align: center;
+    width: 100px;
+}
+
+
+label{
+
+    weight:50px;
+    height: 20px;
+}
+*/

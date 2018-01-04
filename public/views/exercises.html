@@ -1,0 +1,70 @@
+<head>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" href="/angularScripts/mobile-angular-ui/dist/css/mobile-angular-ui-hover.min.css" />
+    <!-- Always required -->
+    <link rel="stylesheet" href="/angularScripts/mobile-angular-ui/dist/css/mobile-angular-ui-base.min.css" />
+    <!-- Only required for desktop -->
+    <link rel="stylesheet" href="/angularScripts/mobile-angular-ui/dist/css/mobile-angular-ui-desktop.min.css" />
+</head>
+
+<!--<div class="scrollable" ng-controller="mainController as mainController">-->
+        <!--<div class="scrollable-content section" ui-scroll-bottom="loadMore()">-->
+    <div ui-content-for="title">
+        <span>תכניות האימון שלך</span>
+    </div>
+
+    <div class="scrollable" ng-controller="exerciseController as exerciseController">
+        <div class="scrollable-content">
+            <div class="section">
+                <div class="panel-group"
+                     ui-shared-state="myAccordion"
+                     ui-default='1'>
+
+                    <div class="panel panel-default" ng-repeat="item in exerciseController.exercises">
+                        <div class="panel-heading" ui-set="{'myAccordion': item}">
+                            <h4 class="panel-title">
+                                {{item.title}}
+                            </h4>
+                        </div>
+                        <div class="panel-body"> <!--ng-show =exerciseController.chosenExe[item.exe_id]-->
+                                <!--<button class="ProgramDetBtn" ng-click="programsController.getExercises(item.prog_id)">פרטי תכנית</button>-->
+                                <a href="#/exercises"><button class="ProgramDetBtn" ng-click="exerciseController.clickDet(item.exe_id)">פרטי תרגיל</button></a>
+                        <div ng-show = exerciseController.chosenExe[item.exe_id] >
+                        <label>מספר פעמים בשבוע: </label>
+                            <span>{{item.time_in_week}}</span>
+                            <br>
+                            <label>מספר סטים: </label>
+                            <span>{{item.num_sets}}</span>
+                            <br>
+                            <label>מספר חזרות: </label>
+                            <span>{{item.num_repeats}}</span>
+                            <br>
+                            <label>משך סט: </label>
+                            <span>{{item.set_duration}}</span>
+                            <span>שניות</span>
+                            <br>
+                            <label> זמן הפסקה בין סטים: </label>
+                            <span>{{item.break_between_sets}}</span>
+                            <span>שניות</span>
+                            <br>
+                            <label> הוראות נוספות: </label>
+                            <span>{{item.description}}</span>
+                            <br>
+                            <video class="videoClass" src= {{exerciseController.videosURL[item.exe_id]}} controls type="video/mp4">
+                            </video>
+
+                        </div>
+                            </div>
+                        <!--<div class="panel-body">
+                            {{item.prog_id}}מספר תכנית
+                            <br>
+                            <!--<button class="ProgramDetBtn" ng-click="programsController.getExercises(item.prog_id)">פרטי תכנית</button>-->
+                            <!--<a href="#/exercises"><button class="ProgramDetBtn" ng-click="programsController.clickProg(item.prog_id)">פרטי תכנית</button></a>-->
+                        <!--</div>-->
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
