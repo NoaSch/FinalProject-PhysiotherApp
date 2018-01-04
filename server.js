@@ -346,7 +346,7 @@ app.post('/api/authenticate', function (req, res) {
     sql.Select(query)
         .then(function (ans) {
             if (ans.length === 0) {
-                res.json({err:"user or pasword wrong"});
+                res.json({err:"wrong user or pasword "});
                 return;
             }
             res.json({success:"login"});
