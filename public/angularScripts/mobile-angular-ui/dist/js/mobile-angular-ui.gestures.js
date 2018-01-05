@@ -115,7 +115,7 @@
  * ```
  * <iframe class='embedded-example' src='/examples/drag.html'></iframe>
  */
-(function() {
+;(function() {
   'use strict';
 
   angular.module('mobile-angular-ui.gestures.drag', [
