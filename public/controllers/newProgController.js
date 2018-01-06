@@ -10,6 +10,7 @@ angular.module("myApp")
      self.clickedCreate = false;
      self.currProgID;
      self.addExeClicked = false;
+     self.patientService = patientService;
      self.authService = AuthenticationService;
     /* $scope.rememberMe = true;
      $scope.userPhoto;
@@ -30,8 +31,8 @@ angular.module("myApp")
                  'Content-Type': "application/json"
              },
              data: {
-                 "patient": "u1",
-                 "physio": authService.userId,
+                 "patient": self.patientService.getID(),
+                 "physio": self.authService.userId,
                  "date": date,
                  "title": self.ProgName
              }
@@ -63,7 +64,7 @@ angular.module("myApp")
                  'Content-Type': "application/json"
              },
              data: {
-                 "patUsername": "u1",
+                 "patUsername": self.patientService.getID(),
                  "createDate": self.currDate
              }
          };
