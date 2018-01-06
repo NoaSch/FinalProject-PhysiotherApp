@@ -28,10 +28,14 @@ app.controller('mainController', ['AuthenticationService','$http', '$location', 
     let self = this;
 
     self.authService = AuthenticationService;
+    //$window.alert("username: "+ self.authService.userId );
+    self.logout = function()
+    {
+        AuthenticationService.ClearCredentials();
+        $window.alert("loggedOut");
 
+    }
 
-    console.log("noa");
-    console.log("username: "+ self.authService.userId );
 
     // Needed for the loading screen
     $rootScope.$on('$routeChangeStart', function() {

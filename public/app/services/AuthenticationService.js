@@ -11,6 +11,7 @@ angular.module('myApp')
                 var service = {};
                 service.loggedIn = false;
                 service.userId="guest";
+                service.isPhysio=false;
                 service.Login = function (username, password, callback) {
 
                     /* Dummy authentication for testing, uses $timeout to simulate api call
@@ -28,6 +29,7 @@ angular.module('myApp')
                      ----------------------------------------------*/
                     $http.post("http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/authenticate', { username: username, password: password })
                         .then(function (response) {
+                            service.isPhysio = response.data[0].isPhysio;
                            callback(response);
                        });
 
@@ -40,7 +42,7 @@ angular.module('myApp')
                         currentUser: {
                             username: username,
                             authdata: authdata
-                        }
+                        }//,isPhysio = self.isPhysio
                     };
                     service.userId = username;
                     service.loggedIn = true;
@@ -49,9 +51,12 @@ angular.module('myApp')
                 };
 
                 service.ClearCredentials = function () {
+                    service.loggedIn = false;
+                    service.userId="guest";
                     $rootScope.globals = {};
                     $cookieStore.remove('globals');
                     $http.defaults.headers.common.Authorization = 'Basic ';
+
                 };
 
                 return service;

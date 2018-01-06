@@ -337,7 +337,7 @@ app.post('/api/authenticate', function (req, res) {
 
     let query = (
         squel.select()
-        //.field("username")
+            .field("isPhysio")
             .from("users")
             .where("username = ?", _username)
             .where("password = ?", _password)
@@ -349,7 +349,8 @@ app.post('/api/authenticate', function (req, res) {
                 res.json({err:"wrong user or pasword "});
                 return;
             }
-            res.json({success:"login"});
+           // res.json({success:"login"});
+            res.send(ans);
 
         }).catch(function (reason) {
         console.log(reason);

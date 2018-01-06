@@ -31,13 +31,17 @@ angular.module("myApp")
                 self.login = function () {
                     self.dataLoading = true;
                     AuthenticationService.Login(self.username, self.password, function (response) {
-                        if (response.data.success =='login') {
+                        // if (response.data.success =='login') {
+                        if (response.data.hasOwnProperty('err'))
+                        {
+                            self.isError = true;
+                        self.error = response.data.err;
+                       self.dataLoading = false;
+
+                        } else {
+
                             AuthenticationService.SetCredentials(self.username, self.password);
                             $location.path('/');
-                        } else {
-                            self.isError = true;
-                            self.error = response.data.err;
-                            self.dataLoading = false;
                         }
                     });
                 };

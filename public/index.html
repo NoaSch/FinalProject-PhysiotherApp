@@ -88,10 +88,10 @@
     <!-- App body -->
 
     <div class='app-body'>
-        <div class='app-content'>
-            <!--<div ng-controller="mainController as mainCtrl">-->
+        <div class='app-content' ng-controller="mainController as mainCtrl">
+           <!-- <div >put if donttwant to return t ologin-->
                 <span class="lClass">Hello: </span>
-                <span class="bClass">{{authService.userId}}</span>
+                <span class="bClass">{{mainCtrl.authService.userId}}</span>
             <!--</div>-->
             <ng-view></ng-view>
         </div>
