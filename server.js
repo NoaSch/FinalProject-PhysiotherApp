@@ -359,6 +359,89 @@ app.post('/api/authenticate', function (req, res) {
 });
 
 
+app.post('/api/register', function (req, res) {
+    console.log("register");
+    let _username = req.body.username;
+    let _password = req.body.password;
+    let _firstName = req.body.firstName;
+    let _lastName = req.body.lastName;
+    let _physio_username = req.body.physiotherapist_username;
+    let _phone= parseInt(req.body.phone);
+    let _mail = req.body.mail;
+    let _isPhysio = 0;
+    if(req.body.isPhysio === true)
+    {
+        _isPhysio = 1;
+    }
+    let query = (
+        squel.select()
+            .from("users")
+            .where("username = ?", _username)
+            .toString()
+    );
+    sql.Select(query)
+        .then(function (ans) {
+            if (ans.length === 0) {//the username not exist
+                let queryInsert = (//insert to the users table
+                    squel.insert()
+                        .into("[dbo].[users]")
+                        .set("[username]",_username)
+                        .set("[password]",_password)
+                        .set("[isPhysio]",_isPhysio)
+                        .toString()
+                );
+                console.log(query);
+                sql.Insert(queryInsert).then(function(ansUsers){//insert to pyisio or patient
+                if(_isPhysio === 1)
+                {
+                    let queryInsertPhysio = (//insert to the users table
+                        squel.insert()
+                            .into("[dbo].[physiotherapists]")
+                            .set("[username]",_username)
+                            .set("[first_name]",_firstName)
+                            .set("[last_name]",_lastName)
+                            .set("[mail]",_mail)
+                            .set("[phone]",_phone)
+                            .toString()
+                    );
+                    console.log(queryInsertPhysio);
+                    sql.Insert(queryInsertPhysio).then(function (ansIn) {
+                        res.send(ansIn);
+                    })
+                }
+                    else
+                    {
+                        let queryInsertPatient = (//insert to the users table
+                            squel.insert()
+                                .into("[dbo].[patients]")
+                                .set("[username]",_username)
+                                .set("[first_name]",_firstName)
+                                .set("[last_name]",_lastName)
+                                .set("[physiotherapist_username]",_physio_username)
+                                //.set("[mail]",_mail)
+                                //.set("[phone]",_phone)
+                                .toString()
+                        );
+                        console.log(queryInsertPatient);
+                        sql.Insert(queryInsertPatient).then(function (ansIn) {
+                            res.send(ansIn);
+                        })
+                    }
+                })
+            }
+            else
+            {
+                res.json({err:"username exists"});
+            }
+            // res.json({success:"login"});
+          //  res.send(ans);
+
+        }).catch(function (reason) {
+        console.log(reason);
+        res.send(reason);
+    })
+});
+
 app.post('/api/getProgramExe', function (req, res) {
     console.log("enter test users");
     let _prog_id = req.body.prog_id;

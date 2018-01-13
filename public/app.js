@@ -146,10 +146,14 @@ app.config( ['$routeProvider', function($routeProvider) {
     }).when("/newProgram", {
         templateUrl : "views/newProgram.html",reloadOnSearch: false,
         controller : "newProgController"
-    }).when('/login', {
+}).when('/login', {
         controller: 'LoginController',reloadOnSearch: false,
         templateUrl: 'views/login.html'
     })
+        .when('/register', {
+            controller: 'RegisterController',reloadOnSearch: false,
+            templateUrl: 'views/register.html'
+        })
         .otherwise({redirect: '/',
         });
 }]);
