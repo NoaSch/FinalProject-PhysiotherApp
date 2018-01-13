@@ -11,6 +11,7 @@ angular.module('myApp')
                 var service = {};
                 service.loggedIn = false;
                 service.userId="guest";
+                service.isAdmin=false;
                 service.isPhysio=false;
                 service.Login = function (username, password, callback) {
 
@@ -30,6 +31,13 @@ angular.module('myApp')
                     $http.post("http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/authenticate', { username: username, password: password })
                         .then(function (response) {
                             service.isPhysio = response.data[0].isPhysio;
+                            if(username == "admin")
+                            {
+                                service.isAdmin = true;
+                            }
+                            else {
+                                service.isAdmin = false;
+                            }
                            callback(response);
                        });
 
@@ -53,6 +61,7 @@ angular.module('myApp')
                 service.ClearCredentials = function () {
                     service.loggedIn = false;
                     service.userId="guest";
+                    service.isAdmin = false;
                     $rootScope.globals = {};
                     $cookieStore.remove('globals');
                     $http.defaults.headers.common.Authorization = 'Basic ';

@@ -10,6 +10,7 @@ angular.module('myApp')
                 self.register = function() {
                     alert("inReg")
                     self.dataLoading = true;
+                    self.authService = AuthenticationService;
                     var req = {
                         method: 'POST',
                         url: 'http://localhost:4000/api/register',
