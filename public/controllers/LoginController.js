@@ -35,8 +35,8 @@ angular.module("myApp")
                         if (response.data.hasOwnProperty('err'))
                         {
                             self.isError = true;
-                        self.error = response.data.err;
-                       self.dataLoading = false;
+                            self.error = response.data.err;
+                            self.dataLoading = false;
 
                         } else {
 

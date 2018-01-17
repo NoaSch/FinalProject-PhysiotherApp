@@ -3,7 +3,7 @@
  */
 
 angular.module("myApp").service('programService', function() {
-     var progID = 'test string value';
+     var progID = 0;
         return {
             getProgID: function() {
                 return progID;

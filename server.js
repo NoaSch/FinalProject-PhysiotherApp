@@ -21,8 +21,8 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
-app.listen(4000,function(){
-    console.log("Working on port 4000");
+app.listen(3000,function(){
+    console.log("Working on port 3000");
 });
 
 /*let config = {
@@ -260,6 +260,25 @@ app.get('/api/video/:id', function(req, res){
         })
     });
 
+app.get('/api/GetAllTherapists', function (req, res) {
+    console.log("enter to all video");
+    let query = (
+        squel.select()
+            .from("physiotherapists")
+            .toString()
+    );
+    sql.Select(query)
+        .then(function (ans) {
+            console.log("physios came back from the DB");
+
+            // var pathes = ans[0].path.toString();
+            res.send(ans);
+
+        }).catch(function (reason) {
+        console.log(reason);
+        res.send(reason);
+    })
+});
 
 
     app.get('/api/testUsers', function (req, res) {

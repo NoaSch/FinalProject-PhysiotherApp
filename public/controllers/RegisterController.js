@@ -3,17 +3,35 @@
  */
 
 angular.module('myApp')
-    .controller('RegisterController',['$location', 'AuthenticationService','FlashService','$http',
-            function ($location, AuthenticationService,FlashService,$http) {
-
+    .controller('RegisterController',['$location', 'AuthenticationService','FlashService','$http','ipconfigService','PhysiotherapistModel',
+            function ($location, AuthenticationService,FlashService,$http,ipconfigService,PhysiotherapistModel) {
+                //Get the physiotherapiss
                 var self = this;
-                self.register = function() {
+                self.therapists = [];
+                $http.get('http://'+ipconfigService.getIP()+":"+ipconfigService.getPort()+'/api/GetAllTherapists')
+                    .then(function (response) {
+                         var physios = response.data;
+                        //////continue Here to initialize the physiothrapysts!!!!
+                        physios.forEach(function(item) {
+                             physio = new PhysiotherapistModel(item.username,item.first_name,item.last_name,item.phone,item.mail);
+                             console.log(physio)
+                             self.therapists.push(physio);
+                        });
+                        ////
+                        ////
+                            }, function (errResponse) {
+                                console.error(errResponse);
+                            });
+
+
+                    var self = this;
+                 self.register = function() {
                     alert("inReg")
                     self.dataLoading = true;
                     self.authService = AuthenticationService;
                     var req = {
                         method: 'POST',
-                        url: 'http://localhost:4000/api/register',
+                        url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/register',
                         headers: {
                             'Content-Type': "application/json"
                         },
@@ -34,29 +52,25 @@ angular.module('myApp')
                             "lastName": self.lastName,
                             "mail": self.mail,
                             "phone": self.phone,
-                            "physiotherapist_username": self.physio_name,
+                            "physiotherapist_username": self.chosenTherapist,
                             "isPhysio": self.physioChecked
                         }
                     }
                     $http(req).then(function (response) {
                         //console.error($scope.selectedVslues);
                         var res = response.data;
-                        /*if (Object.values(res)[0] === "Inserted"){
-                            alert("Registration Complete, Go to Login Page");
-                            $location.path('/login');
-                        }
-                        else if (Object.values(res)[0]=== "Username already exists")  {
-                            alert("Username already exists");
+                        if (response.data.hasOwnProperty('err'))
+                        {
+                            self.isError = true;
+                            self.error = response.data.err;
+                            self.dataLoading = false;
+
                         }
                         else {
-                            alert(Object.values(res)[0]);
-
-                        }*/
                         self.dataLoading = false;
-
                         alert("inserted");
                         $location.path('/');
-                    }, function (errResponse) {
+                    }}, function (errResponse) {
                         console.error('Error while register');
                     });
 

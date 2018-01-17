@@ -1,8 +1,8 @@
 <div class="scrollable" ng-controller="RegisterController as registerController">
     <div class="col-md-6 col-md-offset-3">
 
-    <div ng-show="registerController.isError" class="alert alert-danger">{{registerController.error}}</div>
     <form name="form" ng-submit="registerController.register()" role="form">
+        <div ng-show="registerController.isError" class="alert alert-danger">{{registerController.error}}</div>
         <div class="form-group">
             <label for="username">שם משתמש</label>
             <i class="fa fa-key"></i>
@@ -39,14 +39,19 @@
             <input type="email" name="mail" id="mail" class="form-control" ng-model="registerController.mail" required />
             <span ng-show="form.mail.$dirty && form.mail.$error.required" class="help-block">דואר אלקטרוני נדרש</span>
         </div>
-        <div class="form-group">
-            <label for="username">שם פיזיותרפיסט</label>
+        <div class="form-group" ng-hide="registerController.physioChecked">
+
             <i class="fa fa-key"></i>
-            <input type="text" name="physio_name" id="physio_name" class="form-control" ng-model="registerController.physio_name"  />
+           <!-- <input type="text" name="physio_name" id="physio_name" class="form-control" ng-model="registerController.physio_name"  />-->
+            <label for="repeatSelect"> שם פיזיותרפיסט </label>
+            <br>
+            <select name="repeatSelect" id="repeatSelect" ng-model="registerController.chosenTherapist">
+                <option ng-repeat="physio in registerController.therapists" value="{{physio.username}}">{{physio.FirstName}} {{physio.LastName}}</option>
+            </select>
             <!--<span ng-show="form.physio_name.$dirty && form.physio_name.$error.required" class="help-block"> נדרש</span>-->
         </div>
         <div class="form-group">
-            <input type="checkbox" ng-model="registerController.physioChecked" name="isPhysio" value="Physiotherapist"> physiotherapist<br>
+            <input type="checkbox" ng-model="registerController.physioChecked" name="isPhysio" value="Physiotherapist"> רישום פיזיותרפיסט<br>
         </div>
 
         <br>

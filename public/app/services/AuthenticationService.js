@@ -30,7 +30,10 @@ angular.module('myApp')
                      ----------------------------------------------*/
                     $http.post("http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/authenticate', { username: username, password: password })
                         .then(function (response) {
-                            service.isPhysio = response.data[0].isPhysio;
+                            if (!response.data.hasOwnProperty('err'))
+                            {
+                                service.isPhysio = response.data[0].isPhysio;
+                            }
                             if(username == "admin")
                             {
                                 service.isAdmin = true;
