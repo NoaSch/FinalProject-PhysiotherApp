@@ -8722,6 +8722,7 @@ a.list-group-item .icon.pull-right {
   -o-transition: -o-transform 400ms ease;
   transition: transform 400ms ease;
   pointer-events: none;
+  background: #d489c9;
 }
 
 .sidebar-left {

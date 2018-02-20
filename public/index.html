@@ -4,13 +4,16 @@
     <meta charset="utf-8">
     <title>Physiother</title>
 
-    <!--<link rel="stylesheet" type="text/css" href="style.css" />-->
-    <!-- Only required for desktop -->
-    <link rel="stylesheet" href="angularScripts/mobile-angular-ui/dist/css/mobile-angular-ui-hover.min.css" />
-    <!-- Always required -->
     <link rel="stylesheet" href="angularScripts/mobile-angular-ui/dist/css/mobile-angular-ui-base.min.css" />
+
+    <link rel="stylesheet" type="text/css" href="css/style.css" /> <!--my style-->
+
     <!-- Only required for desktop -->
-    <link rel="stylesheet" href="/angularScripts/mobile-angular-ui/dist/css/mobile-angular-ui-desktop.min.css" />
+   <!--<link rel="stylesheet" href="angularScripts/mobile-angular-ui/dist/css/mobile-angular-ui-hover.min.css" />
+    <!-- Always required -->
+    <!--<link rel="stylesheet" href="angularScripts/mobile-angular-ui/dist/css/mobile-angular-ui-base.min.css" />-->
+    <!-- Only required for desktop -->
+    <!--<link rel="stylesheet" href="angularScripts/mobile-angular-ui/dist/css/mobile-angular-ui-desktop.min.css" />-->
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -29,10 +32,10 @@
     <script src="angularScripts/ng-file-upload/dist/ng-file-upload.min.js"></script>
     <script src="angularScripts/xml2json.js"></script>
     <script src="angularScripts/angular.min.js"></script>
-    <script src="/angularScripts/mobile-angular-ui/dist/js/mobile-angular-ui.min.js"></script>
+    <script src="angularScripts/mobile-angular-ui/dist/js/mobile-angular-ui.min.js"></script>
     <!--<script src="app/models/ProductModel.js"></script>-->
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.0-beta.2/angular-sanitize.js"></script>
-    <script src="/angularScripts/mobile-angular-ui/dist/js/mobile-angular-ui.gestures.min.js"></script>
+    <script src="angularScripts/mobile-angular-ui/dist/js/mobile-angular-ui.gestures.min.js"></script>
 
 
 
@@ -86,25 +89,31 @@
                 <i class="fa fa-bars"></i> תפריט
             </div>
         </div>
-        <div class="btn-group pull-right" ui-yield-to="navbarAction">
+        <!--<div class="btn-group pull-right" ui-yield-to="navbarAction">
             <div ui-toggle="uiSidebarRight" class="btn sidebar-right-toggle">
                 <i class="fa fa-comment"></i> הודעות
             </div>
-        </div>
+        </div>-->
     </div>
-    <div class="navbar navbar-app navbar-absolute-bottom"><!-- Bottom Navbar --></div>
+
     <!-- App body -->
 
     <div class='app-body'>
         <div class='app-content' ng-controller="mainController as mainCtrl">
            <!-- <div >put if donttwant to return t ologin-->
-                <span class="lClass">Hello: </span>
+               <!-- <span class="lClass">Hello: </span>
                 <span class="bClass">{{mainCtrl.authService.userId}}</span>
+            <br>
             <!--</div>-->
             <ng-view></ng-view>
         </div>
     </div>
-</div><!-- ~ .app -->
+
+</div>
+<div class="navbar navbar-app navbar-absolute-bottom">
+    <!-- Bottom Navbar -->
+    <img  class="logo" src="pics/logo1-01.png">
+</div>
 
 <!-- Modals and Overlays -->
 <div ui-yield-to="modals"></div>

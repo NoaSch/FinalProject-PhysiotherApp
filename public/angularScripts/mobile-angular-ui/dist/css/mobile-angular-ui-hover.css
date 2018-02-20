@@ -282,7 +282,7 @@ fieldset[disabled] .btn-link:hover {
 }
 
 .nav > li.disabled > a:hover {
-  color: #777777;
+  color: #d489c9;
   text-decoration: none;
   background-color: transparent;
   cursor: not-allowed;
