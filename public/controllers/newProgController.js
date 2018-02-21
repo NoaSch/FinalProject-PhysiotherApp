@@ -12,6 +12,8 @@ angular.module("myApp")
      self.addExeClicked = false;
      self.patientService = patientService;
      self.authService = AuthenticationService;
+     self.defaultNum = 1;
+
     /* $scope.rememberMe = true;
      $scope.userPhoto;
      $scope.email = 'heyyy@example.com';
@@ -39,7 +41,10 @@ angular.module("myApp")
          };
          //alert(self.ProgName);
          self.clickedCreate = true;
-         $http(req).then(function (ans) {alert("new program inserted")})};
+         $http(req).then(function (ans)
+         {
+             //alert("new program inserted")
+         })};
 
 
 
@@ -69,8 +74,8 @@ angular.module("myApp")
              }
          };
          $http(req).then(function (ans) {
-             console.log("desc:" + self.desc);
-             alert("desc:" + self.desc);
+            /* console.log("desc:" + self.desc);*/
+             /*alert("desc:" + self.desc);*/
          let currProgIDLocal = ans.data[0].prog_id;
          //self.cuurDate
          Upload.upload({
@@ -93,7 +98,8 @@ angular.module("myApp")
              if(resp.data.error_code === 0){ //validate success\\
 
                  ////call insert to DB!!!
-                 $window.alert('Success ' + resp.config.data.file.name + 'uploaded. Response: ');
+                /* $window.alert('Success ' + resp.config.data.file.name + 'uploaded. ');*/
+                 $window.alert('upload successful');
              } else {
                  $window.alert('an error occured');
              }
@@ -116,8 +122,9 @@ angular.module("myApp")
              if(resp.data.error_code === 0){ //validate success\\
 
                  ////call insert to DB!!!
+                 $window.alert('upload successful');
 
-                 $window.alert('Success ' + resp.config.data.file.name + 'uploaded. Response: ');
+                /* $window.alert('Success ' + resp.config.data.file.name + 'uploaded. Response: ');*/
              } else {
                  $window.alert('an error occured');
              }
@@ -140,9 +147,17 @@ angular.module("myApp")
 
      self.AddExe = function(){ //function to call on form submit
         self.clickedAdd = true;
+
      };
      self.AddMoreExe = function(){ //function to call on form submit
          self.submitExeClicked = false;
+         self.exeTitle = "";
+         self.timeInWeek = self.defaultNum;
+         self.nSets = self.defaultNum;
+         self.nRepeats = self.defaultNum;
+         self.setDuration = self.defaultNum;
+         self.break = self.defaultNum;
+         self.desc = "";
      };
 
    /*  $scope.uploadVideo = function () {

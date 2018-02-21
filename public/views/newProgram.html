@@ -6,7 +6,7 @@
     <div class="scrollable-content paddClass">
       <form role="form" ng-hide="newProgController.clickedAdd || newProgController.videoClick">
          <fieldset>
-             <legend ng-hide="newProgController.clickedCreate">יצירת תכנית אימון</legend>
+             <legend align="right"  ng-hide="newProgController.clickedCreate">יצירת תכנית אימון</legend>
              <div ng-hide="newProgController.clickedCreate" class="form-group has-success has-feedback" >
                  <label>שם תכנית אימון</label>
                  <input type="text" required
@@ -14,7 +14,7 @@
                         class="form-control"
                         placeholder="הכנס שם תכנית אימון">
              </div>
-             <legend ng-show="newProgController.clickedCreate">{{newProgController.ProgName}} </legend>
+             <legend align="right" ng-show="newProgController.clickedCreate">{{newProgController.ProgName}} </legend>
              <button class="btn btn-primary btn-block" ng-show="newProgController.clickedCreate" ng-click="newProgController.AddExe()">הוסף תרגיל </button>
 
              <button class="btn btn-primary btn-block" ng-hide="newProgController.clickedCreate" type="submit" ng-click="newProgController.createProg()">צור תכנית אימון
@@ -37,7 +37,7 @@
                 <a  href="#/" class="btn btn-primary btn-block" ng-show="newProgController.clickedCreate && newProgController.submitExeClicked" >סיים </a>
                 <div  ng-show= "!newProgController.submitExeClicked">
                 <!--<legend>{{newProgController.ProgName}}</legend>-->
-               <legend>הוספת תרגיל</legend>
+               <legend  align="right" >הוספת תרגיל </legend>
                 <div class="form-group has-success has-feedback">
                     <label>שם תרגיל</label>
                     <input type="text"

@@ -1,8 +1,7 @@
 .videoClass {
-   width:100%;
-    width:20%;
+    width:30%;
    /* height:auto;*/
-    height: 150px;
+    height: 200px;
 }
 
 @media (min-width: 768px) {
@@ -4534,6 +4533,7 @@ input[type="search"] {
 
 .form-group {
     margin-bottom: 15px;
+    direction: rtl;
 }
 
 .radio,
@@ -5163,7 +5163,7 @@ fieldset[disabled] .btn-info.focus {
 
 .btn-warning {
     color: #fff;
-    background-color: #fc0;
+    background-color: #ffad00;
     border-color: #e6b800;
 }
 
@@ -7183,6 +7183,9 @@ button.list-group-item-danger.active:focus {
 
 .panel-body {
     padding: 15px;
+    text-align: center;
+    direction: rtl;
+
 }
 
 .panel-heading {
@@ -7190,6 +7193,8 @@ button.list-group-item-danger.active:focus {
     border-bottom: 1px solid transparent;
     border-top-right-radius: 3px;
     border-top-left-radius: 3px;
+    text-align: right;
+
 }
 
 .panel-heading > .dropdown .dropdown-toggle {
@@ -9083,4 +9088,8 @@ ui-switch {
     margin-left: auto;
     margin-right: auto;
     width: 150px;
+}
+
+.rtlH3{
+    padding: 10px;
 }

@@ -10,7 +10,7 @@ angular.module('myApp')
             function (Base64, $http, $cookieStore, $rootScope, $timeout,ipconfigService) {
                 var service = {};
                 service.loggedIn = false;
-                service.userId="guest";
+                service.userId="אורח";
                 service.isAdmin=false;
                 service.isPhysio=false;
                 service.Login = function (username, password, callback) {
