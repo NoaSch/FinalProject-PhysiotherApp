@@ -3325,7 +3325,7 @@ body {
     font-size: 14px;
     line-height: 1.42857143;
     color: #333333;
-    background-color: #fff;
+    background-color: #f9f7fa;
 }
 
 input,
@@ -8447,7 +8447,7 @@ body {
 a {
     text-decoration: none;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    color: #007aff;
+    color: #ffad00;
 }
 
 a:active,
@@ -8574,8 +8574,8 @@ input[type="url"] {
 .btn-group > .btn-default.active,
 .btn-group > .btn-default.active:focus {
     color: #fff;
-    background-color: #007aff;
-    border-color: #006ee6;
+    background-color: #ffad00;
+    border-color: #ffad00;
 }
 
 .list-group-item,
@@ -8614,7 +8614,13 @@ a.list-group-item .icon.pull-right {
     position: relative;
     z-index: 2;
     width: 100%;
-    background: #777777;
+    background-position: center;
+    background-position: center bottom	;
+    background-image: url("../pics/background.jpg");
+    background-color: #f9f7fa;
+    background-repeat: no-repeat, repeat;
+
+    /*background: #777777;*/
     overflow: hidden;
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
@@ -8655,7 +8661,7 @@ a.list-group-item .icon.pull-right {
     background: #f7f7f7;
     border-width: 1px;
     border-style: solid;
-    color: #007aff;
+    color: #ffad00;
 }
 
 .navbar-app .btn-icon-only .fa,
@@ -8671,7 +8677,7 @@ a.list-group-item .icon.pull-right {
     line-height: 50px;
     padding-top: 0;
     padding-bottom: 0;
-    color: #007aff;
+    color: #ffad00;
     text-transform: uppercase;
 }
 
@@ -8729,11 +8735,11 @@ a.list-group-item .icon.pull-right {
     -o-transition: -o-transform 400ms ease;
     transition: transform 400ms ease;
     pointer-events: none;
-    background: #d489c9;
+    background: #ffad00;
 }
 
 .sidebar-left {
-    background:  #f7f7f7;
+    background: #555555;
     width: 200px;
     left: 0;
     right: auto;
@@ -8794,7 +8800,7 @@ a.list-group-item .icon.pull-right {
     line-height: 70px;
     padding: 0 10px;
     font-size: 23px;
-    color: #ff8b27;
+    color: #ffad00;
     margin: 0;
     z-index: 10;
 }
@@ -8804,7 +8810,24 @@ a.list-group-item .icon.pull-right {
     margin-left: auto;
     padding-left: 15px;
     padding-right: 15px;
-    background: #fff;
+    /*background: #ff17e8;*/
+   /* background-image: url("../pics/background.jpg");
+    background-color: #f9f7fa;*/
+    background-repeat: no-repeat, repeat;
+    background-repeat: no-repeat, repeat;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.paddClass {
+    margin-right: auto;
+    margin-left: auto;
+    padding-left: 15px;
+    padding-right: 15px;
+    /*background: #ff17e8;*/
+    /* background-image: url("../pics/background.jpg");
+     background-color: #f9f7fa;*/
+    background-repeat: no-repeat, repeat;
+    background-repeat: no-repeat, repeat;
     padding-top: 10px;
     padding-bottom: 10px;
 }
@@ -8837,7 +8860,7 @@ a.list-group-item .icon.pull-right {
 }
 
 .section-primary {
-    background-color: #007aff;
+    background-color: #ffad00;
     color: #fff;
 }
 
@@ -8852,7 +8875,7 @@ a.list-group-item .icon.pull-right {
 }
 
 .section-warning {
-    background-color: #fc0;
+    background-color: #ffad00;
     color: #fff;
 }
 
@@ -8922,11 +8945,11 @@ a.list-group-item .icon.pull-right {
 
 input.ng-invalid,
 textarea.ng-invalid {
-    border-color: #fc0;
+    border-color: #ffad00;
 }
 
 .ng-dirty input.ng-invalid {
-    border-color: #fc0;
+    border-color: #ffad00;
 }
 
 .ng-dirty input.ng-invalid ~ span.ko {
@@ -9026,12 +9049,12 @@ ui-switch {
 }
 
 .switch.active {
-    background-color: #007aff;
-    border: 1px solid #007aff;
+    background-color: #ffad00;
+    border: 1px solid #ffad00;
 }
 
 .switch.active .switch-handle {
-    border-color: #007aff;
+    border-color: #ffad00;;
     -webkit-transform: translate(34px, 0);
     -ms-transform: translate(34px, 0);
     -o-transform: translate(34px, 0);
@@ -9059,5 +9082,5 @@ ui-switch {
     display: block;
     margin-left: auto;
     margin-right: auto;
-    width: 40%;
+    width: 150px;
 }

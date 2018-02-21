@@ -20,7 +20,7 @@
 
 <div class="scrollable" ng-controller="programsController as programsController">
     <div class="scrollable-content">
-        <div class="section">
+        <!--<div class="section">-->
             <div class="panel-group"
                  ui-shared-state="myAccordion"
                  ui-default='1'>
@@ -32,15 +32,15 @@
                         </h4>
                     </div>
                         <div class="panel-body">
-                            {{item.prog_id}}מספר תכנית
-                            <br>
+                           <!-- {{item.prog_id}}מספר תכנית-->
+                           <!-- <br>>>
                             <!--<button class="ProgramDetBtn" ng-click="programsController.getExercises(item.prog_id)">פרטי תכנית</button>-->
                             <a href="#/exercises"><button class="ProgramDetBtn" ng-click="programsController.clickProg(item.prog_id)">פרטי תכנית</button></a>
                         </div>
 
                 </div>
             </div>
-        </div>
+       <!-- </div>-->
     </div>
 </div>
 
