@@ -1,8 +1,10 @@
 <div class="scrollable" ng-controller="RegisterController as registerController">
-    <div class="col-md-6 col-md-offset-3">
+    <!--<div class="col-md-6 col-md-offset-3">-->
+    <div class="scrollable-content paddClass">
 
     <form name="form" ng-submit="registerController.register()" role="form">
         <div ng-show="registerController.isError" class="alert alert-danger">{{registerController.error}}</div>
+
         <div class="form-group">
             <label for="username">שם משתמש</label>
             <i class="fa fa-key"></i>
@@ -17,31 +19,26 @@
         </div>
         <div class="form-group">
             <label for="username">שם פרטי</label>
-            <i class="fa fa-key"></i>
             <input type="text" name="firstName" id="firstName" class="form-control" ng-model="registerController.firstName" required />
             <span ng-show="form.firstName.$dirty && form.firstName.$error.required" class="help-block">שם פרטי נדרש</span>
         </div>
         <div class="form-group">
             <label for="username">שם משפחה</label>
-            <i class="fa fa-key"></i>
             <input type="text" name="lastName" id="lastName" class="form-control" ng-model="registerController.lastName" required />
             <span ng-show="form.lastName.$dirty && form.lastName.$error.required" class="help-block">שם משפחה נדרש</span>
         </div>
         <div class="form-group">
             <label for="username">מספר טלפון סלולארי</label>
-            <i class="fa fa-key"></i>
             <input type="text" name="phone" id="phone" class="form-control" ng-model="registerController.phone" required />
             <span ng-show="form.phone.$dirty && form.phone.$error.required" class="help-block">מספר סלולארי נדרש</span>
         </div>
         <div class="form-group">
             <label for="username">דואר אלקטרוני</label>
-            <i class="fa fa-key"></i>
             <input type="email" name="mail" id="mail" class="form-control" ng-model="registerController.mail" required />
             <span ng-show="form.mail.$dirty && form.mail.$error.required" class="help-block">דואר אלקטרוני נדרש</span>
         </div>
         <div class="form-group" ng-hide="registerController.physioChecked">
 
-            <i class="fa fa-key"></i>
            <!-- <input type="text" name="physio_name" id="physio_name" class="form-control" ng-model="registerController.physio_name"  />-->
             <label for="repeatSelect"> שם פיזיותרפיסט </label>
             <br>
@@ -57,12 +54,13 @@
         <br>
         <br>
         <div class="form-actions">
-            <button type="submit" ng-disabled="form.$invalid || registerController.dataLoading" class="btn btn-danger">Register</button>
+            <button  class="btn btn-warning"  type="submit" ng-disabled="form.$invalid || registerController.dataLoading" class="btn btn-danger">Register</button>
             <br>
             <img ng-if="registerController.dataLoading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
         </div>
     </form>
     </div>
+</div>
 
     <!--<div class="col-md-6 col-md-offset-3">
         <h2>Login</h2>
