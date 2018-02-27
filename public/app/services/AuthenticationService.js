@@ -11,6 +11,7 @@ angular.module('myApp')
                 var service = {};
                 service.loggedIn = false;
                 service.userId="אורח";
+                service.userFirstName="אורח";
                 service.isAdmin=false;
                 service.isPhysio=false;
                 service.Login = function (username, password, callback) {
@@ -33,6 +34,7 @@ angular.module('myApp')
                             if (!response.data.hasOwnProperty('err'))
                             {
                                 service.isPhysio = response.data[0].isPhysio;
+                                service.userFirstName = response.data[0].first_name;
                             }
                             if(username == "admin")
                             {
@@ -55,6 +57,8 @@ angular.module('myApp')
                             authdata: authdata
                         }//,isPhysio = self.isPhysio
                     };
+                    //get the user first name
+
                     service.userId = username;
                     service.loggedIn = true;
                     //$http.defaults.headers.common['Authorization'] = 'Basic ' + authdata; // jshint ignore:line

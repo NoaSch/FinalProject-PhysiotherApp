@@ -9,12 +9,12 @@ angular.module("myApp")
      self.videoClick = false;
      self.clickedCreate = false;
      self.onTime = false;
-     self.currProgID;
-     self.finishLoad = true;
+     self.finishLoad = false;
      self.addExeClicked = false;
      self.patientService = patientService;
      self.authService = AuthenticationService;
      self.defaultNum = 1;
+
 
     /* $scope.rememberMe = true;
      $scope.userPhoto;
@@ -59,7 +59,7 @@ angular.module("myApp")
             self.upload(self.file)
         }
         else {
-            self.addExeWithoutFile();
+            self.addExeWithoutFile()
         }
          self.submitExeClicked = true;
          ///
@@ -108,7 +108,10 @@ angular.module("myApp")
                  ////call insert to DB!!!
                 /* $window.alert('Success ' + resp.config.data.file.name + 'uploaded. ');*/
                  //self.finishLoad = true;
-                 $window.alert('upload successful');
+                 $window.alert('התרגיל נוסף בהצלחה');
+                 self.finishLoad = true;
+
+
              } else {
                  $window.alert('an error occured');
              }
@@ -121,16 +124,17 @@ angular.module("myApp")
              console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
              console.log(self.finishLoad);
              self.progress = 'progress: ' + progressPercentage + '% '; // capture upload progress
-             if(progressPercentage == 100)
+             /*if(progressPercentage == 100)
              {
                  self.finishLoad = true;
-             }
+             }*/
          });
          })
      };
 
 
      self.addExeWithoutFile = function () {
+         self.finishLoad = false;
          ////get the programID
          let req = {
              method: 'POST',
@@ -171,8 +175,9 @@ angular.module("myApp")
 
                      ////call insert to DB!!!
                      /* $window.alert('Success ' + resp.config.data.file.name + 'uploaded. ');*/
-                     //self.finishLoad = true;
-                     $window.alert('upload successful');
+
+                     $window.alert('התרגיל נוסף בהצלחה');
+                     self.finishLoad = true;
                  } else {
                      $window.alert('an error occured');
                  }
@@ -181,6 +186,10 @@ angular.module("myApp")
          })
      };
 
+     self.finish = function()
+     {
+         alert("תכנית האימון נוצרה בהצלחה");
+     }
 
      self.uploadWork = function (file) {
          Upload.upload({
@@ -191,8 +200,10 @@ angular.module("myApp")
 
                  ////call insert to DB!!!
                  $window.alert('התרגיל נוסף בהצלחה');
+                 self.finishLoad = true;
 
-                /* $window.alert('Success ' + resp.config.data.file.name + 'uploaded. Response: ');*/
+
+                 /* $window.alert('Success ' + resp.config.data.file.name + 'uploaded. Response: ');*/
              } else {
                  $window.alert('an error occured');
              }
@@ -220,13 +231,21 @@ angular.module("myApp")
 
      };
      self.AddMoreExe = function(){ //function to call on form submit
-         self.submitExeClicked = false;
+        /* self.submitExeClicked = false;
          self.exeTitle = "";
          self.timeInWeek = self.defaultNum;
          self.nSets = self.defaultNum;
          self.nRepeats = self.defaultNum;
          self.setDuration = self.defaultNum;
          self.break = self.defaultNum;
+         self.desc = "";*/
+         self.submitExeClicked = false;
+         self.exeTitle = null;
+         self.timeInWeek = null;
+         self.nSets = null;
+         self.nRepeats = null;
+         self.setDuration = null;
+         self.break = null;
          self.desc = "";
      };
 

@@ -382,13 +382,48 @@ app.post('/api/authenticate', function (req, res) {
                 return;
             }
            // res.json({success:"login"});
-            res.send(ans);
+            if(ans[0].isPhysio)
+            {
+                console.log("physio");
+                let query2 = (
+                    squel.select()
+                        .from("physiotherapists")
+                        .where("username = ?", _username)
+                        .toString()
+                );
+                sql.Select(query2)
+                    .then(function (ansP) {
+                        ansP[0].isPhysio = ans[0].isPhysio;
+                        res.send(ansP);
+                    }).catch(function (err1) {
+                    console.log(err1);
+                    res.send(err1);
+                });
 
-        }).catch(function (reason) {
+            }
+            else {
+                let query3 = (
+                    squel.select()
+                        .from("patients")
+                        .where("username = ?", _username)
+                        .toString()
+                );
+                sql.Select(query3)
+                    .then(function (ansP2) {
+                        ansP2[0].isPhysio = ans[0].isPhysio;
+                        res.send(ansP2);
+                    }).catch(function (err2) {
+                    console.log(err2);
+                    res.send(err2);
+                });
+
+
+            }}).catch(function (reason) {
         console.log(reason);
         res.send(reason);
-    })
-});
+    })});
+
+
 
 
 app.post('/api/register', function (req, res) {
@@ -587,9 +622,9 @@ app.get('/api/mediaGet/:path', function(req, res){
                 console.log("before: " + new_Path);
                 console.log("after: " + currPath);
             }
-            if (typeof nRepeats === 'undefined' || !nRepeats) { nRepeats = null};
-            if (typeof dur === 'undefined' || !dur) { dur = null};
-            if (typeof breakBet === 'undefined' || !breakBet) { breakBet = null};
+            if (typeof nRepeats === 'undefined' || !nRepeats || nRepeats=="null") { nRepeats = null};
+            if (typeof dur === 'undefined' || !dur || dur == "null") { dur = null};
+            if (typeof breakBet === 'undefined' || !breakBet ||breakBet=='null' ) { breakBet = null};
            // if (typeof nRepeats === 'undefined' || !nRepeats) { nRepeats = null};
 
             let query = (

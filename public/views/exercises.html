@@ -53,7 +53,7 @@
                             <label> הוראות נוספות: </label>
                             <span>{{item.description}}</span>
                             <br>
-                            <video class="videoClass" src= {{exerciseController.videosURL[item.exe_id]}} controls type="video/mp4">
+                            <video class="videoClass" ng-show="exerciseController.videosURL[item.exe_id]" src= {{exerciseController.videosURL[item.exe_id]}} controls type="video/mp4">
                             </video>
                             <button class="btn btn-primary btn-block">דווח על ביצוע </button>
                             <button class="btn btn-primary btn-block">שלח הודעה לפיזיותרפיסט </button>
