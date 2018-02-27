@@ -5,7 +5,7 @@ var Connection = require('tedious').Connection;
 var Request = require('tedious').Request;
 
 let config = {
- //server: '192.168.1.15',
+ //server: '10.100.102.7',
     //server: '132.73.201.132',
    //server: '10.100.102.10',
     server: '192.168.1.15',

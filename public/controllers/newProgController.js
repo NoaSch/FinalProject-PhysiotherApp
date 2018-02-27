@@ -8,7 +8,9 @@ angular.module("myApp")
      self.clickedAdd = false;
      self.videoClick = false;
      self.clickedCreate = false;
+     self.onTime = false;
      self.currProgID;
+     self.finishLoad = true;
      self.addExeClicked = false;
      self.patientService = patientService;
      self.authService = AuthenticationService;
@@ -49,17 +51,23 @@ angular.module("myApp")
 
 
      self.submit = function(){ //function to call on form submit
-         if (/*self.upload_form.file.$valid && */self.file) { //check if from is valid
+        /* if (/*self.upload_form.file.$valid && self.file) { //check if from is valid and exist
             // $window.alert("time:  "+self.timeInWeek);
-
-             self.upload(self.file); //call upload function
-         }
+             self.upload(self.file) //call upload function
+         /*}*/
+        if(self.file) {
+            self.upload(self.file)
+        }
+        else {
+            self.addExeWithoutFile();
+        }
          self.submitExeClicked = true;
          ///
          ///check if we want to do another func without video -
          ///
      }
      self.upload = function (file) {
+         self.finishLoad = false;
          ////get the programID
          let req = {
              method: 'POST',
@@ -99,6 +107,7 @@ angular.module("myApp")
 
                  ////call insert to DB!!!
                 /* $window.alert('Success ' + resp.config.data.file.name + 'uploaded. ');*/
+                 //self.finishLoad = true;
                  $window.alert('upload successful');
              } else {
                  $window.alert('an error occured');
@@ -110,10 +119,69 @@ angular.module("myApp")
              console.log(evt);
              var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
              console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+             console.log(self.finishLoad);
              self.progress = 'progress: ' + progressPercentage + '% '; // capture upload progress
+             if(progressPercentage == 100)
+             {
+                 self.finishLoad = true;
+             }
          });
          })
      };
+
+
+     self.addExeWithoutFile = function () {
+         ////get the programID
+         let req = {
+             method: 'POST',
+             url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/getEXEidByDateAndPat',
+             // url: 'http://132.73.201.132:4000/api/getUserPrograms',
+             headers: {
+                 'Content-Type': "application/json"
+             },
+             data: {
+                 "patUsername": self.patientService.getID(),
+                 "createDate": self.currDate
+             }
+         };
+         $http(req).then(function (ans) {
+             /* console.log("desc:" + self.desc);*/
+             /*alert("desc:" + self.desc);*/
+             let currProgIDLocal = ans.data[0].prog_id;
+             //self.cuurDate
+             let exeReq={
+                 method: 'POST',
+                 url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/uploadNoVideo', //webAPI exposed to upload the file
+                 data:{
+                     //"prog_id":programService.getProgID(), //add new service orsomething
+                     "prog_id":currProgIDLocal,
+                     "exeTitle":self.exeTitle,
+                     "onTime":self.onTime,
+                     "timeInWeek":self.timeInWeek,
+                     "nSets":self.nSets,
+                     "nRepeats":self.nRepeats,
+                     "setDuration":self.setDuration,
+                     "break":self.break,
+                     "description":self.desc
+
+                 } //pass file as data, should be user ng-model
+             };
+             $http(exeReq).then(function (resp) { //upload function returns a promise
+                 if(resp.data.error_code === 0){ //validate success\\
+
+                     ////call insert to DB!!!
+                     /* $window.alert('Success ' + resp.config.data.file.name + 'uploaded. ');*/
+                     //self.finishLoad = true;
+                     $window.alert('upload successful');
+                 } else {
+                     $window.alert('an error occured');
+                 }
+
+             });
+         })
+     };
+
+
      self.uploadWork = function (file) {
          Upload.upload({
              url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/upload', //webAPI exposed to upload the file
@@ -122,7 +190,7 @@ angular.module("myApp")
              if(resp.data.error_code === 0){ //validate success\\
 
                  ////call insert to DB!!!
-                 $window.alert('upload successful');
+                 $window.alert('התרגיל נוסף בהצלחה');
 
                 /* $window.alert('Success ' + resp.config.data.file.name + 'uploaded. Response: ');*/
              } else {
@@ -133,9 +201,11 @@ angular.module("myApp")
              $window.alert('Error status: ' + resp.status);
          }, function (evt) {
              console.log(evt);
-             var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-             console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
-             self.progress = 'progress: ' + progressPercentage + '% '; // capture upload progress
+             if(typeof evt.config.data.file != undefined) {
+                 var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                 console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+                 self.progress = 'progress: ' + progressPercentage + '% '; // capture upload progress
+             }
          });
      };
 

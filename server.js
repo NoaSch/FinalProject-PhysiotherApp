@@ -148,35 +148,39 @@ app.post('/api/createPrgram', function (req, res) {
 });
 
 app.post('/upload', function(req, res) {
+console.log("enter to upload");
 
-    upload(req,res,function(err){
-        if(err){
-            res.json({error_code:1,err_desc:err});
+    console.log("in upload");
+
+    upload(req, res, function (err) {
+        if (err) {
+            res.json({error_code: 1, err_desc: err});
             return;
         }
-        if(req.file.mimetype == "video/quicktime")
-        {
+        if (req.file.mimetype == "video/quicktime") {
             console.log(req.body.time);
 
             let newPath = changeToMP4Extention(req.file.path);
-            convertTomp4(req.file.path,newPath)
-                // insertVideoToDB(new_Path,prog_id,exetitle,tInWeek,nSets,nRepeats,dur,breakBet)
-                .then(insertVideoToDB(newPath,req.body.prog_id,req.body.exeTitle,req.body.timeInWeek,req.body.nSets,req.body.nRepeats,req.body.setDuration,req.body.break,req.body.break,req.body.description))
-                .then(function(ans){
+            convertTomp4(req.file.path, newPath)
+            // insertVideoToDB(new_Path,prog_id,exetitle,tInWeek,nSets,nRepeats,dur,breakBet)
+                .then(insertVideoToDB(newPath, req.body.prog_id, req.body.exeTitle, req.body.onTime, req.body.timeInWeek, req.body.nSets, req.body.nRepeats, req.body.setDuration, req.body.break, req.body.break, req.body.description))
+                .then(function (ans) {
                     //res.send("Done WithConvert!!!!")
-                    res.json({error_code:0,err_desc:null})
+                    res.json({error_code: 0, err_desc: null})
                 })
-                .catch(function(err){
+                .catch(function (err) {
                     res.send(err)
                 })
         }
         else {
             console.log(req.body.timeInWeek);
-           //insertVideoToDB(req.file.path)
-       insertVideoToDB(req.file.path,req.body.prog_id,req.body.exeTitle,req.body.timeInWeek,req.body.nSets,req.body.nRepeats,req.body.setDuration,req.body.break,req.body.description)
-                .then(function(ans){
-                    res.json({error_code:0,err_desc:null})}).catch(function (err) {
-                reject(err)});
+            //insertVideoToDB(req.file.path)
+            insertVideoToDB(req.file.path, req.body.prog_id, req.body.exeTitle, req.body.onTime, req.body.timeInWeek, req.body.nSets, req.body.nRepeats, req.body.setDuration, req.body.break, req.body.description)
+                .then(function (ans) {
+                    res.json({error_code: 0, err_desc: null})
+                }).catch(function (err) {
+                reject(err)
+            });
         }
         //res.json({error_code:0,err_desc:null});
 //        insertVideoToDB(req.file.path);
@@ -184,6 +188,15 @@ app.post('/upload', function(req, res) {
 
 });
 
+
+app.post('/uploadNoVideo', function(req, res) {
+    console.log("enter to uploadNoVideo");
+    insertVideoToDB(undefined,req.body.prog_id,req.body.exeTitle,req.body.onTime,req.body.timeInWeek,req.body.nSets,req.body.nRepeats,req.body.setDuration,req.body.break,req.body.break,req.body.description).then(function(ans){
+        res.json({error_code:0,err_desc:null})
+    }).catch(function(err){
+            res.send(err)
+        })
+    });
 
 app.post('/api/getEXEidByDateAndPat', function (req, res) {
     console.log("enter test users");
@@ -560,13 +573,20 @@ app.get('/api/mediaGet/:path', function(req, res){
         });
     }
 
-    function insertVideoToDB(new_Path,prog_id,exetitle,tInWeek,nSets,nRepeats,dur,breakBet,description){
+    function insertVideoToDB(new_Path,prog_id,exetitle,onTime,tInWeek,nSets,nRepeats,dur,breakBet,description){
         return new Promise(function(resolve,reject) {
+           let _onTime = 0;
+            if(onTime === true)
+            {
+                _onTime = 1;
+            }
+            let currPath = null;
             let date = moment().format('YYYY-MM-DD hh:mm:ss');
-            let currPath = new_Path.replace('uploads\\', '');
-            console.log("before: " + new_Path);
-            console.log("after: " + currPath);
-
+            if(typeof new_Path != 'undefined') {
+                currPath = new_Path.replace('uploads\\', '');
+                console.log("before: " + new_Path);
+                console.log("after: " + currPath);
+            }
             if (typeof nRepeats === 'undefined' || !nRepeats) { nRepeats = null};
             if (typeof dur === 'undefined' || !dur) { dur = null};
             if (typeof breakBet === 'undefined' || !breakBet) { breakBet = null};
@@ -578,6 +598,7 @@ app.get('/api/mediaGet/:path', function(req, res){
                     .set("[prog_id]",prog_id)
                     .set("[title]",exetitle)
                     .set("[date]",date)
+                    .set("[onTime]",_onTime)
                     .set("[time_in_week]",tInWeek)
                     .set("[num_sets]",nSets)
                     .set("[num_repeats]",nRepeats)

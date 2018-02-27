@@ -28,19 +28,24 @@
                                 <!--<button class="ProgramDetBtn" ng-click="programsController.getExercises(item.prog_id)">פרטי תכנית</button>-->
                                 <a href="#/exercises"><button class="ProgramDetBtn" ng-click="exerciseController.clickDet(item.exe_id)">פרטי תרגיל</button></a>
                         <div ng-show = exerciseController.chosenExe[item.exe_id] >
+                            <br>
                         <label>מספר פעמים בשבוע: </label>
                             <span>{{item.time_in_week}}</span>
                             <br>
                             <label>מספר סטים: </label>
                             <span>{{item.num_sets}}</span>
                             <br>
+                            <div ng-hide="item.onTime">
                             <label>מספר חזרות: </label>
                             <span>{{item.num_repeats}}</span>
                             <br>
+                            </div>
+                            <div ng-show="item.onTime">
                             <label>משך סט: </label>
                             <span>{{item.set_duration}}</span>
                             <span>שניות</span>
-                            <br>
+                                <br>
+                        </div>
                             <label> זמן הפסקה בין סטים: </label>
                             <span>{{item.break_between_sets}}</span>
                             <span>שניות</span>
@@ -50,7 +55,8 @@
                             <br>
                             <video class="videoClass" src= {{exerciseController.videosURL[item.exe_id]}} controls type="video/mp4">
                             </video>
-
+                            <button class="btn btn-primary btn-block">דווח על ביצוע </button>
+                            <button class="btn btn-primary btn-block">שלח הודעה לפיזיותרפיסט </button>
                         </div>
                             </div>
                         <!--<div class="panel-body">

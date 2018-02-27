@@ -1,7 +1,7 @@
 .videoClass {
-    width:30%;
+    width:100%;
    /* height:auto;*/
-    height: 200px;
+    height: 100%;
 }
 
 @media (min-width: 768px) {

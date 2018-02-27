@@ -32,10 +32,11 @@
         <form role="form" ng-show="newProgController.clickedAdd" name="newProgController.upload_form">
             <fieldset>
                 <legend ng-show="newProgController.clickedCreate">{{newProgController.ProgName}} </legend>
-                <button class="btn btn-primary btn-block" ng-show="newProgController.clickedCreate && newProgController.submitExeClicked" ng-click="newProgController.AddMoreExe()">הוסף תרגיל נוסף</button>
+                <button class="btn btn-primary btn-block" ng-show="newProgController.clickedCreate && newProgController.submitExeClicked && (!newProgController.file || newProgController.finishLoad)" ng-click="newProgController.AddMoreExe()">הוסף תרגיל נוסף</button>
                 <!--  <a class="list-group-item" href="#/patients">המטופלים שלי <i class="fa fa-chevron-right pull-right"></i></a>-->
-                <a  href="#/" class="btn btn-primary btn-block" ng-show="newProgController.clickedCreate && newProgController.submitExeClicked" >סיים </a>
-                <div  ng-show= "!newProgController.submitExeClicked">
+                <a  href="#/" class="btn btn-primary btn-block" ng-show="newProgController.clickedCreate && newProgController.submitExeClicked && (!newProgController.file || newProgController.finishLoad)" >סיים </a>
+               <!-- <div  ng-show= "!newProgController.submitExeClicked || (newProgController.videoClick && !self.finishLoad)">-->
+                <div ng-hide="newProgController.clickedCreate && newProgController.submitExeClicked && (!newProgController.file || newProgController.finishLoad)">
                 <!--<legend>{{newProgController.ProgName}}</legend>-->
                <legend  align="right" >הוספת תרגיל </legend>
                 <div class="form-group has-success has-feedback">
@@ -65,14 +66,14 @@
                            class="form-control"
                            placeholder="1" required>
                 </div>
-                <div class="form-group has-success has-feedback">
+                <div class="form-group has-success has-feedback" ng-hide ="newProgController.onTime">
                     <label>מספר חזרות בסט</label>
                     <input type="number"  min="1"
                            ng-model="newProgController.nRepeats"
                            class="form-control"
                            placeholder="1">
                 </div>
-                <div class="form-group has-success has-feedback">
+                <div class="form-group has-success has-feedback" ng-show="newProgController.onTime">
                     <label>משך זמן סט</label>
                     <span><input type="number"  min="1"
                            ng-model="newProgController.setDuration"
@@ -86,6 +87,7 @@
                            ng-model="newProgController.break"
                            class="form-control"
                            placeholder="1" required>
+                    <label>שניות</label> </span>
                 </div>
 
                 <div class="form-group has-success has-feedback">
@@ -109,7 +111,8 @@
                     <i ng-show="up.upload_form.file.$error.required">*required</i><br>
                     <i ng-show="up.upload_form.file.$error.maxSize">File too large
                         {{up.file.size / 1000000|number:1}}MB: max 20M</i>
-                    <button  class="btn btn-primary btn-block" type="submit" ng-click="newProgController.submit()">הוסף את התרגיל</button>
+                    <i>{{newProgController.progress}}</i><br>
+                    <button class="btn btn-primary btn-block" type="submit" ng-click="newProgController.submit()">הוסף את התרגיל</button>
 
                 </div>
                 </div>
