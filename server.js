@@ -189,12 +189,12 @@ console.log("enter to upload");
 });
 
 
-app.post('/uploadNoVideo', function(req, res) {
+app.post('/uploadNoVideo', function(req, res2) {
     console.log("enter to uploadNoVideo");
     insertVideoToDB(undefined,req.body.prog_id,req.body.exeTitle,req.body.onTime,req.body.timeInWeek,req.body.nSets,req.body.nRepeats,req.body.setDuration,req.body.break,req.body.break,req.body.description).then(function(ans){
-        res.json({error_code:0,err_desc:null})
+        res2.json({error_code:0,err_desc:null})
     }).catch(function(err){
-            res.send(err)
+            res2.send(err)
         })
     });
 
@@ -401,7 +401,12 @@ app.post('/api/authenticate', function (req, res) {
                 });
 
             }
-            else {
+            else if(_username == 'admin')
+            {
+                res.send(ans);
+
+            }
+            else{
                 let query3 = (
                     squel.select()
                         .from("patients")

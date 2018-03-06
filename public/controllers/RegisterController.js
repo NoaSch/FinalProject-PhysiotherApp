@@ -26,7 +26,7 @@ angular.module('myApp')
 
                     var self = this;
                  self.register = function() {
-                    alert("inReg")
+                    //alert("inReg")
                     self.dataLoading = true;
                     self.authService = AuthenticationService;
                     var req = {
@@ -68,8 +68,15 @@ angular.module('myApp')
                         }
                         else {
                         self.dataLoading = false;
-                        alert("inserted");
-                        $location.path('/');
+                        alert("הרישום הצליח");
+                            self.username ="";
+                            self.password="";
+                            self.firstName="";
+                            self.lastName="";
+                            self.mail="";
+                            self.phone="";
+                            self.chosenTherapist=""
+                        //$location.path('/');
                     }}, function (errResponse) {
                         console.error('Error while register');
                     });

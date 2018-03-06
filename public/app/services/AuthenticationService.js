@@ -34,7 +34,15 @@ angular.module('myApp')
                             if (!response.data.hasOwnProperty('err'))
                             {
                                 service.isPhysio = response.data[0].isPhysio;
-                                service.userFirstName = response.data[0].first_name;
+                                if(username == 'admin')
+                                {
+                                    service.userFirstName = "מנהל"
+
+                                }
+                                else {
+                                    service.userFirstName = response.data[0].first_name;
+
+                                }
                             }
                             if(username == "admin")
                             {
