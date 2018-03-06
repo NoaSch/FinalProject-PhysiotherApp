@@ -149,7 +149,6 @@ app.post('/api/createPrgram', function (req, res) {
 
 app.post('/upload', function(req, res) {
 console.log("enter to upload");
-
     console.log("in upload");
 
     upload(req, res, function (err) {
@@ -163,7 +162,7 @@ console.log("enter to upload");
             let newPath = changeToMP4Extention(req.file.path);
             convertTomp4(req.file.path, newPath)
             // insertVideoToDB(new_Path,prog_id,exetitle,tInWeek,nSets,nRepeats,dur,breakBet)
-                .then(insertVideoToDB(newPath, req.body.prog_id, req.body.exeTitle, req.body.onTime, req.body.timeInWeek, req.body.nSets, req.body.nRepeats, req.body.setDuration, req.body.break, req.body.break, req.body.description))
+                .then(insertVideoToDB(newPath, req.body.prog_id, req.body.exeTitle, req.body.onTime, req.body.timeInWeek,req.body.timeInDay, req.body.nSets, req.body.nRepeats, req.body.setDuration,req.body.setDurationUnits, req.body.break,req.body.breakUnits, req.body.description))
                 .then(function (ans) {
                     //res.send("Done WithConvert!!!!")
                     res.json({error_code: 0, err_desc: null})
@@ -175,7 +174,7 @@ console.log("enter to upload");
         else {
             console.log(req.body.timeInWeek);
             //insertVideoToDB(req.file.path)
-            insertVideoToDB(req.file.path, req.body.prog_id, req.body.exeTitle, req.body.onTime, req.body.timeInWeek, req.body.nSets, req.body.nRepeats, req.body.setDuration, req.body.break, req.body.description)
+            insertVideoToDB(req.file.path, req.body.prog_id, req.body.exeTitle, req.body.onTime, req.body.timeInWeek,req.body.timeInDay, req.body.nSets, req.body.nRepeats, req.body.setDuration,req.body.setDurationUnits, req.body.break,req.body.breakUnits, req.body.description)
                 .then(function (ans) {
                     res.json({error_code: 0, err_desc: null})
                 }).catch(function (err) {
@@ -191,7 +190,7 @@ console.log("enter to upload");
 
 app.post('/uploadNoVideo', function(req, res2) {
     console.log("enter to uploadNoVideo");
-    insertVideoToDB(undefined,req.body.prog_id,req.body.exeTitle,req.body.onTime,req.body.timeInWeek,req.body.nSets,req.body.nRepeats,req.body.setDuration,req.body.break,req.body.break,req.body.description).then(function(ans){
+    insertVideoToDB(undefined,req.body.prog_id,req.body.exeTitle,req.body.onTime,req.body.timeInWeek,req.body.timeInDay,req.body.nSets,req.body.nRepeats,req.body.setDuration,req.body.setDurationUnits,req.body.break,req.body.breakUnits,req.body.description).then(function(ans){
         res2.json({error_code:0,err_desc:null})
     }).catch(function(err){
             res2.send(err)
@@ -613,13 +612,8 @@ app.get('/api/mediaGet/:path', function(req, res){
         });
     }
 
-    function insertVideoToDB(new_Path,prog_id,exetitle,onTime,tInWeek,nSets,nRepeats,dur,breakBet,description){
+    function insertVideoToDB(new_Path,prog_id,exetitle,onTime,tInWeek,tInDay,nSets,nRepeats,dur,durUnits,breakBet,breakBetUnits,description){
         return new Promise(function(resolve,reject) {
-           let _onTime = 0;
-            if(onTime === true)
-            {
-                _onTime = 1;
-            }
             let currPath = null;
             let date = moment().format('YYYY-MM-DD hh:mm:ss');
             if(typeof new_Path != 'undefined') {
@@ -629,21 +623,24 @@ app.get('/api/mediaGet/:path', function(req, res){
             }
             if (typeof nRepeats === 'undefined' || !nRepeats || nRepeats=="null") { nRepeats = null};
             if (typeof dur === 'undefined' || !dur || dur == "null") { dur = null};
+            if (typeof durUnits === 'undefined' || !durUnits || durUnits == "null") { durUnits = null};
             if (typeof breakBet === 'undefined' || !breakBet ||breakBet=='null' ) { breakBet = null};
            // if (typeof nRepeats === 'undefined' || !nRepeats) { nRepeats = null};
-
             let query = (
                 squel.insert()
                     .into("[dbo].[designated_exercises]")
                     .set("[prog_id]",prog_id)
                     .set("[title]",exetitle)
                     .set("[date]",date)
-                    .set("[onTime]",_onTime)
+                    .set("[onTime]",onTime)
                     .set("[time_in_week]",tInWeek)
+                    .set("[time_in_day]",tInDay)
                     .set("[num_sets]",nSets)
                     .set("[num_repeats]",nRepeats)
                     .set("[set_duration]",dur)
+                    .set("[set_duration_units]",durUnits)
                     .set("[break_between_sets]",breakBet)
+                    .set("[break_between_sets_units]",breakBetUnits)
                     .set("[media_path]", currPath)
                     .set("[description]",description)
                     .toString()

@@ -54,17 +54,24 @@
                 </div>
                 <div class="form-group has-success has-feedback">
                     <label>מספר פעמים בשבוע</label>
-                    <input type="number"  min="1"
-                           ng-model="newProgController.timeInWeek"
-                           class="form-control"
-                           required>
+                    <select name="repeatSelectWeek" id="repeatSelectWeek" ng-model="newProgController.timeInWeek">
+                        <option value="כל יום">כל יום </option>
+                        <option value="יום כן יום לא">יום כן יום לא</option>
+                    </select>
                 </div>
+
+                    <div class="form-group has-success has-feedback">
+                        <label>מספר תרגולים ביום</label>
+                        <input type="number"  min="1"
+                               ng-model="newProgController.timeInDay"
+                               class="form-control"
+                               required>
+                    </div>
                 <div class="form-group has-success has-feedback">
-                    <label>מספר סטים</label>
-                    <input type="number"  min="1"
-                           ng-model="newProgController.nSets"
-                           class="form-control"
-                           required>
+                    <label> מספר סטים בתרגול</label>
+                    <select name="repeatSelectSets" id="repeatSelectSets" ng-model="newProgController.nSets">
+                        <option ng-repeat="num in newProgController.nSetsRange">{{num}}</option>
+                    </select>
                 </div>
                 <div class="form-group has-success has-feedback" ng-hide ="newProgController.onTime">
                     <label>מספר חזרות בסט</label>
@@ -79,7 +86,12 @@
                            ng-model="newProgController.setDuration"
                            class="form-control"
                            >
-                     <label>שניות</label> </span>
+                      <select name="repeatSelectUnit" id="repeatSelectUnit" ng-model="newProgController.setDurationUnits">
+                        <option value="שניות">שניות </option>
+                        <option value="דקות">דקות</option>
+
+                    </select>
+                    </span>
                 </div>
                 <div class="form-group has-success has-feedback">
                     <label>משך הפסקה בין סטים</label>
@@ -87,7 +99,13 @@
                            ng-model="newProgController.break"
                            class="form-control"
                            required>
-                    <label>שניות</label> </span>
+                   <!-- <label>שניות</label>-->
+                    <select name="repeatSelectUnit" id="repeatSelectInit" ng-model="newProgController.breakUnits">
+                        <option value="שניות">שניות </option>
+                        <option value="דקות">דקות</option>
+                        <option value="שעות">שעות</option>
+                    </select>
+                    </span>
                 </div>
 
                 <div class="form-group has-success has-feedback">

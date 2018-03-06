@@ -14,7 +14,12 @@ angular.module("myApp")
      self.patientService = patientService;
      self.authService = AuthenticationService;
      self.defaultNum = 1;
+     self.desc ="";
 
+     self.nSetsRange = [];
+     for (var i = 1; i <= 10; i++) {
+         self.nSetsRange.push(i);
+     }
 
     /* $scope.rememberMe = true;
      $scope.userPhoto;
@@ -85,6 +90,11 @@ angular.module("myApp")
             /* console.log("desc:" + self.desc);*/
              /*alert("desc:" + self.desc);*/
          let currProgIDLocal = ans.data[0].prog_id;
+             let _onTime = 0;
+             if(self.onTime === true)
+             {
+                 _onTime = 1;
+             }
          //self.cuurDate
          Upload.upload({
              url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/upload', //webAPI exposed to upload the file
@@ -93,12 +103,15 @@ angular.module("myApp")
                  //"prog_id":programService.getProgID(), //add new service orsomething
                  "prog_id":currProgIDLocal,
                  "exeTitle":self.exeTitle,
-                 "onTime":self.onTime,
+                 "onTime":_onTime,
                  "timeInWeek":self.timeInWeek,
+                 "timeInDay":self.timeInDay,
                  "nSets":self.nSets,
                  "nRepeats":self.nRepeats,
                  "setDuration":self.setDuration,
+                 "setDurationUnits":self.setDurationUnits,
                  "break":self.break,
+                 "breakUnits":self.breakUnits,
                 "description":self.desc
 
              } //pass file as data, should be user ng-model
@@ -152,6 +165,11 @@ angular.module("myApp")
              /* console.log("desc:" + self.desc);*/
              /*alert("desc:" + self.desc);*/
              let currProgIDLocal = ans.data[0].prog_id;
+             let _onTime = 0;
+             if(self.onTime === true)
+             {
+                 _onTime = 1;
+             }
              //self.cuurDate
              let exeReq={
                  method: 'POST',
@@ -160,12 +178,15 @@ angular.module("myApp")
                      //"prog_id":programService.getProgID(), //add new service orsomething
                      "prog_id":currProgIDLocal,
                      "exeTitle":self.exeTitle,
-                     "onTime":self.onTime,
+                     "onTime":_onTime,
                      "timeInWeek":self.timeInWeek,
+                     "timeInDay":self.timeInDay,
                      "nSets":self.nSets,
                      "nRepeats":self.nRepeats,
                      "setDuration":self.setDuration,
+                     "setDurationUnits":self.setDurationUnits,
                      "break":self.break,
+                     "breakUnits":self.breakUnits,
                      "description":self.desc
 
                  } //pass file as data, should be user ng-model
@@ -242,10 +263,16 @@ angular.module("myApp")
          self.submitExeClicked = false;
          self.exeTitle = null;
          self.timeInWeek = null;
+         self.timeInDay = null;
+
          self.nSets = null;
          self.nRepeats = null;
          self.setDuration = null;
+         self.setDurationUnits = null;
+
          self.break = null;
+         self.breakUnits=null;
+
          self.desc = "";
      };
 
