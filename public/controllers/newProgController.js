@@ -122,6 +122,8 @@ angular.module("myApp")
                 /* $window.alert('Success ' + resp.config.data.file.name + 'uploaded. ');*/
                  //self.finishLoad = true;
                  $window.alert('התרגיל נוסף בהצלחה');
+                 self.file = null;
+                 self.progress = "";
                  self.finishLoad = true;
 
 

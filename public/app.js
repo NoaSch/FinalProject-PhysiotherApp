@@ -153,7 +153,10 @@ app.config( ['$routeProvider', function($routeProvider) {
         .when('/register', {
             controller: 'RegisterController',reloadOnSearch: false,
             templateUrl: 'views/register.html'
-        })
+        }).when('/addToBank', {
+        controller: 'bankController',reloadOnSearch: false,
+        templateUrl: 'views/addToBank.html'
+    })
         .otherwise({redirect: '/',
         });
 }]);

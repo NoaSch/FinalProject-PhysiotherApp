@@ -197,6 +197,48 @@ app.post('/uploadNoVideo', function(req, res2) {
         })
     });
 
+
+
+app.post('/uploadToBank', function(req, res) {
+    console.log("enter to upload to bank");
+
+    upload(req, res, function (err) {
+        if (err) {
+            res.json({error_code: 1, err_desc: err});
+            return;
+        }
+        if (req.file.mimetype == "video/quicktime") {
+
+            let newPath = changeToMP4Extention(req.file.path);
+            convertTomp4(req.file.path, newPath)
+            // insertVideoToDB(new_Path,prog_id,exetitle,tInWeek,nSets,nRepeats,dur,breakBet)
+                .then(insertToBankDB(newPath, req.body.title))
+                .then(function (ans) {
+                    //res.send("Done WithConvert!!!!")
+                    res.json({error_code: 0, err_desc: null})
+                })
+                .catch(function (err) {
+                    res.send(err)
+                })
+        }
+        else {
+            //insertVideoToDB(req.file.path)
+            insertToBankDB(req.file.path, req.body.title)
+                .then(function (ans) {
+                    res.json({error_code: 0, err_desc: null})
+                }).catch(function (err) {
+                reject(err)
+            });
+        }
+        //res.json({error_code:0,err_desc:null});
+//        insertVideoToDB(req.file.path);
+    })
+
+});
+
+
+
+
 app.post('/api/getEXEidByDateAndPat', function (req, res) {
     console.log("enter test users");
     let _patientUsername = req.body.patUsername;
@@ -654,6 +696,37 @@ app.get('/api/mediaGet/:path', function(req, res){
                 reject(err)})
         })
     };
+
+
+
+
+function insertToBankDB(new_Path,title){
+    return new Promise(function(resolve,reject) {
+        let currPath = null;
+        //let date = moment().format('YYYY-MM-DD hh:mm:ss');
+        if(typeof new_Path != 'undefined') {
+            currPath = new_Path.replace('uploads\\', '');
+            console.log("before: " + new_Path);
+            console.log("after: " + currPath);
+        }
+        let query = (
+            squel.insert()
+                .into("[dbo].[media_bank]")
+                .set("[title]",title)
+                .set("[media_path]", currPath)
+                .toString()
+        );
+        console.log(query);
+        sql.Insert(query).then(function (res) {
+            //res.send(ans);
+            resolve(res);
+        }).catch(function (err) {
+            console.log("Error in inset: " + err)
+            reject(err)})
+    })
+};
+
+
 function insertVideoToDBbackup(new_Path){
     return new Promise(function(resolve,reject) {
         let date = moment().format('YYYY-MM-DD hh:mm:ss');
