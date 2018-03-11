@@ -15,10 +15,54 @@ angular.module("myApp")
      self.authService = AuthenticationService;
      self.defaultNum = 1;
      self.desc ="";
+     self.videoSource = "none";
+     self.onlyPath = null;
+     self.bankVideoChosen = false;
 
      self.nSetsRange = [];
      for (var i = 1; i <= 10; i++) {
          self.nSetsRange.push(i);
+     }
+
+     self.chosenVideo = {};
+     self.videosURL = {};
+     self.videosPath = {}
+     //load bank details
+     let reqBank = {
+         method: 'POST',
+         url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/getBank',
+         headers: {
+             'Content-Type': "application/json"
+         },
+
+     };
+     $http(reqBank).then(function (ans) {
+         self.bankVideos = ans.data;
+         self.bankVideos.forEach(function (element) {
+             console.log(element);
+             self.chosenVideo[element.title] = false;
+             if(element.media_path != null) {
+                 self.videosURL[element.title] = "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + "/api/mediaGet/" + element.media_path;
+                 self.videosPath[element.title] = element.media_path;
+             }
+             console.log(self.videosPath[element.title]);
+         });
+
+     }).catch(function (err) {
+         console.log(err)
+     });
+
+     self. chooseVideo = function(title){
+         self.chosenVideo[title] = true;
+         self.chosenTitle = title;
+         self.bankVideos.forEach(function (element) {
+             if(element.title != title)
+             {
+                 self.chosenVideo[element.title] = false;
+             }
+         });
+         self.bankVideoChosen = true;
+console.log("chosen" + self.bankVideoChosen);
      }
 
     /* $scope.rememberMe = true;
@@ -125,6 +169,7 @@ angular.module("myApp")
                  self.file = null;
                  self.progress = "";
                  self.finishLoad = true;
+                 self.onlyPath = null;
 
 
              } else {
@@ -150,6 +195,17 @@ angular.module("myApp")
 
      self.addExeWithoutFile = function () {
          self.finishLoad = false;
+         console.log(self.bankVideoChosen);
+        /* self.chosenVideo.forEach(function (element) {
+             console.log(element);
+             if(element == true)
+             {
+                 onlyPath = self.videosURL[element.title];
+             }
+             })*/
+        if(self.videoSource == "bank") {
+            self.onlyPath = self.videosPath[self.chosenTitle];
+        }
          ////get the programID
          let req = {
              method: 'POST',
@@ -189,7 +245,8 @@ angular.module("myApp")
                      "setDurationUnits":self.setDurationUnits,
                      "break":self.break,
                      "breakUnits":self.breakUnits,
-                     "description":self.desc
+                     "description":self.desc,
+                     "path":self.onlyPath
 
                  } //pass file as data, should be user ng-model
              };
@@ -274,6 +331,15 @@ angular.module("myApp")
 
          self.break = null;
          self.breakUnits=null;
+         self.bankVideoChosen = false;
+         self.videoSource="none";
+         self.chosenTitle = null;
+         self.onlyPath = null;
+
+         self.bankVideos.forEach(function (element) {
+             self.chosenVideo[element.title] = false;
+         });
+
 
          self.desc = "";
      };

@@ -190,7 +190,7 @@ console.log("enter to upload");
 
 app.post('/uploadNoVideo', function(req, res2) {
     console.log("enter to uploadNoVideo");
-    insertVideoToDB(undefined,req.body.prog_id,req.body.exeTitle,req.body.onTime,req.body.timeInWeek,req.body.timeInDay,req.body.nSets,req.body.nRepeats,req.body.setDuration,req.body.setDurationUnits,req.body.break,req.body.breakUnits,req.body.description).then(function(ans){
+    insertVideoToDB(req.body.path,req.body.prog_id,req.body.exeTitle,req.body.onTime,req.body.timeInWeek,req.body.timeInDay,req.body.nSets,req.body.nRepeats,req.body.setDuration,req.body.setDurationUnits,req.body.break,req.body.breakUnits,req.body.description).then(function(ans){
         res2.json({error_code:0,err_desc:null})
     }).catch(function(err){
             res2.send(err)
@@ -578,6 +578,26 @@ app.post('/api/getProgramExe', function (req, res) {
 });
 
 
+app.post('/api/getBank', function (req, res) {
+    console.log("enter toGet bank");
+    let query = (
+        squel.select()
+            .from("media_bank")
+            .toString()
+    );
+    sql.Select(query)
+        .then(function (ans) {
+            console.log("video came back from the DB");
+            // var pathes = ans[0].path.toString();
+            res.send(ans);
+
+        }).catch(function (reason) {
+        console.log(reason);
+        res.send(reason);
+    })
+});
+
+
 app.post('/api/getExeDetails', function (req, res) {
     console.log("enter test users");
     let _exe_id = req.body.exe_id;
@@ -630,6 +650,8 @@ app.get('/api/mediaGet/:path', function(req, res){
             res.send(reason);
         })
 });
+
+
     function convertTomp4(input,output) {
         console.log("enter to covert");
         return new Promise(function(resolve,reject) {
@@ -658,7 +680,7 @@ app.get('/api/mediaGet/:path', function(req, res){
         return new Promise(function(resolve,reject) {
             let currPath = null;
             let date = moment().format('YYYY-MM-DD hh:mm:ss');
-            if(typeof new_Path != 'undefined') {
+            if(typeof new_Path != 'undefined' && new_Path!="null" && new_Path!= null) {
                 currPath = new_Path.replace('uploads\\', '');
                 console.log("before: " + new_Path);
                 console.log("after: " + currPath);

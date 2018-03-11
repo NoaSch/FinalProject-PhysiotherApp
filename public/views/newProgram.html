@@ -117,9 +117,26 @@
                     <label>הוראות נוספות</label>
                     <textarea name="desc" ng-model="newProgController.desc" cols="40" rows="5"></textarea>
                 </div>
+                    <div class="form-group has-success has-feedback">
+                        <label>סרטון:</label>
+                        <label class="radioBTN">
+                            <input   type="radio" ng-model="newProgController.videoSource" value="no">
+                            ללא סרטון
+                        </label><br/>
+                    <label class="radioBTN">
+                        <input  type="radio" ng-model="newProgController.videoSource" value="new">
+                        סרטון חדש
+                    </label><br/>
+                    <label class="radioBTN">
+                        <input   type="radio" ng-model="newProgController.videoSource" value="bank">
+                        סרטון מהבנק
+                    </label><br/><br/>
+                        <label ng-show="newProgController.videoSource == 'bank' && newProgController.bankVideoChosen">סרטון נבחר: </label>
+                        <label ng-show="newProgController.videoSource == 'bank' && newProgController.bankVideoChosen" >{{newProgController.chosenTitle}}</label>
 
-                <div class="form-group has-success has-feedback">
-                <input
+                    </div>
+                <div class="form-group has-success has-feedback" ng-show="newProgController.videoSource == 'new'">
+                    <input
                         type="file"
                         ngf-select
                         ng-model="newProgController.file"
@@ -130,10 +147,47 @@
                     <i ng-show="up.upload_form.file.$error.maxSize">File too large
                         {{up.file.size / 1000000|number:1}}MB: max 20M</i>
                     <i>{{newProgController.progress}}</i><br>
-                    <button class="btn btn-primary btn-block" ng-disabled="newProgController.upload_form.$invalid"  type="submit" ng-click="newProgController.submit()">הוסף את התרגיל</button>
+                </div>
+                   <!-- <div class="form-group has-success has-feedback">
+                        <label>בחר וידאו מבנק תרגילים</label>
+                        <button  ng-click="newProgController.showBank()">בנק תרגילים</button>
+                    </div>-->
+                </div>
 
-                </div>
-                </div>
+                    <div class="scrollable-content" ng-show="newProgController.videoSource == 'bank' && !newProgController.bankVideoChosen">
+                        <!--  <div class="section">-->
+                        <div class="panel-group"
+                             ui-shared-state="myAccordion"
+                             ui-default='1'>
+
+                            <div class="panel panel-default" ng-repeat="item in newProgController.bankVideos">
+                                <div class="panel-heading" ui-set="{'myAccordion': item}">
+                                    <h4 class="panel-title">
+                                        {{item.title}}
+                                    </h4>
+                                </div>
+                                <div class="panel-body"> <!--ng-show =exerciseController.chosenExe[item.exe_id]-->
+                                    <!--<button class="ProgramDetBtn" ng-click="programsController.getExercises(item.prog_id)">פרטי תכנית</button>-->
+                                    <div>
+                                        <br>
+                                        <video class="videoClass" ng-show="newProgController.videosURL[item.title]" src= {{newProgController.videosURL[item.title]}} controls type="video/mp4">
+                                        </video>
+                                        <button class="btn btn-primary btn-block" ng-click="newProgController.chooseVideo(item.title)">בחר </button>
+                                    </div>
+                                </div>
+                                <!--<div class="panel-body">
+                                    {{item.prog_id}}מספר תכנית
+                                    <br>
+                                    <!--<button class="ProgramDetBtn" ng-click="programsController.getExercises(item.prog_id)">פרטי תכנית</button>-->
+                                <!--<a href="#/exercises"><button class="ProgramDetBtn" ng-click="programsController.clickProg(item.prog_id)">פרטי תכנית</button></a>-->
+                                <!--</div>-->
+
+                                <!--</div>-->
+                            </div>
+                        </div>
+                    </div>
+                <button class="btn btn-primary btn-block"  ng-hide="newProgController.clickedCreate && newProgController.submitExeClicked && newProgController.finishLoad" ng-disabled="newProgController.upload_form.$invalid"  type="submit" ng-click="newProgController.submit()">הוסף את התרגיל</button>
+
                 <!--<div class="form-group has-success has-feedback">
                     <label>וידאו</label>
                     <input type="file" name="userPhoto" input file="file" class="form-control" ng-model="userPhoto"/>
