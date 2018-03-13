@@ -37,10 +37,17 @@
                             <br>
                             <!--<button class="ProgramDetBtn" ng-click="programsController.getExercises(item.prog_id)">פרטי תכנית</button>-->
                             <button class="ProgramDetBtn" ng-click="patientsController.clickUser(patient.username)">פרטי מטופל</button>
+                            <button class="ProgramDetBtn" ng-click="patientsController.patientProg(patient.username)">תכניות שהקצתי למטופל</button>
                             <a href="#/newProgram"><button class="ProgramDetBtn" ng-click="patientsController.createProgram(patient.username)">צור תכנית אימון למטופל</button>
                             </a>
                         </div>
-                </div>
+                    <div class="panel panel-default" ng-repeat="programs in patientsController.programs">
+                        <div class="panel-body">
+                        <label>                        {{programs.prog_title}}
+                        </label>
+                        <button class="ProgramDetBtn" ng-click="patientsController.deleteProg(programs.prog_id)">מחק תכנית אימון</button>
+                        </div>
+                    </div>
             <!--</div>-->
         </div>
     </div>

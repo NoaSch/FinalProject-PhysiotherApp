@@ -650,7 +650,36 @@ app.get('/api/mediaGet/:path', function(req, res){
             res.send(reason);
         })
 });
+app.delete('/api/deleteProg', function(req, res) {
+    var prog_id = req.body.prog_id;
+    let query = (
+        squel.delete()
+            .from("[dbo].[designated_exercises]")
+            .where("prog_id = ?", prog_id)
+            .toString()
+    );
+    sql.Delete(query)
+        .then(function (ans) {
+            let query2 = (
+                squel.delete()
+                    .from("[dbo].[designated_programs]")
+                    .where("prog_id = ?", prog_id)
+                    .toString()
+            );
+            sql.Delete(query2)
+                .then(function (ans) {
+                    res.send(ans);
 
+                }).catch(function (err) {
+                console.log("Error in delete: " + err)
+                res.send(err);
+            })
+
+        }).catch(function (err) {
+        console.log("Error in delete: " + err)
+        res.send(err);
+    });
+});
 
     function convertTomp4(input,output) {
         console.log("enter to covert");
@@ -812,6 +841,8 @@ function insertVideoToDBbackup(new_Path){
             resolve("DoneChange Ext");
         })
     }
+
+
 
 /*});*/
 /*let storage	=	multer.diskStorage({

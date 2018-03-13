@@ -3,8 +3,8 @@
  */
 
 angular.module('myApp')
-    .controller('RegisterController',['$location', 'AuthenticationService','FlashService','$http','ipconfigService','PhysiotherapistModel',
-            function ($location, AuthenticationService,FlashService,$http,ipconfigService,PhysiotherapistModel) {
+    .controller('RegisterController',['$route','$location', 'AuthenticationService','FlashService','$http','ipconfigService','PhysiotherapistModel',
+            function ($route,$location, AuthenticationService,FlashService,$http,ipconfigService,PhysiotherapistModel) {
                 //Get the physiotherapiss
                 var self = this;
                 self.therapists = [];
@@ -76,6 +76,7 @@ angular.module('myApp')
                             self.mail="";
                             self.phone="";
                             self.chosenTherapist=""
+                            $route.reload();
                         //$location.path('/');
                     }}, function (errResponse) {
                         console.error('Error while register');

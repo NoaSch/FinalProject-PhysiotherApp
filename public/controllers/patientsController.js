@@ -3,21 +3,12 @@
  */
 
 angular.module("myApp")
- .controller('patientsController', ['$http', '$location', '$window','$scope', '$rootScope','programService','exerciseService','patientService','ipconfigService','AuthenticationService', function ($http,$location, $window,$scope,$rootScope,programService,exerciseService,patientService,ipconfigService,AuthenticationService   ) {
+ .controller('patientsController', ['$route','$http', '$location', '$window','$scope', '$rootScope','programService','exerciseService','patientService','ipconfigService','AuthenticationService', function ($route,$http,$location, $window,$scope,$rootScope,programService,exerciseService,patientService,ipconfigService,AuthenticationService   ) {
      let self = this;
      self.authService = AuthenticationService
-     //self.userName = "noa";
-     //let ip = "192.168.1.15";
-     //let port = 3000;
-     //let ipAndProt = "http://10.100.102.13:4000";
      self.chosenPatient = "";
-     //self.videoURL = "http://" + ip + ":" + port + "/api/video/" + testURL;
-     //console.log("videoURL"+self.videoURL);
-     //let req = "http://192.168.1.15:4001/api/GetAllVideosPathes";
      let req = {
          method: 'POST',
-         //url: 'http://132.73.201.132:3000/api/getUserPrograms',
-         //url: 'http://10.100.102.11:3000/api/getUserPrograms',
          url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/getPhysioPatients',
 
          headers: {
@@ -47,5 +38,50 @@ angular.module("myApp")
      self.createProgram = function(patient){
          patientService.setID(patient);
          console.log("chosen patient: " +  patientService.getID());
-     }//
+     };
+     self.patientProg = function(username){
+         let req = {
+             method: 'POST',
+             url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/getUserPrograms',
+             headers: {
+                 'Content-Type': "application/json"
+             },
+             data: {
+                 "username": username
+             }
+         };
+         $http(req).then(function (ans) {
+             self.programs = ans.data;
+             console.log(self.programs);
+
+             //console.log(self.videsPathes);
+         }).catch(function (err) {
+             console.log(err)
+         });
+     };
+     self.deleteProg = function(progID)
+     {
+         let req = {
+             method: 'DELETE',
+             url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/deleteProg',
+             headers: {
+                 'Content-Type': "application/json"
+             },
+             data: {
+                 "prog_id": progID
+             }
+         };
+         $http(req).then(function (ans) {
+             console.log(ans);
+            if(ans.status == "200")
+            {
+                alert("התכנית נמחקה");
+                $route.reload();
+            }
+             //console.log(self.videsPathes);
+         }).catch(function (err) {
+             console.log(err)
+         });
+
+     }
  }]);
