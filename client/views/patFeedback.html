@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Feedback</title>
+</head>
+<body>
+<div class="scrollable" ng-controller="patFeedbackController as patFeedbackController" >
+    <div class="scrollable-content paddClass">
+        <form role="form"  name="patFeedbackController.feesback_form">
+        <legend>{{patFeedbackController.feedbackService.getExercise().title}}</legend>
+            <div class="form-group has-success has-feedback">
+                <div align="right">
+                <label>מידת הצלחת הביצוע</label>
+            </br><label class="radioBTN">
+                    <input   type="radio" ng-model="patFeedbackController.succ" value="all">
+במידה מלאה                </label><br/>
+                <label class="radioBTN">
+                    <input  type="radio" ng-model="patFeedbackController.succ" value="some">
+במידה חלקית                </label><br/>
+                <label class="radioBTN">
+                    <input   type="radio" ng-model="patFeedbackController.succ" value="none">
+לא הצלחתי לבצע                </label><br/><br/>
+                <span ng-show="patFeedbackController.succ == 'some'">
+                                <label>מספר התרגולים שהצלחתי לבצע:</label>
+
+           <select name="repeatSelectSetsFeed" id="repeatSelectSetsFeed" ng-model="patFeedbackController.nSucc">
+                        <option ng-repeat="num in patFeedbackController.nSuccRange">{{num}}</option>
+                    </select>
+                        <label>מתוך {{patFeedbackController.feedbackService.getExercise().time_in_day}}  </label>
+
+        </span>
+            </div>
+
+            </div>
+            <div>
+                <label>רמת הכאב:</label>
+                <rzslider
+                        rz-slider-model="painSlider.value"
+                        rz-slider-options="painSlider.options"></rzslider>
+            </div>
+
+
+            <button class="btn btn-primary btn-block" type="submit" ng-click="patFeedbackController.submit()">שלח דיווח</button>
+
+
+
+        </form>
+    </div>
+</div>
+</body>
+</html>
