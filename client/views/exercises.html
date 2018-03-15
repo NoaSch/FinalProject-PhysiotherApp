@@ -55,7 +55,7 @@
                             <br>
                             <video class="videoClass" ng-show="exerciseController.videosURL[item.exe_id]" src= {{exerciseController.videosURL[item.exe_id]}} controls type="video/mp4">
                             </video>
-                            <button class="btn btn-primary btn-block">דווח על ביצוע </button>
+                            <button  ng-click="exerciseController.clickFeedback(item)" class="btn btn-primary btn-block">דווח על ביצוע </button>
                             <button class="btn btn-primary btn-block">שלח הודעה לפיזיותרפיסט </button>
                         </div>
                             </div>
