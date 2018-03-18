@@ -8,7 +8,7 @@
 <div class="scrollable" ng-controller="patFeedbackController as patFeedbackController" >
     <div class="scrollable-content paddClass">
         <form role="form"  name="patFeedbackController.feesback_form">
-        <legend>{{patFeedbackController.feedbackService.getExercise().title}}</legend>
+        <legend align="right">{{patFeedbackController.feedbackService.getExercise().title}}</legend>
             <div class="form-group has-success has-feedback">
                 <div align="right">
                 <label>מידת הצלחת הביצוע</label>
@@ -22,7 +22,7 @@
                     <input   type="radio" ng-model="patFeedbackController.succ" value="none">
 לא הצלחתי לבצע                </label><br/><br/>
                 <span ng-show="patFeedbackController.succ == 'some'">
-                                <label>מספר התרגולים שהצלחתי לבצע:</label>
+                                <label >מספר התרגולים שהצלחתי לבצע:</label>
 
            <select name="repeatSelectSetsFeed" id="repeatSelectSetsFeed" ng-model="patFeedbackController.nSucc">
                         <option ng-repeat="num in patFeedbackController.nSuccRange">{{num}}</option>
@@ -33,8 +33,8 @@
             </div>
 
             </div>
-            <div>
-                <label>רמת הכאב:</label>
+            <div align="right">
+                <label>:רמת הכאב</label>
                 <rzslider
                         rz-slider-model="painSlider.value"
                         rz-slider-options="painSlider.options"></rzslider>

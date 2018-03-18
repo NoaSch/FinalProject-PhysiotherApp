@@ -224,7 +224,7 @@ app.post('/uploadToBank', function(req, res) {
         }
         else {
             //insertVideoToDB(req.file.path)
-            insertToBankDB(req.file.path, req.body.title)
+            insertToBankDB(req.file.path, req.body.title,req.body.tags)
                 .then(function (ans) {
                     res.json({error_code: 0, err_desc: null})
                 }).catch(function (err) {
@@ -237,8 +237,57 @@ app.post('/uploadToBank', function(req, res) {
 
 });
 
+//setPatientFeedback
+app.post('/api/setPatientFeedback', function (req, res) {
+    let createDate = req.body.date;
+    let pat_username = req.body.patUsername;
+    let exe = req.body.exe;
+    let succ_Level = req.body.succLvl;
+    let painLVvl = req.body.painLVvl;
+    let nSucc = req.body.nSucc;
+    //get the physiotherapist
+    let query = (
+        squel.select()
+            .from("patients")
+            .field("physiotherapist_username")
+            .where("username = ?", pat_username)
+            .toString()
+    );
+    sql.Select(query)
+        .then(function (ans) {
+                let physio_username = ans[0].physiotherapist_username;
+            let queryInsert = (
 
+                squel.insert()
+                    .into("[dbo].[patients_feedback]")
+                    .set("[date]", createDate)
+                    .set("[exe_id]", exe.exe_id)
+                    .set("[prog_id]", exe.prog_id)
+                    .set("[patient_username]", pat_username)
+                    .set("[physio_username]", physio_username)
+                    .set("[succ_level]", succ_Level)
+                    .set("[TotalNum]", exe.time_in_day)
+                    .set("[succ_num]", nSucc)
+                    .set("[pain_level]", painLVvl)
+                    .toString()
+            );
 
+            console.log(query);
+            sql.Insert(queryInsert).then(function (ansInsert) {//insert to pyisio or patient;
+
+                // var pathes = ans[0].path.toString();
+                res.send(ansInsert);
+                ///create message for the physiotherpaist
+
+            }).catch(function (reason) {
+                console.log(reason);
+                res.send(reason);
+            })
+        }).catch(function (reason2) {
+        console.log(reason2);
+        res.send(reason2);
+    });
+});
 
 app.post('/api/getEXEidByDateAndPat', function (req, res) {
     console.log("enter test users");
@@ -752,7 +801,7 @@ app.delete('/api/deleteProg', function(req, res) {
 
 
 
-function insertToBankDB(new_Path,title){
+function insertToBankDB(new_Path,title,tags){
     return new Promise(function(resolve,reject) {
         let currPath = null;
         //let date = moment().format('YYYY-MM-DD hh:mm:ss');
@@ -766,6 +815,9 @@ function insertToBankDB(new_Path,title){
                 .into("[dbo].[media_bank]")
                 .set("[title]",title)
                 .set("[media_path]", currPath)
+                .set("tag0",tags[0])
+                .set("tag1",tags[1])
+                .set("tag2",tags[2])
                 .toString()
         );
         console.log(query);
@@ -844,295 +896,3 @@ function insertVideoToDBbackup(new_Path){
     }
 
 
-
-/*});*/
-/*let storage	=	multer.diskStorage({
-    destination: function (req, file, callback) {
-        callback(null, './uploads');
-    },
-    filename: function (req, file, callback) {
-        //callback(null, file.fieldname + '-' + Date.now()+"."+path.extname(file.originalname));
-        callback(null,Date.now() + file.originalname);
-    }
-});
-let upload = multer({ storage : storage}).single('userPhoto');
-
-app.get('/test', function (req, res) {
-console.log("on test");
-    // connect to your database
-    sql.connect(config, function (err) {
-
-        if (err) console.log(err);
-
-        // create Request object
-        var request = new sql.Request();
-
-        // query to the database and get the records
-        request.query('select * from videos', function (err, recordset) {
-
-            if (err) console.log(err)
-
-            // send records as a response
-            res.send(recordset);
-
-        });
-    });
-});
-
-app.post('/api/photo',function(req,res){
-    console.log("enter to photo");
-    upload(req,res,function(err) {
-        if(err) {
-            return res.end("Error uploading file.");
-        }
-        if (typeof req.file === 'undefined')
-            return res.end("No file");
-        // res.end("File is uploaded");
-        console.log(req.file.filename);
-        ////add to DB
-        if(req.file.mimetype === "video/quicktime")
-        {
-            var newPath = changeToMP4Extention(req.file.path);
-            convertTomp4(req.file.path,newPath)
-                .then(insertVideoToDB(newPath))
-                .then(function(ans){
-                    res.send("Done WithConvert!!!!")
-                })
-                .catch(function(err){
-                    res.send(err)
-                })
-        }
-        else {
-            insertVideoToDB(req.file.path)
-                .then(function(ans){
-                    res.send("DoneWithOutConvert")}).catch(function (err) {
-                console.log(err);
-                reject(err)});
-        }
-    });
-
-});
-
-function insertVideoToDB(new_Path){
-    console.log("insert");
-    return new Promise(function(resolve,reject) {
-        var date = moment().format('YYYY-MM-DD hh:mm:ss');
-        let query = (
-            squel.insert()
-                .into("[dbo].[videos]")
-                .set("[id]", date)
-                .set("[path]", new_Path)
-                .toString()
-        );
-        sql.connect(config, function (err) {
-            if (err) console.log(err);
-            reject(err);
-            // create Request object
-            var request = new sql.Request();
-            // query to the database and get the records
-            request.query('select * from videos', function (err, recordset) {
-                if (err)
-                {
-                    console.log(err);
-                    reject(err);
-                }
-                // send records as a response
-                resolve(recordset);
-
-            });
-        });
-        /*sql.Insert(connection, query).then(function (res) {
-            //res.send(ans);
-            resolve(res);
-        }).catch(function (err) {
-            cosole.log("Error in inset: " + err)
-            reject(err)})*/
-/*    })
-};
-*/
-/*app2.use(express.static(path.join(__dirname, 'public')));
-var config = {
- userName: 'sa',
- password: 'Admin1!',
- server: 'DESKTOP-PV6H97E\PHYSIOTHER',
- options: {
- database: 'physiotherDB'
- }
- };
-app2.use(cors);
-
-var connection = new Connection(config);
-console.log("before connect");
-connection.on('connect', function (err) {
-    console.log("inside connect");*/
-   /* var storage	=	multer.diskStorage({
-        destination: function (req, file, callback) {
-            callback(null, './uploads');
-        },
-        filename: function (req, file, callback) {
-            //callback(null, file.fieldname + '-' + Date.now()+"."+path.extname(file.originalname));
-            callback(null,Date.now() + file.originalname);
-        }
-    });
-    var upload = multer({ storage : storage}).single('userPhoto');*/
-
- /*   app2.get('/',function(req,res){
-        res.sendFile(__dirname + "/index.html");
-        console.log("?");
-    });*/
-
-  /*  app2.get('/test', function (req, res) {
-        res.send("noa");
-        console.log("test");
-    });*/
-/*    app2.post('/api/photo',function(req,res){
-        console.log("enter to photo");
-        upload(req,res,function(err) {
-            if(err) {
-                return res.end("Error uploading file.");
-            }
-            if (typeof req.file === 'undefined')
-                return res.end("No file");
-            // res.end("File is uploaded");
-            console.log(req.file.filename);
-            ////add to DB
-            if(req.file.mimetype === "video/quicktime")
-            {
-                var newPath = changeToMP4Extention(req.file.path);
-                convertTomp4(req.file.path,newPath)
-                    .then(insertVideoToDB(newPath))
-                    .then(function(ans){
-                        res.send("Done WithConvert!!!!")
-                    })
-                    .catch(function(err){
-                        res.send(err)
-                    })
-            }
-            else {
-                insertVideoToDB(req.file.path)
-                    .then(function(ans){
-                        res.send("DoneWithOutConvert")}).catch(function (err) {
-                            console.log(err);
-                    reject(err)});
-            }
-        });
-
-    });
-
-
-
-    function convertTomp4(input,output) {
-        return new Promise(function(resolve,reject) {
-            var ans = [];
-            var convert = new Mp4Convert(input, output);
-            convert.on('ffprobeCommand', function(cmd) {
-                console.log('Command', cmd);
-            });
-            convert.on('ffprobeOutput', function(json) {
-                console.log('ffprobe output');
-            });
-            convert.    on('progress', function(p) {
-                console.log('Progress', p);
-            });
-            convert.on('done', function() {
-                console.log('DoneConvert');
-                ans.push("doneConvert");
-                resolve(ans);
-            });
-            convert.start();
-
-        });
-    }
-
-    function insertVideoToDB(new_Path){
-        console.log("insert");
-        return new Promise(function(resolve,reject) {
-            var date = moment().format('YYYY-MM-DD hh:mm:ss');
-            let query = (
-                squel.insert()
-                    .into("[dbo].[videos]")
-                    .set("[id]", date)
-                    .set("[path]", new_Path)
-        .toString()
-        );
-    sql.Insert(connection, query).then(function (res) {
-        //res.send(ans);
-        resolve(res);
-    }).catch(function (err) {
-        cosole.log("Error in inset: " + err)
-        reject(err)})
-})
-};
-app2.get('/api/video/:id', function(req, res){
-        console.log("enter to video");
-        var id = req.params.id;
-        var query = (
-            squel.select()
-                .from("videos")
-                .field("path")
-                .where("id = ?", id)
-                .toString()
-        );
-        sql.Select(connection, query)
-            .then(function (ans) {
-
-                var curr_path = ans[0].path.toString();
-                if(curr_path.endsWith('.mp4')) {
-                    //path2 = curr_path;
-                    showVideo(curr_path,req,res).then(function(ans){console.log("showVideo" + curr_path)})
-                }
-            }).catch(function (reason) {
-            console.log(reason);
-            res.send(reason);
-        })
-    })
-
-    function changeToMP4Extention(path)
-    {
-        var idx = path.indexOf(".MOV");
-        var withoutExt = path.substring(0, idx);
-        var new_path = withoutExt + ".mp4";
-        return new_path;
-    }
-
-    function showVideo (path2,req,res){
-        return new Promise(function(resolve,reject) {
-            console.log("enter to show video");
-            //const path2 = 'uploads/test22.mp4'
-            const stat = fs.statSync(path2);
-            const fileSize = stat.size;
-            const range = req.headers.range;
-            if (range) {
-                const parts = range.replace(/bytes=/, "").split("-")
-                const start = parseInt(parts[0], 10)
-                const end = parts[1]
-                    ? parseInt(parts[1], 10)
-                    : fileSize - 1
-
-                const chunksize = (end - start) + 1
-                const file = fs.createReadStream(path2, {start, end})
-                const head = {
-                    'Content-Range': `bytes ${start}-${end}/${fileSize}`,
-                    'Accept-Ranges': 'bytes',
-                    'Content-Length': chunksize,
-                    'Content-Type': 'video/mp4',
-                }
-
-                res.writeHead(206, head)
-                file.pipe(res)
-            } else {
-                const head = {
-                    'Content-Length': fileSize,
-                    'Content-Type': 'video/mp4',
-                }
-                res.writeHead(200, head)
-                fs.createReadStream(path2).pipe(res)
-            }
-            resolve("DoneChange Ext");
-        })
-    }*/
-   /* app2.listen(4001,function(){
-        console.log("Working on port 4001");
-    })
-
-});*/

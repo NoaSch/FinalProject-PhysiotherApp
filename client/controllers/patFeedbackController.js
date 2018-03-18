@@ -1,12 +1,11 @@
-chosenExe = undefined;
 /**
  * Created by NOA-PC on 12/21/2017.
  */
 angular.module("myApp")
-    .controller('patFeedbackController', ['$http', '$location', '$window','$rootScope','$scope','programService','exerciseService','ipconfigService','patientFeedbackService', function ($http,$location, $window,$rootScope,$scope,programService,exerciseService,ipconfigService,patientFeedbackService ) {
+    .controller('patFeedbackController', ['AuthenticationService','$http', '$location', '$window','$rootScope','$scope','programService','exerciseService','ipconfigService','patientFeedbackService', function (AuthenticationService,$http,$location, $window,$rootScope,$scope,programService,exerciseService,ipconfigService,patientFeedbackService ) {
         let self = this;
         self.feedbackService = patientFeedbackService;
-
+        self.authService = AuthenticationService;
         self.nSuccRange = [];
         for (var i = 0; i <= self.feedbackService.getExercise().time_in_day; i++) {
             self.nSuccRange.push(i);
@@ -34,7 +33,32 @@ angular.module("myApp")
         };
 
         self.submit = function () {
-            alert($scope.painSlider.value)
+            let date = new Date();
+            let req = {
+                method: 'POST',
+                url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/setPatientFeedback',
+                headers: {
+                    'Content-Type': "application/json"
+                },
+                data: {
+                    "patUsername": self.authService.userId,
+                    "date": date,
+                    "exe": self.feedbackService.getExercise(),
+                    "nSucc":self.nSucc,
+                    "succLvl":self.succ,
+                    "painLVvl":$scope.painSlider.value
+
+                }
+            };
+            $http(req).then(function (ans) {
+                console.log(ans);
+                alert("המשוב התקבל");
+                //console.log(self.videsPathes);
+                $location.path('exercises')
+            }).catch(function (err) {
+                console.log("error: " + err)
+            });
+
         };
 
 

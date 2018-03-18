@@ -13,6 +13,25 @@
                         class="form-control"
                         placeholder="הכנס שם לסרטון">
              </div>
+             <div  class="form-group has-success has-feedback" >
+             <label >תגיות(עד 3 תגיות)</label>
+             <div class="panel panel-default" ng-repeat="item in bankController.tags">
+                 <div class="panel-heading" ui-set="{'myAccordion': item}">
+                     <h4 class="panel-title">
+                         {{item}}
+                     </h4>
+                 </div>
+             </div>
+             </div>
+             <div  class="form-group has-success has-feedback" >
+                 <label>הוספת תגית חדשה</label>
+                 <span><input type="text"
+                        ng-model="bankController.currTag"
+                        class="form-control"
+                        >
+                 <button class="btn btn-warning" ng-click="bankController.addTag()">הוסף תגית</button></span>
+
+             </div>
              <div class="form-group has-success has-feedback">
                  <input
                          type="file"

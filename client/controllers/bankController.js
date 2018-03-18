@@ -14,6 +14,14 @@ angular.module("myApp")
      self.defaultNum = 1;
      self.desc ="";
 
+     self.tags =[];
+     self.currTag ="";
+     self.addTag = function()
+     {
+         self.tags.push(self.currTag);
+         self.currTag ="";
+         console.log(self.tags);
+     }
 
      self.submit = function(){ //function to call on form submit
         console.log("in submit");
@@ -22,6 +30,7 @@ angular.module("myApp")
         }
 
          self.submitExeClicked = true;
+
          ///
          ///check if we want to do another func without video -
          ///
@@ -34,6 +43,7 @@ angular.module("myApp")
              data:{
                  file:file,
                  "title":self.title,
+                 "tags":self.tags
              } //pass file as data, should be user ng-model
          }).then(function (resp) { //upload function returns a promise
              if(resp.data.error_code === 0){ //validate success\\
@@ -42,6 +52,8 @@ angular.module("myApp")
                  self.file = null;
                  self.progress = "";
                  self.finishLoad = true;
+                 self.tags =[];
+                 self.currTag ="";
 
              } else {
                  $window.alert('an error occured');

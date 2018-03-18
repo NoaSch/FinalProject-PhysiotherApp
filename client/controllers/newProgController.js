@@ -18,6 +18,8 @@ angular.module("myApp")
      self.videoSource = "none";
      self.onlyPath = null;
      self.bankVideoChosen = false;
+     self.filterBy = "";
+
 
      self.nSetsRange = [];
      for (var i = 1; i <= 10; i++) {
@@ -265,7 +267,16 @@ console.log("chosen" + self.bankVideoChosen);
              });
          })
      };
+    self.showTag = function (tag)
+    {
+      if(tag == 'undefined') {
 
+          return false;
+      }
+        else {
+          return true;
+      }
+    };
      self.finish = function()
      {
          alert("תכנית האימון נוצרה בהצלחה");

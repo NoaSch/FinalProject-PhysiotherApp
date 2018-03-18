@@ -109,11 +109,7 @@
                 </div>
 
                 <div class="form-group has-success has-feedback">
-                   <!-- <label>הוראות נוספות</label>
-                    <input type="text"
-                           ng-model="newProgController.desc"
-                           class="form-control"
-                           >-->
+
                     <label>הוראות נוספות</label>
                     <textarea name="desc" ng-model="newProgController.desc" cols="40" rows="5"></textarea>
                 </div>
@@ -156,88 +152,46 @@
 
                     <div class="scrollable-content" ng-show="newProgController.videoSource == 'bank' && !newProgController.bankVideoChosen">
                         <!--  <div class="section">-->
+                        <div align="right">
+                        <input type="text" ng-model="newProgController.filterBy">
+                            <label>:סינון</label>
+
+                        </div>
                         <div class="panel-group"
                              ui-shared-state="myAccordion"
                              ui-default='1'>
 
-                            <div class="panel panel-default" ng-repeat="item in newProgController.bankVideos">
+                            <div class="panel panel-default" ng-repeat="item in newProgController.bankVideos | filter : newProgController.filterBy">
                                 <div class="panel-heading" ui-set="{'myAccordion': item}">
                                     <h4 class="panel-title">
-                                        {{item.title}}
-                                    </h4>
+                                    {{item.title}}
+                                </h4>
                                 </div>
-                                <div class="panel-body"> <!--ng-show =exerciseController.chosenExe[item.exe_id]-->
+                                <div class="panel-body">
+                                    <div align="right">
+                                        <h5>תגיות:</h5>
+                                    <label ng-show="newProgController.showTag(item.tag0)">{{item.tag0}}</label><br>
+                                    <label ng-show="newProgController.showTag(item.tag1)">{{item.tag1}}</label><br>
+                                    <label ng-show="newProgController.showTag(item.tag2)">{{item.tag2}}</label>
+                                 <!--ng-show =exerciseController.chosenExe[item.exe_id]-->
                                     <!--<button class="ProgramDetBtn" ng-click="programsController.getExercises(item.prog_id)">פרטי תכנית</button>-->
-                                    <div>
+                                    </div>
                                         <br>
                                         <video class="videoClass" ng-show="newProgController.videosURL[item.title]" src= {{newProgController.videosURL[item.title]}} controls type="video/mp4">
                                         </video>
                                         <button class="btn btn-primary btn-block" ng-click="newProgController.chooseVideo(item.title)">בחר </button>
                                     </div>
                                 </div>
-                                <!--<div class="panel-body">
-                                    {{item.prog_id}}מספר תכנית
-                                    <br>
-                                    <!--<button class="ProgramDetBtn" ng-click="programsController.getExercises(item.prog_id)">פרטי תכנית</button>-->
-                                <!--<a href="#/exercises"><button class="ProgramDetBtn" ng-click="programsController.clickProg(item.prog_id)">פרטי תכנית</button></a>-->
-                                <!--</div>-->
 
-                                <!--</div>-->
                             </div>
                         </div>
-                    </div>
+
+
                 <button class="btn btn-primary btn-block"  ng-hide="newProgController.clickedCreate && newProgController.submitExeClicked && newProgController.finishLoad" ng-disabled="newProgController.upload_form.$invalid"  type="submit" ng-click="newProgController.submit()">הוסף את התרגיל</button>
 
-                <!--<div class="form-group has-success has-feedback">
-                    <label>וידאו</label>
-                    <input type="file" name="userPhoto" input file="file" class="form-control" ng-model="userPhoto"/>
-                </div>-->
-
-               <!-- <form id="uploadForm"
-                      enctype="multipart/form-data"
-                      acost">tion="http://10.100.102.13:4000/api/photo"
-                      method="p
-                    <input type="file" name="userPhoto"  ng-model="video"/>
-
-                   <input type="submit" value="העלה וידאו" name="submit">
-                    <span id = "status"></span>
-                </form>-->
-            <!--<input type="file" file ="file" name="userPhoto" />-->
-
-       <!-- <input type="file" file-model="myFile"/><br><br>
-        <button ng-click="uploadFile()">Upload</button>
-               <!--<input type="submit" value="העלה וידאו" name="submit">-->
-             <!--  <span id = "status"></span>-->
             </fieldset>
             <hr>
-
-           <!-- <button class="btn btn-secondary btn-block">
-             </button>      הוסף וידאו       -->
-          <!--  <button class="btn primary btn-block">
-                הוסף תרגיל לתכנית האימון
-            </button>
-            <div ui-content-for="navbarAction">
-            </div>-->
-         <!--   <button class="btn btn-primary btn-block">
-                הוסף וידאו
-
-            </button>
-            <div ui-content-for="navbarAction">
-
-            </div>-->
-            <!--<button class="btn btn-primary btn-block">
-                צור תכנית אימון
-            </button>-->
-
         </form>
-       <!-- <form id="uploadForm" ng-show = "newProgController.videoClick"
-              enctype="multipart/form-data"
-              action="http://10.100.102.13:4000/api/photo"
-              method="post">
-            <input type="file" name="userPhoto" />
-            <input type="submit" value="העלה וידאו" name="submit" onclick="testFunc()">
-            <span id = "status"></span>
-        </form>-->
 
     </div>
 </div>

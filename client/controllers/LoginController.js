@@ -21,9 +21,11 @@ angular.module("myApp")
                 });
             };
         }]);*/
+
+
     .controller('LoginController',
-        ['$location', 'AuthenticationService','FlashService',
-            function ($location, AuthenticationService,FlashService) {
+        ['$location', 'AuthenticationService','FlashService','resetPasswordService',
+            function ($location, AuthenticationService,FlashService,resetPasswordService) {
                 // reset login status
                 AuthenticationService.ClearCredentials();
                 var self = this;
@@ -45,4 +47,9 @@ angular.module("myApp")
                         }
                     });
                 };
+
+                self.resetPassword = function () {
+                    resetPasswordService.setID(self.username);
+                    alert(self.username);
+                }
             }])
