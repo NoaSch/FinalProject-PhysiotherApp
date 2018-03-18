@@ -647,7 +647,68 @@ app.post('/api/getBank', function (req, res) {
     })
 });
 
+app.post('/api/getTempPass', function (req, res) {
+    console.log("enter toGet tempPass");
+    let _username = req.body.username;
+    let mail = null;
+    let query = (
+        squel.select()
+            .from("patients")
+            .field("mail")
+            .where("username = ?", _username)
+            .toString()
+    );
+    //check if the
+    sql.Select(query)
+        .then(function (ansPat) {
+            if(ansPat.length == 0)
+            {
+                let query2 = (
+                    squel.select()
+                        .from("physiotherapists")
+                        .field("mail")
+                        .where("username = ?", _username)
+                        .toString()
+                );
+                //check if the
+                sql.Select(query2).then(function (ansPhy)
+                {
+                    if(ansPhy.length == 0)
+                    {
 
+                        res.json({err_desc: "mail not found"});
+
+                    }
+                    else {
+                        mail = ansPhy[0].mail;
+                        console.log(mail);
+                    }
+                }).catch(function (reason) {
+                    console.log(reason);
+                    res.send(reason);
+            });}
+            else {
+                mail = ansPat[0].mail;
+                console.log(mail);
+
+            }
+
+            // to be continued
+           res.json("=)");
+
+        }).catch(function (reason) {
+        console.log(reason);
+        res.send(reason);
+    })
+    //get the user's mail
+
+    //generate a random number
+
+
+    //send mail to the user
+
+
+});
 app.post('/api/getExeDetails', function (req, res) {
     console.log("enter test users");
     let _exe_id = req.body.exe_id;
@@ -682,6 +743,11 @@ app.post('/api/mediaPost', function(req, res){
         res.send(reason);
     })
 });
+
+
+
+
+
 ///maybe change to post
 app.get('/api/mediaGet/:path', function(req, res){
     console.log("enter to mediaGet");

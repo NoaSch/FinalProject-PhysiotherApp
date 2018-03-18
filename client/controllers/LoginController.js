@@ -51,5 +51,6 @@ angular.module("myApp")
                 self.resetPassword = function () {
                     resetPasswordService.setID(self.username);
                     alert(self.username);
+                    $location.path('/resetPassword')
                 }
             }])

@@ -4,4 +4,11 @@
 angular.module("myApp")
     .controller('resetPasswordController', ['AuthenticationService','$http', '$location', '$window','$rootScope','$scope','ipconfigService', function (AuthenticationService,$http,$location, $window,$rootScope,$scope,ipconfigService ) {
         let self = this;
+        self.trueTemp = false;
+
+        self.checkTemp = function () {
+            self.trueTemp = true;
+        }
+
+
     }]);

@@ -98,9 +98,9 @@ app.run(['$rootScope', '$location', '$cookieStore', '$http',
             $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
         }
 
-        $rootScope.$on('$locationChangeStart', function (event, next, current) {
+        $rootScope.$on('$locationChangeStart', function (event, next, current) { ////new change for reset password
             // redirect to login page if not logged in
-            if ($location.path() !== '/login' && !$rootScope.globals.currentUser) {
+            if (($location.path() !== '/resetPassword' )&& !$rootScope.globals.currentUser) {
                 $location.path('/login');
             }
         });
@@ -159,6 +159,9 @@ app.config( ['$routeProvider', function($routeProvider) {
     }).when('/patFeedback', {
         controller: 'patFeedbackController',reloadOnSearch: false,
         templateUrl: 'views/patFeedback.html'
+    }).when('/resetPassword', {
+        controller: 'resetPasswordController',reloadOnSearch: false,
+        templateUrl: 'views/resetPass.html'
     })
         .otherwise({redirect: '/',
         });
