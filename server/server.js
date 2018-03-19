@@ -15,7 +15,10 @@ let moment = require('moment');
 let cors = require('cors');
 let bodyParser = require('body-parser');
 let passwordValidator = require('password-validator');
+let nodemailer = require('nodemailer');
+
 app.use(bodyParser.urlencoded({ extended: false }));
+
 app.use(bodyParser.json());
 //var path2;
 app.use(express.static(path.join(__dirname, 'public')));
@@ -44,7 +47,7 @@ connection.on('connect', function (err) {
     if (err) {
         console.log(err)
     }
-    console.log("commmmksdgkjfdgkjfhg;");
+    console.log("commmmksdgkjfdgkfjfhg;");
     /*app.get('/', function (req, res) {
 
         res.send("Connected to DB.");
@@ -650,6 +653,7 @@ app.post('/api/getBank', function (req, res) {
 app.post('/api/getTempPass', function (req, res) {
     console.log("enter toGet tempPass");
     let _username = req.body.username;
+    var mailOptions = null;
     let mail = null;
     let query = (
         squel.select()
@@ -682,7 +686,31 @@ app.post('/api/getTempPass', function (req, res) {
                     else {
                         mail = ansPhy[0].mail;
                         console.log(mail);
+                        let r = Math.floor(Math.random()*100000000);
+                        console.log(r);
+
+                        var transporter = nodemailer.createTransport({
+                            service: 'gmail',
+                            auth: {
+                                user: 'physiotherapp@gmail.com',
+                                pass: 'Physio123#'
+                            }
+                        });
+
+                        mailOptions = {
+                            from: 'physiotherapp@gmail.com',
+                            to: mail,
+                            subject: 'סיסמא זמנית',
+                            text: r.toString()
+                        }
                     }
+                    transporter.sendMail(mailOptions, function(error, info){
+                        if (error) {
+                            console.log(error);
+                        } else {
+                            console.log('Email sent: ' + info.response);
+                        }
+                    });
                 }).catch(function (reason) {
                     console.log(reason);
                     res.send(reason);
@@ -690,11 +718,33 @@ app.post('/api/getTempPass', function (req, res) {
             else {
                 mail = ansPat[0].mail;
                 console.log(mail);
+                let r = Math.floor(Math.random()*100000000);
+                console.log(r);
 
+                var transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                        user: 'physiotherapp@gmail.com',
+                        pass: 'Physio123#'
+                    }
+                });
+
+                mailOptions = {
+                    from: 'physiotherapp@gmail.com',
+                    to: mail,
+                    subject: 'סיסמא זמנית',
+                    text: r.toString()
+                }
+                transporter.sendMail(mailOptions, function(error, info){
+                    if (error) {
+                        console.log(error);
+                    } else {
+                        console.log('Email sent: ' + info.response);
+                    }
+                });
             }
 
             // to be continued
-           res.json("=)");
 
         }).catch(function (reason) {
         console.log(reason);
