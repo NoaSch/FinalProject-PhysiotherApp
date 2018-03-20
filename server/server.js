@@ -650,9 +650,66 @@ app.post('/api/getBank', function (req, res) {
     })
 });
 
+app.post('/api/validateTempPass', function (req, res) {
+    let userTemp= req.body.tempPass;
+    let username = req.body.username;
+    ////check the date!!!!!!//
+    let query = (
+        squel.select()
+            .from("tempPass")
+            .where("username = ?", username)
+            .where("temp_pass = ?", userTemp)
+            .toString()
+    );
+    sql.Select(query)
+        .then(function (ans) {
+            res.json({"status": "valid"});
+
+        }).catch(function (reason) {
+        console.log(reason);
+        res.send(reason);
+    })
+});
+
+app.post('/api/updatePassord', function (req, res) {
+    //username,pass
+
+});
+
+function sendMail(mailOptions, mail, r) {
+    return new Promise(function(resolve,reject) {
+
+        var transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'physiotherapp@gmail.com',
+            pass: 'Physio123#'
+        }
+    });
+
+    mailOptions = {
+        from: 'physiotherapp@gmail.com',
+        to: mail,
+        subject: 'סיסמא זמנית',
+        text: r.toString()
+    }
+
+    transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+            console.log(error);
+            reject("error");
+        } else {
+            console.log('Email sent: ' + info.response);
+            resolve("send");
+        }
+    });
+    return mailOptions;
+})
+}
 app.post('/api/getTempPass', function (req, res) {
     console.log("enter toGet tempPass");
     let _username = req.body.username;
+    let date = moment().format('YYYY-MM-DD hh:mm:ss');
     var mailOptions = null;
     let mail = null;
     let query = (
@@ -686,42 +743,63 @@ app.post('/api/getTempPass', function (req, res) {
                     else {
                         mail = ansPhy[0].mail;
                         console.log(mail);
-                        let r = Math.floor(Math.random()*100000000);
+                        let r = Math.floor(Math.random() * 100000000);
                         console.log(r);
 
-                        var transporter = nodemailer.createTransport({
-                            service: 'gmail',
-                            auth: {
-                                user: 'physiotherapp@gmail.com',
-                                pass: 'Physio123#'
-                            }
-                        });
-
-                        mailOptions = {
-                            from: 'physiotherapp@gmail.com',
-                            to: mail,
-                            subject: 'סיסמא זמנית',
-                            text: r.toString()
-                        }
+                        let querInsertTemp = (
+                            squel.insert()
+                                .into("[dbo].[tempPass]")
+                                .set("[username]", _username)
+                                .set("[time]", date)
+                                .set("[temp_pass]", r)
+                                .toString()
+                        );
+                        console.log(querInsertTemp);
+                        sql.Insert(querInsertTemp).then(function (ansIn) {
+                            mailOptions = sendMail(mailOptions, mail, r).then(function(ans){
+                                res.json({success: 1});
+                            }).catch(function(err)
+                            {
+                                res.send(err);
+                            })
+                            //res.send(ansIn);
+                        })
                     }
-                    transporter.sendMail(mailOptions, function(error, info){
-                        if (error) {
-                            console.log(error);
-                        } else {
-                            console.log('Email sent: ' + info.response);
-                        }
-                    });
                 }).catch(function (reason) {
                     console.log(reason);
                     res.send(reason);
-            });}
+            });
+            }
             else {
                 mail = ansPat[0].mail;
                 console.log(mail);
                 let r = Math.floor(Math.random()*100000000);
                 console.log(r);
+                //inset to the db
 
-                var transporter = nodemailer.createTransport({
+                let querInsertTemp = (
+                    squel.insert()
+                        .into("[dbo].[tempPass]")
+                        .set("[username]", _username)
+                        .set("[time]", date)
+                        .set("[temp_pass]", r)
+                        .toString()
+                );
+                console.log(querInsertTemp);
+                sql.Insert(querInsertTemp).then(function (ansIn) {
+                    mailOptions = sendMail(mailOptions, mail, r).then(function(ans){
+                        res.json({success: 1});
+                    }).catch(function(err)
+                    {
+                        res.send(err);
+                    })
+                    //res.send(ansIn);
+                })
+
+
+
+
+               /* var transporter = nodemailer.createTransport({
                     service: 'gmail',
                     auth: {
                         user: 'physiotherapp@gmail.com',
@@ -741,7 +819,7 @@ app.post('/api/getTempPass', function (req, res) {
                     } else {
                         console.log('Email sent: ' + info.response);
                     }
-                });
+                });*/
             }
 
             // to be continued
@@ -750,10 +828,6 @@ app.post('/api/getTempPass', function (req, res) {
         console.log(reason);
         res.send(reason);
     })
-    //get the user's mail
-
-    //generate a random number
-
 
     //send mail to the user
 

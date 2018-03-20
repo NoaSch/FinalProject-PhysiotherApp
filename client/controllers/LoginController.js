@@ -24,8 +24,8 @@ angular.module("myApp")
 
 
     .controller('LoginController',
-        ['$location', 'AuthenticationService','FlashService','resetPasswordService',
-            function ($location, AuthenticationService,FlashService,resetPasswordService) {
+        ['$location', 'AuthenticationService','FlashService','resetPasswordService','ipconfigService','$http',
+            function ($location, AuthenticationService,FlashService,resetPasswordService,ipconfigService,$http) {
                 // reset login status
                 AuthenticationService.ClearCredentials();
                 var self = this;
@@ -50,7 +50,23 @@ angular.module("myApp")
 
                 self.resetPassword = function () {
                     resetPasswordService.setID(self.username);
-                    alert(self.username);
-                    $location.path('/resetPassword')
-                }
+                        let req = {
+                            method: 'POST',
+                            url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/getTempPass',
+                            headers: {
+                                'Content-Type': "application/json"
+                            },
+                            data: {
+                                "username": self.username,
+                            }
+                        };
+                        $http(req).then(function (ans) {
+                            console.log(ans);
+                            $location.path('/resetPassword');
+                        }).catch(function (err) {
+                            alert("error");
+                        })
+                    };
+
+
             }])
