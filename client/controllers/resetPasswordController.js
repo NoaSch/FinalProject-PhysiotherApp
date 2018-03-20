@@ -15,7 +15,8 @@ angular.module("myApp")
                     'Content-Type': "application/json"
                 },
                 data: {
-                    "username": resetPasswordService.resetPasswordService,
+                    "username": resetPasswordService.getID(),
+                    "tempPass": self.tempPass
                 }
             };
             $http(req).then(function (ans) {
