@@ -671,8 +671,22 @@ app.post('/api/validateTempPass', function (req, res) {
     })
 });
 
-app.post('/api/updatePassord', function (req, res) {
+app.post('/api/updatePassword', function (req, res) {
     //username,pass
+    let _username = req.body.username;
+    let _newPass = req.body.newPass;
+
+    let query = (squel.update()
+        .table("users")
+        .set("password", _newPass)
+        .where("username = ?",_username)
+        .toString());
+    sql.Update(query)
+        .then(function (ans) {
+            res.send(ans);
+        }).catch(function (err){
+            res.json({"error":1});
+    })
 
 });
 
@@ -687,11 +701,13 @@ function sendMail(mailOptions, mail, r) {
         }
     });
 
+       let message =  "סיסמתך הזמנית היא: " + r.toString()+"\n שים לב הסיסמא תקפה לשעה";
+       console.log(message);
     mailOptions = {
         from: 'physiotherapp@gmail.com',
         to: mail,
         subject: 'סיסמא זמנית',
-        text: r.toString()
+        text: message
     }
 
     transporter.sendMail(mailOptions, function (error, info) {
@@ -745,7 +761,7 @@ app.post('/api/getTempPass', function (req, res) {
                         console.log(mail);
                         let r = Math.floor(Math.random() * 100000000);
                         console.log(r);
-
+                        ////change to if record exsist update else insert
                         let querInsertTemp = (
                             squel.insert()
                                 .into("[dbo].[tempPass]")

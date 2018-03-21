@@ -62,6 +62,7 @@ angular.module("myApp")
                         };
                         $http(req).then(function (ans) {
                             console.log(ans);
+                            alert("סיסמא זמנית נשלחה למייל השמור במערכת");
                             $location.path('/resetPassword');
                         }).catch(function (err) {
                             alert("error");

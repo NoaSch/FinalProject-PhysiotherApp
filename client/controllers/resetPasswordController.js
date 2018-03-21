@@ -31,7 +31,25 @@ angular.module("myApp")
 
         self.updatePass = function()
         {
-          //call /api/updatePassord
+            let req = {
+                method: 'POST',
+                url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/updatePassword',
+                headers: {
+                    'Content-Type': "application/json"
+                },
+                data: {
+                    "username": resetPasswordService.getID(),
+                    "newPass": self.pass1
+                }
+            };
+            $http(req).then(function (ans) {
+                console.log(ans);
+                alert("הסיסמא עודכנה");
+                $location.path('/login');
+            }).catch(function (err) {
+                alert("שגיאה");
+            })
+          //call /api/updatePassword
         };
 
     }]);
