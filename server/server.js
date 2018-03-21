@@ -663,7 +663,20 @@ app.post('/api/validateTempPass', function (req, res) {
     );
     sql.Select(query)
         .then(function (ans) {
-            res.json({"status": "valid"});
+            if(ans.length == 0)
+            {
+                res.json({"status": "expired"});
+            }
+            //res.json({"status": "valid"});
+            else {
+                if (checkdiff(ans[0].time)) {
+                    res.json({"status": "valid"});
+                }
+                else {
+                    res.json({"status": "expired"});
+
+                }
+            }
 
         }).catch(function (reason) {
         console.log(reason);
@@ -690,6 +703,44 @@ app.post('/api/updatePassword', function (req, res) {
 
 });
 
+
+function checkdiff(dbTime)
+{
+    var now = new Date();
+    //let now = moment().format('YYYY-MM-DD hh:mm:ss');
+
+    var difference = now - dbTime;
+    difference = difference /1000/60-600;
+    if(difference <= 60)
+    {
+        return true;
+    }
+    return false;
+};
+function  checkIfTempExist(username) {
+    return new Promise(function(resolve,reject) {
+        let query = (
+            squel.select()
+                .from("tempPass")
+                .where("username = ?", username)
+                .toString()
+        );
+        sql.Select(query)
+            .then(function (ans) {
+                if(ans.length == 0 )
+                {
+                    resolve("notExist");
+                }
+                else {
+                    resolve("exist");
+                }
+
+            }).catch(function (reason) {
+            console.log(reason);
+            reject(reason);
+        })
+    })
+    }
 function sendMail(mailOptions, mail, r) {
     return new Promise(function(resolve,reject) {
 
@@ -726,6 +777,7 @@ app.post('/api/getTempPass', function (req, res) {
     console.log("enter toGet tempPass");
     let _username = req.body.username;
     let date = moment().format('YYYY-MM-DD hh:mm:ss');
+    //let date = Date();
     var mailOptions = null;
     let mail = null;
     let query = (
@@ -738,8 +790,7 @@ app.post('/api/getTempPass', function (req, res) {
     //check if the
     sql.Select(query)
         .then(function (ansPat) {
-            if(ansPat.length == 0)
-            {
+            if(ansPat.length == 0) {
                 let query2 = (
                     squel.select()
                         .from("physiotherapists")
@@ -748,10 +799,8 @@ app.post('/api/getTempPass', function (req, res) {
                         .toString()
                 );
                 //check if the
-                sql.Select(query2).then(function (ansPhy)
-                {
-                    if(ansPhy.length == 0)
-                    {
+                sql.Select(query2).then(function (ansPhy) {
+                    if (ansPhy.length == 0) {
 
                         res.json({err_desc: "mail not found"});
 
@@ -762,6 +811,97 @@ app.post('/api/getTempPass', function (req, res) {
                         let r = Math.floor(Math.random() * 100000000);
                         console.log(r);
                         ////change to if record exsist update else insert
+                        /*let querInsertTemp = (
+                         squel.insert()
+                         .into("[dbo].[tempPass]")
+                         .set("[username]", _username)
+                         .set("[time]", date)
+                         .set("[temp_pass]", r)
+                         .toString()
+                         );*/
+                        /* console.log(querInsertTemp);
+                         sql.Insert(querInsertTemp).then(function (ansIn) {
+                         mailOptions = sendMail(mailOptions, mail, r).then(function (ans) {
+                         res.json({success: 1});
+                         }).catch(function (err) {
+                         res.send(err);
+                         })
+                         //res.send(ansIn);
+                         })*/
+                        checkIfTempExist(_username).then(function (existAns){
+                        if (existAns == "exist") {
+                            let queryUpdate = (squel.update()
+                                    .table("tempPass")
+                                    .set("[time]", date)
+                                    .set("[temp_pass]", r)
+                                    .where("username = ?", _username)
+                                    .toString()
+                            );
+                            console.log(queryUpdate);
+                            sql.Update(queryUpdate).then(function (ansIn) {
+                                mailOptions = sendMail(mailOptions, mail, r).then(function (ans) {
+                                    res.json({success: 1});
+                                }).catch(function (err) {
+                                    res.send(err);
+                                })
+                                //res.send(ansIn);
+                            })
+                        }
+                        else {
+                            let querInsertTemp = (
+                                squel.insert()
+                                    .into("[dbo].[tempPass]")
+                                    .set("[username]", _username)
+                                    .set("[time]", date)
+                                    .set("[temp_pass]", r)
+                                    .toString()
+                            );
+                            console.log(querInsertTemp);
+                            sql.Insert(querInsertTemp).then(function (ansIn) {
+                                mailOptions = sendMail(mailOptions, mail, r).then(function (ans) {
+                                    res.json({success: 1});
+                                }).catch(function (err) {
+                                    res.send(err);
+                                })
+                                //res.send(ansIn);
+                            })
+                        }
+                    })
+                    }
+                }).catch(function (reason) {
+                    console.log(reason);
+                    res.send(reason);
+                });
+                //}
+            }
+            else {
+                mail = ansPat[0].mail;
+                console.log(mail);
+                let r = Math.floor(Math.random()*100000000);
+                console.log(r);
+                //inset to the db
+                checkIfTempExist(_username).then(function (existAns){
+                    if(existAns == "exist")
+                    {
+                        let queryUpdate = (squel.update()
+                                .table("tempPass")
+                                .set("[time]", date)
+                                .set("[temp_pass]", r)
+                                .where("username = ?",_username)
+                                .toString()
+                        );
+                        console.log(queryUpdate);
+                        sql.Update(queryUpdate).then(function (ansIn) {
+                            mailOptions = sendMail(mailOptions, mail, r).then(function(ans){
+                                res.json({success: 1});
+                            }).catch(function(err)
+                            {
+                                res.send(err);
+                            })
+                            //res.send(ansIn);
+                        })
+                    }
+                    else {
                         let querInsertTemp = (
                             squel.insert()
                                 .into("[dbo].[tempPass]")
@@ -779,38 +919,11 @@ app.post('/api/getTempPass', function (req, res) {
                                 res.send(err);
                             })
                             //res.send(ansIn);
-                        })
-                    }
-                }).catch(function (reason) {
-                    console.log(reason);
-                    res.send(reason);
-            });
-            }
-            else {
-                mail = ansPat[0].mail;
-                console.log(mail);
-                let r = Math.floor(Math.random()*100000000);
-                console.log(r);
-                //inset to the db
+                        }).catch(function(err){res.send(err)})
 
-                let querInsertTemp = (
-                    squel.insert()
-                        .into("[dbo].[tempPass]")
-                        .set("[username]", _username)
-                        .set("[time]", date)
-                        .set("[temp_pass]", r)
-                        .toString()
-                );
-                console.log(querInsertTemp);
-                sql.Insert(querInsertTemp).then(function (ansIn) {
-                    mailOptions = sendMail(mailOptions, mail, r).then(function(ans){
-                        res.json({success: 1});
-                    }).catch(function(err)
-                    {
-                        res.send(err);
-                    })
-                    //res.send(ansIn);
+                    }
                 })
+
 
 
 
@@ -840,7 +953,9 @@ app.post('/api/getTempPass', function (req, res) {
 
             // to be continued
 
-        }).catch(function (reason) {
+        }
+    //}
+        ).catch(function (reason) {
         console.log(reason);
         res.send(reason);
     })

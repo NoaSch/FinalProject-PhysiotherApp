@@ -20,8 +20,16 @@ angular.module("myApp")
                 }
             };
             $http(req).then(function (ans) {
-                console.log(ans);
-                self.trueTemp = true;
+                //console.log(ans);
+                if(ans.data.status =="valid" ) {
+                    self.trueTemp = true;
+                }
+                else {
+                    alert("סיסמא זמנית לא בתוקף");
+                    $location.path('/login');
+
+
+                }
             }).catch(function (err) {
                 alert("error");
             })
