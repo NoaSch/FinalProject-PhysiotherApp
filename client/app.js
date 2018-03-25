@@ -35,6 +35,12 @@ app.controller('mainController', ['AuthenticationService','$http', '$location', 
         $window.alert("loggedOut");
 
     }
+    self.click = function()
+    {
+        alert("click");
+        $location.path('/messages');
+
+    }
 
 
     // Needed for the loading screen
@@ -162,6 +168,9 @@ app.config( ['$routeProvider', function($routeProvider) {
     }).when('/resetPassword', {
         controller: 'resetPasswordController',reloadOnSearch: false,
         templateUrl: 'views/resetPass.html'
+    }).when('/messages', {
+        controller: 'messagesController',reloadOnSearch: false,
+        templateUrl: 'views/messages.html'
     })
         .otherwise({redirect: '/',
         });

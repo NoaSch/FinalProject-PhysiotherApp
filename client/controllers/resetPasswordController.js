@@ -5,9 +5,10 @@ angular.module("myApp")
     .controller('resetPasswordController', ['resetPasswordService','$http', '$location', '$window','$rootScope','$scope','ipconfigService', function (resetPasswordService,$http,$location, $window,$rootScope,$scope,ipconfigService ) {
         let self = this;
         self.trueTemp = false;
-
+        self.dataLoading = false;
 
         self.checkTemp = function () {
+            self.dataLoading = true;
             let req = {
                 method: 'POST',
                 url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/validateTempPass',
@@ -22,10 +23,12 @@ angular.module("myApp")
             $http(req).then(function (ans) {
                 //console.log(ans);
                 if(ans.data.status =="valid" ) {
+                    self.dataLoading = false;
                     self.trueTemp = true;
                 }
                 else {
-                    alert("סיסמא זמנית לא בתוקף");
+                    self.dataLoading = false;
+                    alert("סיסמא זמנית נכונה או לא בתוקף");
                     $location.path('/login');
 
 
@@ -37,8 +40,21 @@ angular.module("myApp")
 
         //function to check the two pass are same- use ng-show
 
+        self.passwordDifferent = function ()
+        {
+
+            if(self.pass1 == self.pass2)
+            {
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
         self.updatePass = function()
         {
+            self.dataLoading = true;
+
             let req = {
                 method: 'POST',
                 url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/updatePassword',
@@ -52,6 +68,7 @@ angular.module("myApp")
             };
             $http(req).then(function (ans) {
                 console.log(ans);
+                self.dataLoading = false;
                 alert("הסיסמא עודכנה");
                 $location.path('/login');
             }).catch(function (err) {

@@ -49,6 +49,7 @@ angular.module("myApp")
                 };
 
                 self.resetPassword = function () {
+                    self.dataLoading = true;
                     resetPasswordService.setID(self.username);
                         let req = {
                             method: 'POST',
@@ -61,9 +62,21 @@ angular.module("myApp")
                             }
                         };
                         $http(req).then(function (ans) {
-                            console.log(ans);
-                            alert("סיסמא זמנית נשלחה למייל השמור במערכת");
-                            $location.path('/resetPassword');
+                            // console.log(ans);
+                            if (ans.data.err_desc == "mail not found")
+                            {
+                                self.dataLoading = false;
+
+                                alert("לא נמצא מייל עבור המשתמש");
+
+                            }
+                            else {
+                                self.dataLoading = false;
+
+                                alert("סיסמא זמנית נשלחה למייל השמור במערכת");
+
+                                $location.path('/resetPassword');
+                            }
                         }).catch(function (err) {
                             alert("error");
                         })

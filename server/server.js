@@ -964,6 +964,135 @@ app.post('/api/getTempPass', function (req, res) {
 
 
 });
+
+
+//getInbox
+
+function getMessageOfCorrespondence(element) {
+    return new Promise(function(resolve,reject) {
+        let _cor_id = element.correspondence_id;
+    let query3 = (
+        squel.select()
+        //  .field("Min(date)","max_date")
+            .from("messages")
+            .where("correspondence_id = ?", _cor_id)
+            .order("date", false)
+            .toString()
+    );
+    sql.Select(query3)
+        .then(function (ansQ) {
+            //res.send(ans);
+            console.log(ansQ);
+           resolve(ansQ);
+        }).catch(function (reason) {
+           reject(reason);
+        }
+    )
+})};
+
+app.post('/api/getMessagesTest', function (req, res) {
+    let _username = req.body.username;
+    let ansFinal = [];
+    let query = (
+        squel.select()
+            .field("correspondence_id")
+            //  .field("Min(date)","max_date")
+            .from("messages")
+            .where("to_username = ?", _username)
+            .group("correspondence_id")
+            .toString()
+    );
+    sql.Select(query)
+        .then(function (ans) {
+            for(var i = 0; i < ans.length; i++){
+                var tmp = getMessageOfCorrespondence(ans[i]).then(function(ansNew){ansFinal.push(ansNew);})
+
+        }}).then(function (ansTry) {
+                res.send(ansFinal);
+            }).catch(function (reason) {
+        console.log(reason);
+        res.send(reason);
+    });
+
+});
+
+
+
+app.post('/api/getMessageByCorrespondence', function (req, res) {
+    let _cor_id = req.body.cor_id;
+    let query = (
+        squel.select()
+          //  .field("Min(date)","max_date")
+            .from("messages")
+            .where("correspondence_id = ?", _cor_id)
+            .order("date",false)
+            .toString()
+    );
+    sql.Select(query)
+        .then(function (ans) {
+            res.send(ans);
+
+        }).catch(function (reason) {
+        console.log(reason);
+        res.send(reason);
+    })
+});
+app.post('/api/getAllMessagesByCorrespondenceID', function (req, res) {
+    let _cor_id = req.body.cor_id;
+    let query = (
+        squel.select()
+            .from("messages")
+            .where("correspondence_id = ?", _cor_id)
+            .order("date", false)
+            .toString()
+    );
+    sql.Select(query)
+        .then(function (ans) {
+            res.send(ans);
+
+        }).catch(function (reason) {
+        console.log(reason);
+        res.send(reason);
+    })
+});
+
+app.post('/api/getOutbox', function (req, res) {
+    let _username = req.body.username;
+    let query = (
+        squel.select()
+            .from("messages")
+            .where("from_username = ?", _username)
+            .order("date", false)
+            .toString()
+    );
+    sql.Select(query)
+        .then(function (ans) {
+            res.send(ans);
+
+        }).catch(function (reason) {
+        console.log(reason);
+        res.send(reason);
+    })
+});
+app.post('/api/getInbox', function (req, res) {
+    let _username = req.body.username;
+    let query = (
+        squel.select()
+            .from("messages")
+            .where("to_username = ?", _username)
+            .order("date", false)
+            .toString()
+    );
+    sql.Select(query)
+        .then(function (ans) {
+            res.send(ans);
+
+        }).catch(function (reason) {
+        console.log(reason);
+        res.send(reason);
+    })
+});
+
 app.post('/api/getExeDetails', function (req, res) {
     console.log("enter test users");
     let _exe_id = req.body.exe_id;

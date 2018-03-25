@@ -48,6 +48,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
 
     <script src="controllers/resetPasswordController.js"></script>
+    <script src="controllers/messagesController.js"></script>
 
     <script src="controllers/bankController.js"></script>
     <script src="controllers/patFeedbackController.js"></script>
@@ -101,7 +102,7 @@
 
 
     <!--top -->
-    <div class="navbar navbar-app navbar-absolute-top">
+    <div class="navbar navbar-app navbar-absolute-top" ng-controller="mainController as mainCtrl">
         <div class="navbar-brand navbar-brand-center" ui-yield-to="title">
             פיזיותר
         </div>
@@ -110,11 +111,11 @@
                 <i class="fa fa-bars"></i> תפריט
             </div>
         </div>
-        <!--<div class="btn-group pull-right" ui-yield-to="navbarAction">
-            <div ui-toggle="uiSidebarRight" class="btn sidebar-right-toggle">
-                <i class="fa fa-comment"></i> הודעות
+        <div class="btn-group pull-right">
+            <div class="btn">
+                <button class="fa fa-envelope" href="/register" ng-click="mainCtrl.click()"></button> הודעות
             </div>
-        </div>-->
+        </div>
     </div>
 
     <!-- App body -->
