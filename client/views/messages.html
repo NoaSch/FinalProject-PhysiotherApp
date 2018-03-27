@@ -16,7 +16,7 @@
                         </h4>
                     </div>
                     <div class="panel-body">
-                    <button ng-click="messagesController.reply(cor)">השב</button>
+                    <button ng-click="messagesController.reply(cor[0])">השב</button>
 
                         <button ng-click="messagesController.more(cor[0].correspondence_id)">הודעות קודמות</button>
 
@@ -24,6 +24,15 @@
                     <div class="panel-body">
                         {{cor[0].date|date :  "dd.MM.y HH:mm" }}<br>
                         {{cor[0].msg_content}}
+                    </div>
+
+                    <div class="form-group has-success has-feedback" align="center" ng-show="messagesController.rep[cor[0].correspondence_id]">
+
+                        <!-- <div class="panel panel-default" >-->
+                            <textarea name="desc" ng-model="messagesController.repMsg" cols="30" rows="5"></textarea>
+                        <br>
+                        <button>שלח</button>
+                        <!--</div>-->
                     </div>
                     <div class="panel-group paddClass" ng-show="messagesController.moreMsgInCor[cor[0].correspondence_id]"
                          ui-shared-state="myAccordion2"

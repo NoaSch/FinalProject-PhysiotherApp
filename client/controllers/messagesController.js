@@ -8,6 +8,7 @@ angular.module("myApp")
      self.inbox  = {};
      self.moreMsgInCor = {};
      self.correspondences = {};
+     self.rep = {};
      self.authService = AuthenticationService;
      let req = {
          method: 'POST',
@@ -35,6 +36,7 @@ angular.module("myApp")
                  self.correspondences[cor_id] = [];
                  self.correspondences[cor_id].push(element);
                  self.moreMsgInCor[cor_id]= false;
+                 self.rep[cor_id]= false;
              }
 
          });
@@ -94,6 +96,14 @@ angular.module("myApp")
          console.log("more");
          console.log(self.moreMsgInCor);
 
+     };
+     self.reply = function(cor)
+     {
+         console.log("cor: "+cor);
+         //create new message
+         //check who is the other person and he will be the recipient
+        self.rep[cor.correspondence_id] = true;
+        console.log("rep: "+ self.rep);
      }
 
 
