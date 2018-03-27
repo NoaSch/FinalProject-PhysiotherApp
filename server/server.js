@@ -810,24 +810,6 @@ app.post('/api/getTempPass', function (req, res) {
                         console.log(mail);
                         let r = Math.floor(Math.random() * 100000000);
                         console.log(r);
-                        ////change to if record exsist update else insert
-                        /*let querInsertTemp = (
-                         squel.insert()
-                         .into("[dbo].[tempPass]")
-                         .set("[username]", _username)
-                         .set("[time]", date)
-                         .set("[temp_pass]", r)
-                         .toString()
-                         );*/
-                        /* console.log(querInsertTemp);
-                         sql.Insert(querInsertTemp).then(function (ansIn) {
-                         mailOptions = sendMail(mailOptions, mail, r).then(function (ans) {
-                         res.json({success: 1});
-                         }).catch(function (err) {
-                         res.send(err);
-                         })
-                         //res.send(ansIn);
-                         })*/
                         checkIfTempExist(_username).then(function (existAns){
                         if (existAns == "exist") {
                             let queryUpdate = (squel.update()
@@ -923,32 +905,6 @@ app.post('/api/getTempPass', function (req, res) {
 
                     }
                 })
-
-
-
-
-
-               /* var transporter = nodemailer.createTransport({
-                    service: 'gmail',
-                    auth: {
-                        user: 'physiotherapp@gmail.com',
-                        pass: 'Physio123#'
-                    }
-                });
-
-                mailOptions = {
-                    from: 'physiotherapp@gmail.com',
-                    to: mail,
-                    subject: 'סיסמא זמנית',
-                    text: r.toString()
-                }
-                transporter.sendMail(mailOptions, function(error, info){
-                    if (error) {
-                        console.log(error);
-                    } else {
-                        console.log('Email sent: ' + info.response);
-                    }
-                });*/
             }
 
             // to be continued
@@ -1085,6 +1041,34 @@ app.post('/api/getInbox', function (req, res) {
     );
     sql.Select(query)
         .then(function (ans) {
+            res.send(ans);
+
+        }).catch(function (reason) {
+        console.log(reason);
+        res.send(reason);
+    })
+});
+
+
+app.post('/api/getAllMessagesOfUser', function (req, res) {
+    let _username = req.body.username;
+    let query = (
+        squel.select()
+            .from("messages")
+            //.where("to_username = ?", _username)
+            .where(squel.expr().and("to_username = ?", _username).or("from_username = ?", _username))
+            .order("date", false)
+            .toString()
+    );
+    sql.Select(query)
+        .then(function (ans) {
+
+
+
+
+
+
+
             res.send(ans);
 
         }).catch(function (reason) {
@@ -1247,6 +1231,55 @@ app.delete('/api/deleteProg', function(req, res) {
                 reject(err)})
         })
     };
+
+function getFullname(username){
+    return new Promise(function(resolve,reject) {
+        let ans = [];
+        //let date = moment().format('YYYY-MM-DD hh:mm:ss');
+        let query = (
+            squel.select()
+                .from("patients")
+                .field("first_name")
+                .field("last_name")
+                .where("username = ?", _username)
+                .toString()
+        );
+        sql.Select(query)
+            .then(function (ansPat) {
+                if (ansPat.length == 0) {
+                    let query2 = (
+                        squel.select()
+                            .from("physiotherapists")
+                            .field("first_name")
+                            .field("last_name")
+                            .where("username = ?", _username)
+                            .toString()
+                    );
+                    //check if the
+                    sql.Select(query2).then(function (ansPhy) {
+                        if (ansPhy.length == 0) {
+
+                            res.json({err_desc: "user not found"});
+
+                        }
+                        else {
+                            resolve(ansPhy)
+                        }
+                    }).catch(function (reason) {
+                        console.log(reason);
+                        reject(reason);
+                    });
+                    //}
+                }
+                else {
+                    resolve(ansPat);
+                }
+            }).catch(function (err) {
+            res.send(err)
+        })
+    })
+
+};
 
 
 

@@ -9,12 +9,43 @@
             <div class="panel-group paddClass"
                  ui-shared-state="myAccordion"
                  ui-default='1'>
-                <div class="panel panel-default" ng-repeat="message in messagesController.messages">
+                <div class="panel panel-default" ng-repeat="cor in messagesController.correspondences">
                     <div class="panel-heading" ui-set="{'myAccordion': patient}">
                         <h4 class="panel-title">
-                            {{message.correspondence_id}}
-                            {{message.date}}
+                            {{cor[0].title}}
                         </h4>
+                    </div>
+                    <div class="panel-body">
+                    <button ng-click="messagesController.reply(cor)">השב</button>
+
+                        <button ng-click="messagesController.more(cor[0].correspondence_id)">הודעות קודמות</button>
+
+                    </div>
+                    <div class="panel-body">
+                        {{cor[0].date|date :  "dd.MM.y HH:mm" }}<br>
+                        {{cor[0].msg_content}}
+                    </div>
+                    <div class="panel-group paddClass" ng-show="messagesController.moreMsgInCor[cor[0].correspondence_id]"
+                         ui-shared-state="myAccordion2"
+                         ui-default='1'>
+                        <div class="panel panel-default" ng-repeat="msg in cor">
+                            <div ng-show = "messagesController.notFirst(msg,cor)">
+                            <div class="panel-heading" ui-set="{'myAccordion2': patient}">
+                                {{msg.date | date :  "dd.MM.y HH:mm"}}
+                            </div>
+                            <div class="panel-body">
+                                <label>מאת</label>
+                                {{msg.from_first_name}}
+                                {{msg.from_last_name}}
+                                <label>אל</label>
+                                {{msg.to_first_name}}
+                                {{msg.to_last_name}}
+                            </div>
+                            <div class="panel-body">
+                              {{msg.msg_content}}
+                            </div>
+                            </div>
+                        </div>
                     </div>
                         <!--<div class="panel-body">
                             {{patient.details}}

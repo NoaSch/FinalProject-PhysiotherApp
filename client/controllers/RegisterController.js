@@ -8,6 +8,7 @@ angular.module('myApp')
                 //Get the physiotherapiss
                 var self = this;
                 self.therapists = [];
+                self.authService = AuthenticationService;
                 $http.get('http://'+ipconfigService.getIP()+":"+ipconfigService.getPort()+'/api/GetAllTherapists')
                     .then(function (response) {
                          var physios = response.data;
@@ -24,11 +25,9 @@ angular.module('myApp')
                             });
 
 
-                    var self = this;
                  self.register = function() {
                     //alert("inReg")
                     self.dataLoading = true;
-                    self.authService = AuthenticationService;
                     var req = {
                         method: 'POST',
                         url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/register',
@@ -82,7 +81,12 @@ angular.module('myApp')
                         console.error('Error while register');
                     });
 
+                };
+                self.isAdmin = function()
+                {
+                    return self.authService.isAdmin;
                 }
+
             }]);
 
 

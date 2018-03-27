@@ -1,6 +1,6 @@
 <div class="scrollable" ng-controller="RegisterController as registerController">
     <!--<div class="col-md-6 col-md-offset-3">-->
-    <div class="scrollable-content paddClass">
+    <div class="scrollable-content paddClass" ng-show="registerController.isAdmin()">
 
     <form name="form" ng-submit="registerController.register()" role="form">
         <div ng-show="registerController.isError" class="alert alert-danger">{{registerController.error}}</div>
