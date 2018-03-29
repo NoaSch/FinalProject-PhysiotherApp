@@ -67,6 +67,14 @@ angular.module("myApp")
          console.log(err)
      });
 
+     self.isNewewClicked = false;
+
+     self.sendNewnewMsgClick = function()
+     {
+         self.isNewewClicked =true;
+
+     }
+
      self.notFirst = function(msg,cor)
      {
          if(msg == cor[0]) {
@@ -104,7 +112,35 @@ angular.module("myApp")
          //check who is the other person and he will be the recipient
         self.rep[cor.correspondence_id] = true;
         console.log("rep: "+ self.rep);
-     }
+     };
+     self.sendNewnewMsg = function()
+     {
+         ///call /api/sendMessage
+         let reqMsg = {
+             method: 'POST',
+             url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/sendMessage',
+
+             headers: {
+                 'Content-Type': "application/json"
+             },
+             data: {
+                 "isNew": self.true,
+                 "to": self.authService.PhysioUsername,
+                 "from": self.authService.userId,
+                 "date":Date.now(),
+                 "msgtitle":self.msgTitle,
+                 "content":self.newMsg
+             }
+         };
+         $http(reqMsg).then(function (ans) {
+             alert("ההודעה נשלחה")
+
+     }).catch(function(err)
+         {
+             console.log(err);
+             alert("שגיאה");
+         })
+     };
 
 
  }]);

@@ -240,6 +240,67 @@ app.post('/uploadToBank', function(req, res) {
 
 });
 
+function InsertMessage(cor_id,to,from,date,title,content) {
+    return new Promise(function(resolve,reject) {
+        let query = (
+            squel.insert()
+                .into("[dbo].[messages]")
+                .set("[correspondence_id]", cor_id)
+                .set("[to_username]", to)
+                .set("[from_username]", from)
+                .set("[date]", date)
+                .set("[title]", title)
+                .set("[msg_content]", content)
+                .toString()
+        );
+        console.log(query);
+        sql.Insert(query).then(function (ans) {
+            //res.send(ans);
+            resolve(ans);
+        }).catch(function (err) {
+                console.log("Error in inset: " + err);
+                reject(err);
+            }
+        )
+    })
+
+    };
+
+app.post('/api/sendMessage', function (req, res) {
+    let _isNew = req.body.isNew;
+    let _to = req.body.to;
+    let _from = req.body.from;
+    let _date = moment().format('YYYY-MM-DD HH:mm:ss');
+
+    let _title = req.body.msgtitle;
+    let _content = req.body.content;
+    let new_cor_id="";
+    if(_isNew == true)
+    {
+    let query = "select Max(correspondence_id) from dbo.messages";
+    sql.Select(query)
+        .then(function (ans) {
+            console.log("old: "+ ans[0]['']);
+            let new_cor_id=parseInt(ans[0][''], 10)+1;   // parseInt(015, 10); will return 15
+            console.log("new:" + new_cor_id);
+            InsertMessage(new_cor_id,_to,_from,_date,_title,_content).then(function (ans) {
+                        res.send(ans);
+            }).catch(function (err) {
+                console.log("Error in inset: " + err);
+                res.send(err);
+            })})
+        }
+        else {
+        InsertMessage(new_cor_id,_to,_from,_date,_title,_content).then(function (ans) {
+            res.send(ans)
+        }).catch(function (err) {
+            console.log("Error in inset: " + err);
+            res.send(err);
+        })}
+});
+
+
+
 //setPatientFeedback
 app.post('/api/setPatientFeedback', function (req, res) {
     let createDate = req.body.date;

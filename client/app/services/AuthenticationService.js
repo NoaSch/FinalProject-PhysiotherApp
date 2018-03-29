@@ -12,6 +12,7 @@ angular.module('myApp')
                 service.loggedIn = false;
                 service.userId="אורח";
                 service.userFirstName="אורח";
+                service.PhysioUsername = "";
                 service.isAdmin=false;
                 service.isPhysio=false;
                 service.Login = function (username, password, callback) {
@@ -50,6 +51,10 @@ angular.module('myApp')
                             }
                             else {
                                 service.isAdmin = false;
+                                if(service.isPhysio== false)
+                                {
+                                    service.PhysioUsername = response.data[0].physiotherapist_username;
+                                }
                             }
                            callback(response);
                        });
