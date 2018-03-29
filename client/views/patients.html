@@ -40,158 +40,70 @@
                             <button class="ProgramDetBtn" ng-click="patientsController.patientProg(patient.username)">תכניות שהקצתי למטופל</button>
                             <a href="#/newProgram"><button class="ProgramDetBtn" ng-click="patientsController.createProgram(patient.username)">צור תכנית אימון למטופל</button>
                             </a>
+                            <button class="ProgramDetBtn" ng-click="patientsController.getMessages(patient.username)">הודעות</button>
+
                         </div>
-                    <div class="panel panel-default" ng-show="patientsController.isEven(patient)" ng-repeat="programs in patientsController.programs">
+                    <div class="panel panel-default" ng-show="patientsController.isEven(patient)" ng-repeat="program in patientsController.programs">
                         <div class="panel-body">
-                        <label>                        {{programs.prog_title}}
+                        <label>                        {{program.prog_title}}
                         </label>
-                        <button class="ProgramDetBtn" ng-click="patientsController.deleteProg(programs.prog_id)">מחק תכנית אימון</button>
+                            <button class="ProgramDetBtn" ng-click="patientsController.progDet(program.prog_id)">פרטי תכנית אימון</button>
+
+                            <button class="ProgramDetBtn" ng-click="patientsController.deleteProg(program.prog_id)">מחק תכנית אימון</button>
+                            <div class="panel panel-default" ng-repeat="item in patientsController.exercises">
+
+                            <div class="panel-body" ng-show = "patientsController.isChosenProg(program.prog_id)" > <!--ng-show =exerciseController.chosenExe[item.exe_id]-->
+                                <!--<button class="ProgramDetBtn" ng-click="programsController.getExercises(item.prog_id)">פרטי תכנית</button>-->
+                                <div  align="center" class="panel-body" ui-set="{'myAccordion': item}">
+
+                                    <h4 class="panel-title">
+                                        {{item.title}}
+                                    </h4>
+                                    <br>
+                                        <button class="ProgramDetBtn" ng-click="patientsController.clickExeDet(item.exe_id)">פרטי תרגיל</button>
+                                </div>
+                                <div ng-show = "patientsController.chosenExe[item.exe_id] && patientsController.isBelongToProgram(item,program.prog_id)">
+
+                                    <br>
+                                    <label>מספר פעמים בשבוע: </label>
+                                    <span>{{item.time_in_week}}</span>
+                                    <br>
+                                    <label>מספר סטים: </label>
+                                    <span>{{item.num_sets}}</span>
+                                    <br>
+                                    <div ng-hide="item.onTime">
+                                        <label>מספר חזרות: </label>
+                                        <span>{{item.num_repeats}}</span>
+                                        <br>
+                                    </div>
+                                    <div ng-show="item.onTime">
+                                        <label>משך סט: </label>
+                                        <span>{{item.set_duration}}</span>
+                                        <span>{{item.set_duration_units}}</span>
+                                        <br>
+                                    </div>
+                                    <label> זמן הפסקה בין סטים: </label>
+                                    <span>{{item.break_between_sets}}</span>
+                                    <span>{{item.break_between_sets_units}}</span>
+                                    <br>
+                                    <label> הוראות נוספות: </label>
+                                    <span>{{item.description}}</span>
+                                    <br>
+                                    <video class="videoClass" ng-show="patientsController.videosURL[item.exe_id]" src= {{patientsController.videosURL[item.exe_id]}} controls type="video/mp4">
+                                    </video>
+                                </div>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                         </div>
                     </div>
             <!--</div>-->
         </div>
     </div>
-</div>
 
 
-
-
-
-
-
-   <!-- <button ng-click="programsController.changeVideo()">get Details</button>-->
-
-
-
-
-    <!--<h2 class="labelClass"> Best Sellers</h2>
-
-    <div class="box-table" width="500"  >
-    <table>
-        <tr ng-repeat="popcar in mainController.popCars">
-            <td>{{popcar.CarSeriesID}}</td>
-            <td><button ng-click="open(popcar.CarSeriesID)">Show Details</button> </td>
-           <!-- <td><button ng-show="mainController.userService.isLoggedIn" ng-click="mainController.addToCart(popcar.CarSeriesID)"><img src="pics/add-to-cart-dark.png" /></button> </td>-->
-
-
-            <!--<td><button ng-click="mainController.addToCart(popcar.CarSeriesID)" ng-hide="mainController.userService.notLoggedIn"><img src="pics/add-to-cart-dark.png" /></button> </td>-->
-           <!-- <td><button ng-click="mainController.buyCar(popcar.CarSeriesID)">Buy</button> </td>-->
-
-
-            <!--<td><button ng-click="storeCtrl.removeCart(product)">Remove Cart</button> </td>-->
-      <!--  </tr>
-    </table>-->
-
-
-    <!--<div modal="showModal" close="cancel()">
-        <div class="modal-header">
-            <h4>Car's Details</h4>
-        </div>
-        <div class="modal-body">
-            <div>
-
-                <table>
-                    <thead>
-                    <tr>
-        <th>Category</th>
-        <th>Menufacturer</th>
-        <th>Year</th>
-        <th>Color</th>
-        <th>Price</th>
-        <th>NumInStock</th>
-    </tr>
-    </thead>
-    <tr ng-repeat="car in mainController.carDetails">
-        <td>{{car.Category}}</td>
-        <td>{{car.Manufacturer}}</td>
-        <td>{{car.Year}}</td>
-        <td>{{car.Color}}</td>
-        <td>{{car.PriceNIS|currency: "NIS"}}</td>
-        <td>{{car.NumInStock}}</td>
-
-        <!--<td><button ng-click="storeCtrl.removeCart(product)">Remove Cart</button> </td>-->
-   <!-- </tr>
-    </table>
-</div>
-        </div>
-    </div>
-
-<!--<div ng-show="mainCtrl.userService.isLoggedIn">-->
-
-
-    <!--<div class="box-table" ng-hide="mainController.userService.notLoggedIn" width="500" >
-        <h2 class="labelClass"> new cars</h2>
-        <table>
-            <tr ng-repeat="newCar in mainController.newCars">
-                <td>{{newCar.CarSeriesID}}</td>
-               <!--<td><button ng-click="mainController.getCarDetails(newCar.CarSeriesID)">Show Details</button> </td>-->
-             <!-- <td><button ng-click="open(newCar.CarSeriesID)">Show Details</button> </td>
-                <td><button ng-click="mainController.addToCart(newCar.CarSeriesID)"><img src="pics/add-to-cart-dark.png" /></button> </td>
-                <!-- <td><button ng-click="mainController.buyCar(popcar.CarSeriesID)">Buy</button> </td>-->
-
-
-                <!--<td><button ng-click="storeCtrl.removeCart(product)">Remove Cart</button> </td>-->
-           <!-- </tr>
-        </table>
-    </div>
-
-
-        <div modal="showModal" close="cancel()">
-            <div class="modal-header">
-                <h4>Car's Details</h4>
-            </div>
-            <div class="modal-body">
-                <div>
-
-                    <table>
-                        <thead>
-                        <tr>
-                            <th>Category</th>
-                            <th>Menufacturer</th>
-                            <th>Year</th>
-                            <th>Color</th>
-                            <th>Price</th>
-                            <th>NumInStock</th>
-                        </tr>
-                        </thead>
-                        <tr ng-repeat="car in mainController.carDetails">
-                            <td>{{car.Category}}</td>
-                            <td>{{car.Manufacturer}}</td>
-                            <td>{{car.Year}}</td>
-                            <td>{{car.Color}}</td>
-                            <td>{{car.PriceNIS|currency: "NIS"}}</td>
-                            <td>{{car.NumInStock}}</td>
-                        </tr>
-                    </table>
-
-                </div>
-            </div>
-            </div>
-        </div>
-    <!--<div class="box-table" width="500">
-
-        <table>
-            <thead>
-            <tr>
-                <th>Category</th>
-                <th>Menufacturer</th>
-                <th>Year</th>
-                <th>Color</th>
-                <th>Price</th>
-                <th>NumInStock</th>
-            </tr>
-            </thead>
-            <tr ng-repeat="car in mainController.carDetails">
-                <td>{{car.Category}}</td>
-                <td>{{car.Manufacturer}}</td>
-                <td>{{car.Year}}</td>
-                <td>{{car.Color}}</td>
-                <td>{{car.PriceNIS|currency: "NIS"}}</td>
-                <td>{{car.NumInStock}}</td>
-            </tr>
-        </table>
-
-    </div>-->
 </div>
 <!--</div>-->
 

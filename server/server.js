@@ -216,7 +216,7 @@ app.post('/uploadToBank', function(req, res) {
             let newPath = changeToMP4Extention(req.file.path);
             convertTomp4(req.file.path, newPath)
             // insertVideoToDB(new_Path,prog_id,exetitle,tInWeek,nSets,nRepeats,dur,breakBet)
-                .then(insertToBankDB(newPath, req.body.title))
+                .then(insertToBankDB(newPath, req.body.title,req.body.tags))
                 .then(function (ans) {
                     //res.send("Done WithConvert!!!!")
                     res.json({error_code: 0, err_desc: null})
@@ -609,7 +609,7 @@ app.post('/api/register', function (req, res) {
 });
 
 app.post('/api/getProgramExe', function (req, res) {
-    console.log("enter test users");
+    console.log("enter getProgramExe");
     let _prog_id = req.body.prog_id;
     let query = (
         squel.select()
@@ -1012,6 +1012,48 @@ app.post('/api/getAllMessagesByCorrespondenceID', function (req, res) {
     })
 });
 
+
+app.post('/api/getAllMessagesByCorrespondenceID', function (req, res) {
+    let _cor_id = req.body.cor_id;
+    let query = (
+        squel.select()
+            .from("messages")
+            .where("correspondence_id = ?", _cor_id)
+            .order("date", false)
+            .toString()
+    );
+    sql.Select(query)
+        .then(function (ans) {
+            res.send(ans);
+
+        }).catch(function (reason) {
+        console.log(reason);
+        res.send(reason);
+    })
+});
+
+app.post('/api/getAllMessagesBetweenTwo', function (req, res) {
+    let user1 = req.body.user1;
+    let user2 = req.body.user2;
+
+    let query = (
+        squel.select()
+            .from("messages")
+            .where(squel.expr().and("to_username = ?", user1).or("from_username = ?", user1))
+            .where(squel.expr().and("to_username = ?", user2).or("from_username = ?", user2))
+            .order("date", false)
+            .toString()
+    );
+    sql.Select(query)
+        .then(function (ans) {
+            res.send(ans);
+
+        }).catch(function (reason) {
+        console.log(reason);
+        res.send(reason);
+    })
+});
+
 app.post('/api/getOutbox', function (req, res) {
     let _username = req.body.username;
     let query = (
@@ -1191,6 +1233,7 @@ app.delete('/api/deleteProg', function(req, res) {
 
     function insertVideoToDB(new_Path,prog_id,exetitle,onTime,tInWeek,tInDay,nSets,nRepeats,dur,durUnits,breakBet,breakBetUnits,description){
         return new Promise(function(resolve,reject) {
+            let tags = [];
             let currPath = null;
             let date = moment().format('YYYY-MM-DD hh:mm:ss');
             if(typeof new_Path != 'undefined' && new_Path!="null" && new_Path!= null) {
@@ -1225,7 +1268,15 @@ app.delete('/api/deleteProg', function(req, res) {
             console.log(query);
             sql.Insert(query).then(function (res) {
                 //res.send(ans);
-                resolve(res);
+                ////insert to bank
+                insertToBankDB(currPath,exetitle,tags).then(function(ansBank){
+                    resolve(res);
+                }).catch(function(errbank){
+                    console.log("Error in insetBank: " + ansBank)
+                    reject(ansBank)
+                })
+
+
             }).catch(function (err) {
                 console.log("Error in inset: " + err)
                 reject(err)})
