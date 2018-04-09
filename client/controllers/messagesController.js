@@ -5,7 +5,7 @@
 angular.module("myApp")
  .controller('messagesController', ['$route','$http', '$location', '$window','$scope', '$rootScope','programService','exerciseService','patientService','ipconfigService','AuthenticationService', function ($route,$http,$location, $window,$scope,$rootScope,programService,exerciseService,patientService,ipconfigService,AuthenticationService   ) {
      let self = this;
-     self.inbox  = {};
+     //self.inbox  = {};
      self.moreMsgInCor = {};
      self.correspondences = {};
      self.rep = {};
@@ -43,26 +43,6 @@ angular.module("myApp")
          console.log("cors");
          console.log(self.correspondences);
          console.log(Object.keys(self.correspondences).length)
-         //console.log(self.moreMsgInCor);
-       /*  let reqInbox = {
-             method: 'POST',
-             url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/getInbox',
-             headers: {
-                 'Content-Type': "application/json"
-             },
-             data: {
-                 "username": self.authService.userId
-             }
-         };
-         $http(reqInbox).then(function (ans) {
-             self.messages = ans.data;
-             console.log(self.messages);
-
-         }).catch(function (err) {
-             console.log(err)
-         });
-
-*/
      }).catch(function (err) {
          console.log(err)
      });
@@ -111,7 +91,6 @@ angular.module("myApp")
          //create new message
          //check who is the other person and he will be the recipient
         self.rep[cor.correspondence_id] = true;
-        console.log("rep: "+ self.rep);
      };
      self.sendNewnewMsg = function()
      {
@@ -124,7 +103,7 @@ angular.module("myApp")
                  'Content-Type': "application/json"
              },
              data: {
-                 "isNew": self.true,
+                 "isNew": true,
                  "to": self.authService.PhysioUsername,
                  "from": self.authService.userId,
                  "date":Date.now(),
@@ -133,7 +112,7 @@ angular.module("myApp")
              }
          };
          $http(reqMsg).then(function (ans) {
-             alert("ההודעה נשלחה")
+             alert("ההודעה נשלחה");
 
      }).catch(function(err)
          {
@@ -141,6 +120,35 @@ angular.module("myApp")
              alert("שגיאה");
          })
      };
+
+     self.sendRep = function (cor)
+     {
+         let reqMsg = {
+             method: 'POST',
+             url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/sendMessage',
+
+             headers: {
+                 'Content-Type': "application/json"
+             },
+             data: {
+                 "isNew": false,
+                 "cor_id": cor.correspondence_id,
+                 "to": self.authService.PhysioUsername,
+                 "from": self.authService.userId,
+                 "msgtitle":cor.title,
+                 "date":Date.now(),
+                 "content":self.repMsg
+             }
+         };
+         $http(reqMsg).then(function (ans) {
+             alert("ההודעה נשלחה");
+
+         }).catch(function(err)
+         {
+             console.log(err);
+             alert("שגיאה");
+         })
+     }
 
 
  }]);

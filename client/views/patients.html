@@ -33,7 +33,7 @@
                         </h4>
                     </div>
                         <div class="panel-body">
-                            {{patient.details}}
+                           <!-- {{patient.details}}-->
                             <br>
                             <!--<button class="ProgramDetBtn" ng-click="programsController.getExercises(item.prog_id)">פרטי תכנית</button>-->
                             <button class="ProgramDetBtn" ng-click="patientsController.clickUser(patient.username)">פרטי מטופל</button>
@@ -43,59 +43,130 @@
                             <button class="ProgramDetBtn" ng-click="patientsController.getMessages(patient.username)">הודעות</button>
 
                         </div>
-                    <div class="panel panel-default" ng-show="patientsController.isEven(patient)" ng-repeat="program in patientsController.programs">
+
+                    <div class="panel-body" ng-show = "patientsController.isChosenMsgPat(patient.username)" > <!--ng-show =exerciseController.chosenExe[item.exe_id]-->
+                        <!--<button class="ProgramDetBtn" ng-click="programsController.getExercises(item.prog_id)">פרטי תכנית</button>-->
+                        <label>הודעות</label>
+                        <div class="panel-group paddClass"
+                             ui-shared-state="myAccordion"
+                             ui-default='1'>
+                            <div class="panel panel-default" ng-repeat="cor in patientsController.correspondences">
+                                <div class="panel-heading" ui-set="{'myAccordion': patient}">
+                                    <h4 class="panel-title">
+                                        {{cor[0].title}}
+                                    </h4>
+                                </div>
+                                <div class="panel-body">
+                                    <button ng-click="patientsController.reply(cor[0])">השב</button>
+
+                                    <button ng-click="patientsController.more(cor[0].correspondence_id)">הודעות קודמות</button>
+
+                                </div>
+                                <div class="panel-body">
+                                    {{cor[0].date|date :  "dd.MM.y HH:mm" }}<br>
+                                    {{cor[0].msg_content}}
+                                </div>
+
+                                <div class="form-group has-success has-feedback" align="center" ng-show="patientsController.rep[cor[0].correspondence_id]">
+
+                                    <!-- <div class="panel panel-default" >-->
+                                    <textarea name="desc" ng-model="patientsController.repMsg" cols="30" rows="5"></textarea>
+                                    <br>
+                                    <br>
+                                    <button ng-click="patientsController.sendRep(cor[0])">שלח</button>
+                                    <!--</div>-->
+                                </div>
+                                <div class="panel-group paddClass" ng-show="patientsController.moreMsgInCor[cor[0].correspondence_id]"
+                                     ui-shared-state="myAccordion2"
+                                     ui-default='1'>
+                                    <div class="panel panel-default" ng-repeat="msg in cor">
+                                        <div ng-show = "patientsController.notFirst(msg,cor)">
+                                            <div class="panel-heading" ui-set="{'myAccordion2': patient}">
+                                                {{msg.date | date :  "dd.MM.y HH:mm"}}
+                                            </div>
+                                            <div class="panel-body">
+                                                <label>מאת</label>
+                                                {{msg.from_first_name}}
+                                                {{msg.from_last_name}}
+                                                <label>אל</label>
+                                                {{msg.to_first_name}}
+                                                {{msg.to_last_name}}
+                                            </div>
+                                            <div class="panel-body">
+                                                {{msg.msg_content}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-body" ng-show="patientsController.isEven(patient)">
+                        <label>תכניות שהקצתי למטופל</label>
+
+                        <div ng-repeat="program in patientsController.programs">
                         <div class="panel-body">
-                        <label>                        {{program.prog_title}}
-                        </label>
+                            <label>                        {{program.prog_title}}
+                            </label>
                             <button class="ProgramDetBtn" ng-click="patientsController.progDet(program.prog_id)">פרטי תכנית אימון</button>
 
                             <button class="ProgramDetBtn" ng-click="patientsController.deleteProg(program.prog_id)">מחק תכנית אימון</button>
                             <div class="panel panel-default" ng-repeat="item in patientsController.exercises">
 
-                            <div class="panel-body" ng-show = "patientsController.isChosenProg(program.prog_id)" > <!--ng-show =exerciseController.chosenExe[item.exe_id]-->
-                                <!--<button class="ProgramDetBtn" ng-click="programsController.getExercises(item.prog_id)">פרטי תכנית</button>-->
-                                <div  align="center" class="panel-body" ui-set="{'myAccordion': item}">
+                                <div class="panel-body" ng-show = "patientsController.isChosenProg(program.prog_id)" > <!--ng-show =exerciseController.chosenExe[item.exe_id]-->
+                                    <!--<button class="ProgramDetBtn" ng-click="programsController.getExercises(item.prog_id)">פרטי תכנית</button>-->
+                                    <div  align="center" class="panel-body" ui-set="{'myAccordion': item}">
 
-                                    <h4 class="panel-title">
-                                        {{item.title}}
-                                    </h4>
-                                    <br>
+                                        <h4 class="panel-title">
+                                            {{item.title}}
+                                        </h4>
+                                        <br>
                                         <button class="ProgramDetBtn" ng-click="patientsController.clickExeDet(item.exe_id)">פרטי תרגיל</button>
-                                </div>
-                                <div ng-show = "patientsController.chosenExe[item.exe_id] && patientsController.isBelongToProgram(item,program.prog_id)">
+                                    </div>
+                                    <div ng-show = "patientsController.chosenExe[item.exe_id] && patientsController.isBelongToProgram(item,program.prog_id)">
 
-                                    <br>
-                                    <label>מספר פעמים בשבוע: </label>
-                                    <span>{{item.time_in_week}}</span>
-                                    <br>
-                                    <label>מספר סטים: </label>
-                                    <span>{{item.num_sets}}</span>
-                                    <br>
-                                    <div ng-hide="item.onTime">
-                                        <label>מספר חזרות: </label>
-                                        <span>{{item.num_repeats}}</span>
                                         <br>
-                                    </div>
-                                    <div ng-show="item.onTime">
-                                        <label>משך סט: </label>
-                                        <span>{{item.set_duration}}</span>
-                                        <span>{{item.set_duration_units}}</span>
+                                        <label>מספר פעמים בשבוע: </label>
+                                        <span>{{item.time_in_week}}</span>
                                         <br>
+                                        <label>מספר סטים: </label>
+                                        <span>{{item.num_sets}}</span>
+                                        <br>
+                                        <div ng-hide="item.onTime">
+                                            <label>מספר חזרות: </label>
+                                            <span>{{item.num_repeats}}</span>
+                                            <br>
+                                        </div>
+                                        <div ng-show="item.onTime">
+                                            <label>משך סט: </label>
+                                            <span>{{item.set_duration}}</span>
+                                            <span>{{item.set_duration_units}}</span>
+                                            <br>
+                                        </div>
+                                        <label> זמן הפסקה בין סטים: </label>
+                                        <span>{{item.break_between_sets}}</span>
+                                        <span>{{item.break_between_sets_units}}</span>
+                                        <br>
+                                        <label> הוראות נוספות: </label>
+                                        <span>{{item.description}}</span>
+                                        <br>
+                                        <video class="videoClass" ng-show="patientsController.videosURL[item.exe_id]" src= {{patientsController.videosURL[item.exe_id]}} controls type="video/mp4">
+                                        </video>
                                     </div>
-                                    <label> זמן הפסקה בין סטים: </label>
-                                    <span>{{item.break_between_sets}}</span>
-                                    <span>{{item.break_between_sets_units}}</span>
-                                    <br>
-                                    <label> הוראות נוספות: </label>
-                                    <span>{{item.description}}</span>
-                                    <br>
-                                    <video class="videoClass" ng-show="patientsController.videosURL[item.exe_id]" src= {{patientsController.videosURL[item.exe_id]}} controls type="video/mp4">
-                                    </video>
-                                </div>
-                            </div>
                                 </div>
                             </div>
                         </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+    </div>
+</div>
+
+
+
                     </div>
                         </div>
                     </div>

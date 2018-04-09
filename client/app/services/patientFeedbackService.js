@@ -5,6 +5,7 @@
 angular.module("myApp").service('patientFeedbackService', function() {
      //var patientUsername = 'test string value';
     var chosenExercise = null;
+    var chosenExerciseTitle = null;
 return {
     getExercise: function() {
         return chosenExercise;
@@ -12,6 +13,12 @@ return {
     setID: function(value) {
         chosenExercise = value;
     },
+    getExerciseTitle: function() {
+        return chosenExerciseTitle;
+    },
+    setTitle: function(value) {
+        chosenExerciseTitle = value;
+    }
 
 }
 });

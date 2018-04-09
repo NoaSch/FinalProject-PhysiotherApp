@@ -44,6 +44,7 @@ angular.module("myApp")
                     "patUsername": self.authService.userId,
                     "date": date,
                     "exe": self.feedbackService.getExercise(),
+                    "exeTitle": self.feedbackService.getExerciseTitle(),
                     "nSucc":self.nSucc,
                     "succLvl":self.succ,
                     "painLVvl":$scope.painSlider.value

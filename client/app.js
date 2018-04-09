@@ -37,7 +37,7 @@ app.controller('mainController', ['AuthenticationService','$http', '$location', 
     }
     self.click = function()
     {
-        alert("click");
+        //alert("click");
         $location.path('/messages');
 
     }

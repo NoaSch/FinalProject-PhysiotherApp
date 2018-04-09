@@ -10,9 +10,13 @@
             <label>נושא</label>
             <textarea name="desc" ng-model="messagesController.msgTitle" cols="30" rows="1"></textarea>
             <!-- <div class="panel panel-default" >-->
+            <br>
+            <br>
+            <label>תוכן</label>
             <textarea name="desc" ng-model="messagesController.newMsg" cols="30" rows="5"></textarea>
             <br>
-            <button ng-click = messagesController.sendNewnewMsg()>שלח</button>
+            <br>
+            <button class="btn btn-warning" ng-click = messagesController.sendNewnewMsg()>שלח</button>
             <!--</div>-->
         </div>
         <!--<div class="section">-->
@@ -41,7 +45,8 @@
                         <!-- <div class="panel panel-default" >-->
                             <textarea name="desc" ng-model="messagesController.repMsg" cols="30" rows="5"></textarea>
                         <br>
-                        <button>שלח</button>
+                        <br>
+                        <button ng-click="messagesController.sendRep(cor[0])">שלח</button>
                         <!--</div>-->
                     </div>
                     <div class="panel-group paddClass" ng-show="messagesController.moreMsgInCor[cor[0].correspondence_id]"

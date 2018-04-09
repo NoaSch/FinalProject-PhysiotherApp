@@ -240,50 +240,101 @@ app.post('/uploadToBank', function(req, res) {
 
 });
 
-function InsertMessage(cor_id,to,from,date,title,content) {
+/*function InsertMessage(cor_id,to,from,date,title,content,type) {
     return new Promise(function(resolve,reject) {
-        let query = (
-            squel.insert()
-                .into("[dbo].[messages]")
-                .set("[correspondence_id]", cor_id)
-                .set("[to_username]", to)
-                .set("[from_username]", from)
-                .set("[date]", date)
-                .set("[title]", title)
-                .set("[msg_content]", content)
-                .toString()
-        );
-        console.log(query);
-        sql.Insert(query).then(function (ans) {
-            //res.send(ans);
-            resolve(ans);
-        }).catch(function (err) {
-                console.log("Error in inset: " + err);
-                reject(err);
-            }
-        )
-    })
+        let _toName = "";
+        let _fromName = "";
+        getFullname(to).then(function (ansTo) {
+            _toName = ansTo[0];
+        }).then(getFullname(from)
+            .then(function (ansFrom) {
+                _fromName = ansFrom[0];
+            })
+            .then(function (ans2) {
+                console.log("ans2");
+                let query = (
+                    squel.insert()
+                        .into("[dbo].[messages]")
+                        .set("[correspondence_id]", cor_id)
+                        .set("[to_first_name]", _toName.first_name)
+                        .set("[to_last_name]", _toName.last_name)
+                        .set("[to_username]", to)
+                        .set("[from_username]", from)
+                        .set("[from_first_name]", _fromName.first_name)
+                        .set("[from_last_name]", _fromName.last_name)
+                        .set("[date]", date)
+                        .set("[title]", title)
+                        .set("[msg_content]", content)
+                        .set("[type]", type)
+                        .toString()
+                );
+                console.log("query");
+                sql.Insert(query).then(function (ans) {
+                    //res.send(ans);
+                    resolve(ans);
+                }).catch(function (err) {
+                    console.log("Error in inset: " + err);
+                    reject(err);
+            })}).catch(function (err) {
+            console.log("Error in inset: " + err);
+            reject(err);
+        }))})
+    };*/
 
-    };
+function InsertMessage(cor_id,to,from,date,title,content,type) {
+    return new Promise(function(resolve,reject) {
+        let _toName = "";
+        let _fromName = "";
+        getFullname(to).then(function (ansTo) {
+            _toName = ansTo[0];
+        getFullname(from)
+            .then(function (ansFrom) {
+                _fromName = ansFrom[0];
+                console.log("ans2");
+                let query = (
+                    squel.insert()
+                        .into("[dbo].[messages]")
+                        .set("[correspondence_id]", cor_id)
+                        .set("[to_first_name]", _toName.first_name)
+                        .set("[to_last_name]", _toName.last_name)
+                        .set("[to_username]", to)
+                        .set("[from_username]", from)
+                        .set("[from_first_name]", _fromName.first_name)
+                        .set("[from_last_name]", _fromName.last_name)
+                        .set("[date]", date)
+                        .set("[title]", title)
+                        .set("[msg_content]", content)
+                        .set("[type]", type)
+                        .toString()
+                );
+                console.log("query");
+                sql.Insert(query).then(function (ans) {
+                    //res.send(ans);
+                    resolve(ans);
+                }).catch(function (err) {
+                    console.log("Error in inset: " + err);
+                    reject(err);
+                })}).catch(function (err) {
+            console.log("Error in inset: " + err);
+            reject(err);
+        })})})
+
+};
 
 app.post('/api/sendMessage', function (req, res) {
     let _isNew = req.body.isNew;
     let _to = req.body.to;
     let _from = req.body.from;
     let _date = moment().format('YYYY-MM-DD HH:mm:ss');
-
+    let _orig_cor_id = parseInt(req.body.cor_id);
     let _title = req.body.msgtitle;
     let _content = req.body.content;
     let new_cor_id="";
     if(_isNew == true)
     {
-    let query = "select Max(correspondence_id) from dbo.messages";
-    sql.Select(query)
-        .then(function (ans) {
-            console.log("old: "+ ans[0]['']);
-            let new_cor_id=parseInt(ans[0][''], 10)+1;   // parseInt(015, 10); will return 15
-            console.log("new:" + new_cor_id);
-            InsertMessage(new_cor_id,_to,_from,_date,_title,_content).then(function (ans) {
+        genNextCorId().then(function (ans) {
+            new_cor_id = ans;
+            InsertMessage(new_cor_id,_to,_from,_date,_title,_content,"new").then(function (ans) {
                         res.send(ans);
             }).catch(function (err) {
                 console.log("Error in inset: " + err);
@@ -291,13 +342,28 @@ app.post('/api/sendMessage', function (req, res) {
             })})
         }
         else {
-        InsertMessage(new_cor_id,_to,_from,_date,_title,_content).then(function (ans) {
+        InsertMessage(_orig_cor_id,_to,_from,_date,_title,_content,"rep").then(function (ans) {
             res.send(ans)
         }).catch(function (err) {
             console.log("Error in inset: " + err);
             res.send(err);
         })}
 });
+
+
+function genNextCorId() {
+    return new Promise(function (resolve, reject) {
+        let query = "select Max(correspondence_id) from dbo.messages";
+        sql.Select(query)
+            .then(function (ans) {
+                console.log("old: "+ ans[0]['']);
+                let new_cor_id=parseInt(ans[0][''], 10)+1;
+                resolve(new_cor_id);
+            }).catch(function (err) {
+            reject(err);
+        })
+    });
+}
 
 
 
@@ -338,12 +404,33 @@ app.post('/api/setPatientFeedback', function (req, res) {
 
             console.log(query);
             sql.Insert(queryInsert).then(function (ansInsert) {//insert to pyisio or patient;
+                //send feedback message
+                genNextCorId().then(function (ansCor) {
+                    new_cor_id = ansCor;
+                    let new_title = "פידבק על ביצוע: " + exe.title;
+                    let _content = "מידת הצלחת הביצוע: ";
+                    _content = _content+ succ_Level
+                    if (nSucc != null) {
+                        _content = _content + ", כמות התרגולים שבוצעו בהצלחה:\n" + nSucc + " מתוך: " + exe.time_in_day;
+                    }
+                    _content = _content + " \n , רמת הכאב: " + painLVvl;
+                    InsertMessage(new_cor_id, physio_username, pat_username, createDate, new_title, _content, "feedback").then(function (ans) {
+                        res.send(ans);
+                    }).catch(function (err) {
+                        console.log("Error in inset: " + err);
+                        res.send(err);
+                    })
+                }).catch(function (err2) {
+                    console.log("Error in inset: " + err);
+                    res.send(err2);
+                })
+            })
 
                 // var pathes = ans[0].path.toString();
-                res.send(ansInsert);
+                //res.send(ansInsert);
                 ///create message for the physiotherpaist
 
-            }).catch(function (reason) {
+            .catch(function (reason) {
                 console.log(reason);
                 res.send(reason);
             })
@@ -1165,13 +1252,6 @@ app.post('/api/getAllMessagesOfUser', function (req, res) {
     );
     sql.Select(query)
         .then(function (ans) {
-
-
-
-
-
-
-
             res.send(ans);
 
         }).catch(function (reason) {
@@ -1179,6 +1259,27 @@ app.post('/api/getAllMessagesOfUser', function (req, res) {
         res.send(reason);
     })
 });
+
+/*app.post('/api/getAllMessagesOfPatient', function (req, res) {
+    let _patirnt = req.body.patName;
+    let _physio = req.body.physio;
+    let query = (
+        squel.select()
+            .from("messages")
+            //.where("from_username = ?", _patName)
+            .where(squel.expr().and("to_username = ?", _physio).or("from_username = ?", _username))
+            .order("date", false)
+            .toString()
+    );
+    sql.Select(query)
+        .then(function (ans) {
+            res.send(ans);
+
+        }).catch(function (reason) {
+        console.log(reason);
+        res.send(reason);
+    })
+});*/
 
 app.post('/api/getExeDetails', function (req, res) {
     console.log("enter test users");
@@ -1353,7 +1454,7 @@ function getFullname(username){
                 .from("patients")
                 .field("first_name")
                 .field("last_name")
-                .where("username = ?", _username)
+                .where("username = ?", username)
                 .toString()
         );
         sql.Select(query)
@@ -1364,7 +1465,7 @@ function getFullname(username){
                             .from("physiotherapists")
                             .field("first_name")
                             .field("last_name")
-                            .where("username = ?", _username)
+                            .where("username = ?", username)
                             .toString()
                     );
                     //check if the
