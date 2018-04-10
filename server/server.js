@@ -369,7 +369,7 @@ function genNextCorId() {
 
 //setPatientFeedback
 app.post('/api/setPatientFeedback', function (req, res) {
-    let createDate = req.body.date;
+    let createDate = moment().format('YYYY-MM-DD HH:mm:ss');
     let pat_username = req.body.patUsername;
     let exe = req.body.exe;
     let succ_Level = req.body.succLvl;
@@ -409,11 +409,11 @@ app.post('/api/setPatientFeedback', function (req, res) {
                     new_cor_id = ansCor;
                     let new_title = "פידבק על ביצוע: " + exe.title;
                     let _content = "מידת הצלחת הביצוע: ";
-                    _content = _content+ succ_Level
+                    _content = _content+ succ_Level+","
                     if (nSucc != null) {
-                        _content = _content + ", כמות התרגולים שבוצעו בהצלחה:\n" + nSucc + " מתוך: " + exe.time_in_day;
+                        _content = _content + " תרגולים שבוצעו בהצלחה: " + nSucc+ "/" + exe.time_in_day;
                     }
-                    _content = _content + " \n , רמת הכאב: " + painLVvl;
+                    _content = _content + " , רמת הכאב: " + painLVvl;
                     InsertMessage(new_cor_id, physio_username, pat_username, createDate, new_title, _content, "feedback").then(function (ans) {
                         res.send(ans);
                     }).catch(function (err) {
@@ -1472,7 +1472,7 @@ function getFullname(username){
                     sql.Select(query2).then(function (ansPhy) {
                         if (ansPhy.length == 0) {
 
-                            res.json({err_desc: "user not found"});
+                            reject({err_desc: "user not found"});
 
                         }
                         else {

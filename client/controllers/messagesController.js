@@ -9,6 +9,8 @@ angular.module("myApp")
      self.moreMsgInCor = {};
      self.correspondences = {};
      self.rep = {};
+     self.dataLoading = true;
+     self.corsOrder = {};
      self.authService = AuthenticationService;
      let req = {
          method: 'POST',
@@ -23,36 +25,66 @@ angular.module("myApp")
      };
      $http(req).then(function (ans) {
          self.messages = ans.data;
-
+console.log(self.messages);
          ///get the correspondence and tieles
-         self.messages.forEach(function(element)
+        self.messages.forEach(function(element)
          {
+             if (element.type == "feedback")
+             {
+                 console.log("feedback");
+                 let fixMsg = "";
+                 let strArr = element.msg_content.split(",");
+                 for (i = 0; i < strArr.length; i++) {
+                     fixMsg += strArr[i] + "\n";
+                 }
+                 element.msg_content = fixMsg;
+                 console.log(element.msg_content);
+             }
              let cor_id= element.correspondence_id;
-             if(cor_id in self.correspondences)
+             if(cor_id in self.corsOrder)
             {
-               self.correspondences[cor_id].push(element);
+               self.correspondences[self.corsOrder[cor_id]].push(element);
             }
              else {
-                 self.correspondences[cor_id] = [];
-                 self.correspondences[cor_id].push(element);
+                 let next = Object.keys(self.corsOrder).length
+                 console.log("length: "+ next);
+                 self.corsOrder[cor_id] = next;
+                 console.log("corid:" +cor_id +" , order: "+next);
+                 self.correspondences[self.corsOrder[cor_id]] = [];
+                 console.log("length: "+ next);
+                 self.correspondences[self.corsOrder[cor_id]].push(element);
+                 //console.log(element);
                  self.moreMsgInCor[cor_id]= false;
                  self.rep[cor_id]= false;
              }
 
          });
-         console.log("cors");
-         console.log(self.correspondences);
-         console.log(Object.keys(self.correspondences).length)
-     }).catch(function (err) {
+         //console.log("cors");
+         //console.log(self.correspondences);
+         //console.log(Object.keys(self.correspondences).length)
+         self.dataLoading = false;
+     }).catch(function(err) {
          console.log(err)
      });
 
      self.isNewewClicked = false;
 
-     self.sendNewnewMsgClick = function()
+     self.sendNewMsgClick = function()
      {
          self.isNewewClicked =true;
 
+     }
+
+     self.isPatient = function()
+     {
+         if(AuthenticationService.isPhysio == true || AuthenticationService.isAdmin== true||AuthenticationService.userId== "guest"||AuthenticationService.userId =="אורח")
+         {
+             console.log("userid"+ AuthenticationService.userId);
+             return false;
+         }
+         else {
+             return true;
+         }
      }
 
      self.notFirst = function(msg,cor)
@@ -72,7 +104,7 @@ angular.module("myApp")
          self.moreMsgInCor[cor_id] = true;
          console.log(self.moreMsgInCor);
 
-         for (index in self.correspondences)
+         for (index in self.corsOrder)//check
          {
              console.log("index: "+index);
              if(index != cor_id)
@@ -92,7 +124,7 @@ angular.module("myApp")
          //check who is the other person and he will be the recipient
         self.rep[cor.correspondence_id] = true;
      };
-     self.sendNewnewMsg = function()
+     self.sendNewMsg = function()
      {
          ///call /api/sendMessage
          let reqMsg = {
@@ -113,6 +145,8 @@ angular.module("myApp")
          };
          $http(reqMsg).then(function (ans) {
              alert("ההודעה נשלחה");
+             self.newMsg = "";
+             self.msgTitle = "";
 
      }).catch(function(err)
          {
@@ -142,6 +176,8 @@ angular.module("myApp")
          };
          $http(reqMsg).then(function (ans) {
              alert("ההודעה נשלחה");
+             self.repMsg = "";
+
 
          }).catch(function(err)
          {

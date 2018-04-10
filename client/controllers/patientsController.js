@@ -13,6 +13,7 @@ angular.module("myApp")
      self.moreMsgInCor = {};
      self.correspondences = {};
      self.rep = {};
+     self.corsOrder= {};
 
      let req = {
          method: 'POST',
@@ -210,6 +211,49 @@ angular.module("myApp")
              ///get the correspondence and tieles
              self.messages.forEach(function(element)
              {
+                 if (element.type == "feedback")
+                 {
+                     console.log("feedback");
+                     let fixMsg = "";
+                     let strArr = element.msg_content.split(",");
+                     for (i = 0; i < strArr.length; i++) {
+                         fixMsg += strArr[i] + "\n";
+                     }
+                     element.msg_content = fixMsg;
+                     console.log(element.msg_content);
+                 }
+                 let cor_id= element.correspondence_id;
+                 if(cor_id in self.corsOrder)
+                 {
+                     self.correspondences[self.corsOrder[cor_id]].push(element);
+                 }
+                 else {
+                     let next = Object.keys(self.corsOrder).length
+                     console.log("length: "+ next);
+                     self.corsOrder[cor_id] = next;
+                     console.log("corid:" +cor_id +" , order: "+next);
+                     self.correspondences[self.corsOrder[cor_id]] = [];
+                     console.log("length: "+ next);
+                     self.correspondences[self.corsOrder[cor_id]].push(element);
+                     //console.log(element);
+                     self.moreMsgInCor[cor_id]= false;
+                     self.rep[cor_id]= false;
+                 }
+
+             });
+             /*self.messages.forEach(function(element)
+             {
+                 if (element.type == "feedback")
+                 {
+                     console.log("feedback");
+                     let fixMsg = "";
+                     let strArr = element.msg_content.split(",");
+                     for (i = 0; i < strArr.length; i++) {
+                         fixMsg += strArr[i] + "\n";
+                     }
+                     element.msg_content = fixMsg;
+                     console.log(element.msg_content);
+                 }
                  let cor_id= element.correspondence_id;
                  if(cor_id in self.correspondences)
                  {
@@ -222,7 +266,7 @@ angular.module("myApp")
                      self.rep[cor_id]= false;
                  }
 
-             });
+             });*/
              //console.log("cors");
              //console.log(self.correspondences);
              //console.log(Object.keys(self.correspondences).length)
@@ -290,6 +334,8 @@ angular.module("myApp")
          };
          $http(reqMsg).then(function (ans) {
              alert("ההודעה נשלחה");
+             self.newMsg = "";
+
 
          }).catch(function(err)
          {
@@ -319,6 +365,7 @@ angular.module("myApp")
          };
          $http(reqMsg).then(function (ans) {
              alert("ההודעה נשלחה");
+             self.repMsg = "";
 
          }).catch(function(err)
          {

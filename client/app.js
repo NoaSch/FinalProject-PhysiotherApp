@@ -41,7 +41,17 @@ app.controller('mainController', ['AuthenticationService','$http', '$location', 
         $location.path('/messages');
 
     }
-
+    self.isPatient = function()
+    {
+        if(AuthenticationService.isPhysio == true || AuthenticationService.isAdmin== true ||AuthenticationService.userId== "guest"   ||AuthenticationService.userId =="אורח")
+        {
+            console.log("userid"+ AuthenticationService.userId);
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
 
     // Needed for the loading screen
     $rootScope.$on('$routeChangeStart', function() {

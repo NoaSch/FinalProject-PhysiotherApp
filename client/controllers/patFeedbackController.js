@@ -33,7 +33,7 @@ angular.module("myApp")
         };
 
         self.submit = function () {
-            let date = new Date();
+            let date = Date.now();
             let req = {
                 method: 'POST',
                 url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/setPatientFeedback',

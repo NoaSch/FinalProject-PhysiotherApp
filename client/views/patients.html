@@ -63,8 +63,17 @@
 
                                 </div>
                                 <div class="panel-body">
-                                    {{cor[0].date|date :  "dd.MM.y HH:mm" }}<br>
-                                    {{cor[0].msg_content}}
+                                    {{cor[0].date|date :  'dd.MM.yyyy H:mm':'+00' }}<br>
+                                    <div class="panel-body">
+                                        <label>מאת</label>
+                                        {{cor[0].from_first_name}}
+                                        {{cor[0].from_last_name}}
+                                        <br>
+                                        <label>אל</label>
+                                        {{cor[0].to_first_name}}
+                                        {{cor[0].to_last_name}}
+                                    </div>
+                                    <pre>{{cor[0].msg_content}}</pre>
                                 </div>
 
                                 <div class="form-group has-success has-feedback" align="center" ng-show="patientsController.rep[cor[0].correspondence_id]">
@@ -73,7 +82,7 @@
                                     <textarea name="desc" ng-model="patientsController.repMsg" cols="30" rows="5"></textarea>
                                     <br>
                                     <br>
-                                    <button ng-click="patientsController.sendRep(cor[0])">שלח</button>
+                                    <button btn btn-warning ng-click="patientsController.sendRep(cor[0])">שלח</button>
                                     <!--</div>-->
                                 </div>
                                 <div class="panel-group paddClass" ng-show="patientsController.moreMsgInCor[cor[0].correspondence_id]"
@@ -81,19 +90,20 @@
                                      ui-default='1'>
                                     <div class="panel panel-default" ng-repeat="msg in cor">
                                         <div ng-show = "patientsController.notFirst(msg,cor)">
-                                            <div class="panel-heading" ui-set="{'myAccordion2': patient}">
-                                                {{msg.date | date :  "dd.MM.y HH:mm"}}
+                                            <div class="panel-body" ui-set="{'myAccordion2': patient}">
+                                                {{msg.date | date :  'dd.MM.yyyy H:mm':'+00' }}<br>
                                             </div>
                                             <div class="panel-body">
                                                 <label>מאת</label>
                                                 {{msg.from_first_name}}
                                                 {{msg.from_last_name}}
+                                                <br>
                                                 <label>אל</label>
                                                 {{msg.to_first_name}}
                                                 {{msg.to_last_name}}
                                             </div>
                                             <div class="panel-body">
-                                                {{msg.msg_content}}
+                                                <pre>{{msg.msg_content}}</pre>
                                             </div>
                                         </div>
                                     </div>
