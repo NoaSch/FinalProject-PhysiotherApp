@@ -9099,3 +9099,8 @@ ui-switch {
 
  }
 
+.ProgramDetBtnPat{
+    width: 90%;
+    padding:2%;
+    margin: 1%;
+}

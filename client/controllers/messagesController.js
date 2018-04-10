@@ -12,60 +12,61 @@ angular.module("myApp")
      self.dataLoading = true;
      self.corsOrder = {};
      self.authService = AuthenticationService;
-     let req = {
-         method: 'POST',
-         url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/getAllMessagesOfUser',
+     function loadMessages() {
+         let req = {
+             method: 'POST',
+             url: "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + '/api/getAllMessagesOfUser',
 
-         headers: {
-             'Content-Type': "application/json"
-         },
-         data: {
-             "username": self.authService.userId
-         }
-     };
-     $http(req).then(function (ans) {
-         self.messages = ans.data;
-console.log(self.messages);
-         ///get the correspondence and tieles
-        self.messages.forEach(function(element)
-         {
-             if (element.type == "feedback")
-             {
-                 console.log("feedback");
-                 let fixMsg = "";
-                 let strArr = element.msg_content.split(",");
-                 for (i = 0; i < strArr.length; i++) {
-                     fixMsg += strArr[i] + "\n";
+             headers: {
+                 'Content-Type': "application/json"
+             },
+             data: {
+                 "username": self.authService.userId
+             }
+         };
+         $http(req).then(function (ans) {
+             self.messages = ans.data;
+             console.log(self.messages);
+             ///get the correspondence and tieles
+             self.messages.forEach(function (element) {
+                 if (element.type == "feedback") {
+                     console.log("feedback");
+                     let fixMsg = "";
+                     let strArr = element.msg_content.split(",");
+                     for (i = 0; i < strArr.length; i++) {
+                         fixMsg += strArr[i] + "\n";
+                     }
+                     element.msg_content = fixMsg;
+                     console.log(element.msg_content);
                  }
-                 element.msg_content = fixMsg;
-                 console.log(element.msg_content);
-             }
-             let cor_id= element.correspondence_id;
-             if(cor_id in self.corsOrder)
-            {
-               self.correspondences[self.corsOrder[cor_id]].push(element);
-            }
-             else {
-                 let next = Object.keys(self.corsOrder).length
-                 console.log("length: "+ next);
-                 self.corsOrder[cor_id] = next;
-                 console.log("corid:" +cor_id +" , order: "+next);
-                 self.correspondences[self.corsOrder[cor_id]] = [];
-                 console.log("length: "+ next);
-                 self.correspondences[self.corsOrder[cor_id]].push(element);
-                 //console.log(element);
-                 self.moreMsgInCor[cor_id]= false;
-                 self.rep[cor_id]= false;
-             }
+                 let cor_id = element.correspondence_id;
+                 if (cor_id in self.corsOrder) {
+                     self.correspondences[self.corsOrder[cor_id]].push(element);
+                 }
+                 else {
+                     let next = Object.keys(self.corsOrder).length
+                     console.log("length: " + next);
+                     self.corsOrder[cor_id] = next;
+                     console.log("corid:" + cor_id + " , order: " + next);
+                     self.correspondences[self.corsOrder[cor_id]] = [];
+                     console.log("length: " + next);
+                     self.correspondences[self.corsOrder[cor_id]].push(element);
+                     //console.log(element);
+                     self.moreMsgInCor[cor_id] = false;
+                     self.rep[cor_id] = false;
+                 }
 
+             });
+             //console.log("cors");
+             //console.log(self.correspondences);
+             //console.log(Object.keys(self.correspondences).length)
+             self.dataLoading = false;
+         }).catch(function (err) {
+             console.log(err)
          });
-         //console.log("cors");
-         //console.log(self.correspondences);
-         //console.log(Object.keys(self.correspondences).length)
-         self.dataLoading = false;
-     }).catch(function(err) {
-         console.log(err)
-     });
+     }
+
+     loadMessages();
 
      self.isNewewClicked = false;
 
@@ -74,7 +75,10 @@ console.log(self.messages);
          self.isNewewClicked =true;
 
      }
-
+     self.refresh = function() {
+         console.log("reload");
+         $route.reload();
+     };
      self.isPatient = function()
      {
          if(AuthenticationService.isPhysio == true || AuthenticationService.isAdmin== true||AuthenticationService.userId== "guest"||AuthenticationService.userId =="אורח")

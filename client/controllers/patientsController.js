@@ -46,6 +46,10 @@ angular.module("myApp")
          else
              return false;
      }
+     self.refresh = function() {
+         console.log("reload");
+         $route.reload();
+     };
         self.clickUser = function(patient){
             self.clickedmsg = false;
             self.chosenPatient = patient;
@@ -55,6 +59,7 @@ angular.module("myApp")
          self.clickedmsg = false;
          patientService.setID(patient);
          console.log("chosen patient: " +  patientService.getID());
+         $location.path('/newProgram');
      };
      self.patientProg = function(username){
          self.clickedmsg = false;

@@ -356,9 +356,15 @@ function genNextCorId() {
         let query = "select Max(correspondence_id) from dbo.messages";
         sql.Select(query)
             .then(function (ans) {
-                console.log("old: "+ ans[0]['']);
-                let new_cor_id=parseInt(ans[0][''], 10)+1;
-                resolve(new_cor_id);
+                if(ans[0][''] == null)
+                {
+                    resolve(1);
+                }
+                else {
+                    console.log("old: " + ans[0]['']);
+                    let new_cor_id = parseInt(ans[0][''], 10) + 1;
+                    resolve(new_cor_id);
+                }
             }).catch(function (err) {
             reject(err);
         })

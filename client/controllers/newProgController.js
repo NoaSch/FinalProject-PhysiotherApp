@@ -3,7 +3,7 @@
  */
 
 angular.module("myApp")
- .controller('newProgController', ['AuthenticationService','Upload','$http', '$location', '$window','$scope', '$rootScope','programService','exerciseService','patientService','ipconfigService', function (AuthenticationService,Upload,$http,$location, $window,$scope,$rootScope,programService,exerciseService,patientService,ipconfigService   ) {
+ .controller('newProgController', ['AuthenticationService','Upload','$http', '$location', '$window','$scope', '$rootScope','programService','exerciseService','patientService','ipconfigService','$route', function (AuthenticationService,Upload,$http,$location, $window,$scope,$rootScope,programService,exerciseService,patientService,ipconfigService,$route   ) {
      let self = this;
      self.clickedAdd = false;
      self.videoClick = false;
@@ -193,7 +193,6 @@ console.log("chosen" + self.bankVideoChosen);
          });
          })
      };
-
 
      self.addExeWithoutFile = function () {
          self.finishLoad = false;

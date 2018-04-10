@@ -21,11 +21,18 @@
 <div class="scrollable" ng-controller="patientsController as patientsController">
     <div class="scrollable-content">
         <!--<div class="section">-->
-            <div class="panel-group paddClass"
+        <button  ng-click="patientsController.refresh()"><img src="../pics/Refresh_icon.svg.png" width="10%" height="1%"/>רענן</button>
+
+        <div class="panel-group paddClass"
                  ui-shared-state="myAccordion"
                  ui-default='1'>
+                <div align="right">
+                    <input type="text" ng-model="patientsController.filterBy">
+                    <label>:סינון</label>
 
-                <div class="panel panel-default" ng-repeat="patient in patientsController.patients">
+                </div>
+
+                <div class="panel panel-default" ng-repeat="patient in patientsController.patients | filter : patientsController.filterBy">
                     <div class="panel-heading" ui-set="{'myAccordion': patient}">
                         <h4 class="panel-title">
                             {{patient.first_name}}
@@ -36,11 +43,17 @@
                            <!-- {{patient.details}}-->
                             <br>
                             <!--<button class="ProgramDetBtn" ng-click="programsController.getExercises(item.prog_id)">פרטי תכנית</button>-->
-                            <button class="ProgramDetBtn" ng-click="patientsController.clickUser(patient.username)">פרטי מטופל</button>
-                            <button class="ProgramDetBtn" ng-click="patientsController.patientProg(patient.username)">תכניות שהקצתי למטופל</button>
-                            <a href="#/newProgram"><button class="ProgramDetBtn" ng-click="patientsController.createProgram(patient.username)">צור תכנית אימון למטופל</button>
-                            </a>
-                            <button class="ProgramDetBtn" ng-click="patientsController.getMessages(patient.username)">הודעות</button>
+                            <button class="ProgramDetBtnPat" ng-click="patientsController.clickUser(patient.username)">פרטי מטופל<img src="../pics/person-icon-user-person-man-icon-4.png" width="10%" height="5%"/></button>
+                        <br>
+                            <button class="ProgramDetBtnPat" ng-click="patientsController.patientProg(patient.username)">תכניות שהקצתי למטופל<img src="../pics/exercise-with-dumbbells-symbol-hi.png" width="10%" height="5%"/></button>
+
+                            <br>
+
+                           <button class="ProgramDetBtnPat" ng-click="patientsController.createProgram(patient.username)">צור תכנית אימון למטופל<img src="../pics/add.png" width="10%" height="5%"/></button>
+                                <br>
+
+
+                            <button class="ProgramDetBtnPat" ng-click="patientsController.getMessages(patient.username)">הודעות<img src="../pics/0998-mail.png" width="10%" height="5%"/></button>
 
                         </div>
 
@@ -117,10 +130,11 @@
 
                         <div ng-repeat="program in patientsController.programs">
                         <div class="panel-body">
-                            <label>                        {{program.prog_title}}
+                            <label>{{program.prog_title}}
                             </label>
+                            <br>
                             <button class="ProgramDetBtn" ng-click="patientsController.progDet(program.prog_id)">פרטי תכנית אימון</button>
-
+                            <br>
                             <button class="ProgramDetBtn" ng-click="patientsController.deleteProg(program.prog_id)">מחק תכנית אימון</button>
                             <div class="panel panel-default" ng-repeat="item in patientsController.exercises">
 
