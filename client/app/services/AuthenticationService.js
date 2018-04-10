@@ -37,15 +37,21 @@ angular.module('myApp')
                                 service.isPhysio = response.data[0].isPhysio;
                                 if(username == 'admin')
                                 {
-                                    service.userFirstName = "מנהל"
+                                    service.userFirstName = "מנהל";
+                                    service.isAdmin = true;
+
 
                                 }
                                 else {
                                     service.userFirstName = response.data[0].first_name;
-
+                                    service.isAdmin = false;
+                                    if(service.isPhysio== false)
+                                    {
+                                        service.PhysioUsername = response.data[0].physiotherapist_username;
+                                    }
                                 }
                             }
-                            if(username == "admin")
+                           /* if(username == "admin")
                             {
                                 service.isAdmin = true;
                             }
@@ -55,7 +61,7 @@ angular.module('myApp')
                                 {
                                     service.PhysioUsername = response.data[0].physiotherapist_username;
                                 }
-                            }
+                            }*/
                            callback(response);
                        });
 
