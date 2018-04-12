@@ -7,6 +7,7 @@ angular.module("myApp")
         self.feedbackService = patientFeedbackService;
         self.authService = AuthenticationService;
         self.nSuccRange = [];
+        self.succ = "all";
         for (var i = 0; i <= self.feedbackService.getExercise().time_in_day; i++) {
             self.nSuccRange.push(i);
         };

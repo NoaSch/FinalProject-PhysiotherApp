@@ -178,7 +178,7 @@ console.log("enter to upload");
         else {
             console.log(req.body.timeInWeek);
             //insertVideoToDB(req.file.path)
-            insertVideoToDB(req.file.path, req.body.prog_id, req.body.exeTitle, req.body.onTime, req.body.timeInWeek,req.body.timeInDay, req.body.nSets, req.body.nRepeats, req.body.setDuration,req.body.setDurationUnits, req.body.break,req.body.breakUnits, req.body.description)
+            insertVideoToDB(false,req.file.path, req.body.prog_id, req.body.exeTitle, req.body.onTime, req.body.timeInWeek,req.body.timeInDay, req.body.nSets, req.body.nRepeats, req.body.setDuration,req.body.setDurationUnits, req.body.break,req.body.breakUnits, req.body.description)
                 .then(function (ans) {
                     res.json({error_code: 0, err_desc: null})
                 }).catch(function (err) {
@@ -194,7 +194,7 @@ console.log("enter to upload");
 
 app.post('/uploadNoVideo', function(req, res2) {
     console.log("enter to uploadNoVideo");
-    insertVideoToDB(req.body.path,req.body.prog_id,req.body.exeTitle,req.body.onTime,req.body.timeInWeek,req.body.timeInDay,req.body.nSets,req.body.nRepeats,req.body.setDuration,req.body.setDurationUnits,req.body.break,req.body.breakUnits,req.body.description).then(function(ans){
+    insertVideoToDB(req.body.bank,req.body.path,req.body.prog_id,req.body.exeTitle,req.body.onTime,req.body.timeInWeek,req.body.timeInDay,req.body.nSets,req.body.nRepeats,req.body.setDuration,req.body.setDurationUnits,req.body.break,req.body.breakUnits,req.body.description).then(function(ans){
         res2.json({error_code:0,err_desc:null})
     }).catch(function(err){
             res2.send(err)
@@ -381,6 +381,11 @@ app.post('/api/setPatientFeedback', function (req, res) {
     let succ_Level = req.body.succLvl;
     let painLVvl = req.body.painLVvl;
     let nSucc = req.body.nSucc;
+
+    if(typeof nSucc == 'undefined' || nSucc=="null" || nSucc== null)
+    {
+        nSucc = null;
+    }
     //get the physiotherapist
     let query = (
         squel.select()
@@ -1399,7 +1404,7 @@ app.delete('/api/deleteProg', function(req, res) {
         });
     }
 
-    function insertVideoToDB(new_Path,prog_id,exetitle,onTime,tInWeek,tInDay,nSets,nRepeats,dur,durUnits,breakBet,breakBetUnits,description){
+    function insertVideoToDB(isBank,new_Path,prog_id,exetitle,onTime,tInWeek,tInDay,nSets,nRepeats,dur,durUnits,breakBet,breakBetUnits,description){
         return new Promise(function(resolve,reject) {
             let tags = [];
             let currPath = null;
@@ -1435,15 +1440,21 @@ app.delete('/api/deleteProg', function(req, res) {
             );
             console.log(query);
             sql.Insert(query).then(function (res) {
-                //res.send(ans);
-                ////insert to bank
-                insertToBankDB(currPath,exetitle,tags).then(function(ansBank){
+                if(currPath == null || isBank == true)
+                {
                     resolve(res);
-                }).catch(function(errbank){
-                    console.log("Error in insetBank: " + ansBank)
-                    reject(ansBank)
-                })
 
+                }
+                else {
+                    //res.send(ans);
+                    ////insert to bank
+                    insertToBankDB(currPath, exetitle, tags).then(function (ansBank) {
+                        resolve(ansBank);
+                    }).catch(function (errbank) {
+                        console.log("Error in insetBank: " + errbank)
+                        reject(errbank)
+                    })
+                }
 
             }).catch(function (err) {
                 console.log("Error in inset: " + err)

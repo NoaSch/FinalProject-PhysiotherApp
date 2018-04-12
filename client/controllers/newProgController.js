@@ -229,6 +229,7 @@ console.log("chosen" + self.bankVideoChosen);
              {
                  _onTime = 1;
              }
+
              //self.cuurDate
              let exeReq={
                  method: 'POST',
@@ -247,11 +248,13 @@ console.log("chosen" + self.bankVideoChosen);
                      "break":self.break,
                      "breakUnits":self.breakUnits,
                      "description":self.desc,
-                     "path":self.onlyPath
+                     "path":self.onlyPath,
+                     "bank" : self.bankVideoChosen
+
 
                  } //pass file as data, should be user ng-model
              };
-             $http(exeReq).then(function (resp) { //upload function returns a promise
+             $http(exeReq).then(function(resp) { //upload function returns a promise
                  if(resp.data.error_code === 0){ //validate success\\
 
                      ////call insert to DB!!!
