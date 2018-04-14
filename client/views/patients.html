@@ -125,7 +125,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="panel panel-body" ng-show="patientsController.isEven(patient)">
+                    <div class="panel panel-body" ng-show="patientsController.isEven(patient)&&patientsController.clickedDet">
                         <label>תכניות שהקצתי למטופל</label>
 
                         <div ng-repeat="program in patientsController.programs">

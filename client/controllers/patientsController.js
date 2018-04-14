@@ -14,6 +14,8 @@ angular.module("myApp")
      self.correspondences = {};
      self.rep = {};
      self.corsOrder= {};
+     self.clickedDet = false;
+
 
      let req = {
          method: 'POST',
@@ -57,12 +59,15 @@ angular.module("myApp")
         };
      self.createProgram = function(patient){
          self.clickedmsg = false;
+         self.clickedDet = false;
          patientService.setID(patient);
          console.log("chosen patient: " +  patientService.getID());
          $location.path('/newProgram');
      };
      self.patientProg = function(username){
          self.clickedmsg = false;
+         self.clickedDet = true;
+
 
          self.chosenPatUsername = username;
          let req = {
@@ -192,9 +197,11 @@ angular.module("myApp")
 
      self.getMessages = function(patientUsername)
      {
+         self.clickedDet = false;
          console.log("getMessage " + patientUsername);
          self.moreMsgInCor = {};
          self.correspondences = {};
+         self.corsOrder= {};
          self.rep = {};
          self.clickedmsg = true;
          self.chosenPatMsgUsername = patientUsername;
