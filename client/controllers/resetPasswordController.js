@@ -29,7 +29,7 @@ angular.module("myApp")
                 else {
                     self.dataLoading = false;
                     alert("סיסמא זמנית נכונה או לא בתוקף");
-                    $location.path('/login');
+                    //$location.path('/login');
 
 
                 }
