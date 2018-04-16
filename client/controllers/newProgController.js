@@ -107,12 +107,28 @@ console.log("chosen" + self.bankVideoChosen);
              self.upload(self.file) //call upload function
          /*}*/
         if(self.file) {
-            self.upload(self.file)
+            if(self.file.type =="video/mp4" || self.file.type =="video/quicktime" ) {
+                console.log(self.file.type);
+                self.upload(self.file);
+                self.submitExeClicked = true;
+
+
+            }
+            else if(self.videoSource = "none")
+            {
+                console.log("no file");
+                self.addExeWithoutFile();
+                self.submitExeClicked = true;
+            }
+            else {
+                alert ("only videos, found: " + self.file.type);
+            }
         }
         else {
-            self.addExeWithoutFile()
+            self.addExeWithoutFile();
+            self.submitExeClicked = true;
+
         }
-         self.submitExeClicked = true;
          ///
          ///check if we want to do another func without video -
          ///

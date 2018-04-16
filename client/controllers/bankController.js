@@ -26,7 +26,13 @@ angular.module("myApp")
      self.submit = function(){ //function to call on form submit
         console.log("in submit");
         if(self.file) {
-            self.upload(self.file)
+            if(self.file.type =="video/mp4" || self.file.type =="video/quicktime" ) {
+                self.upload(self.file);
+            }
+            else {
+                alert ("only videos, found: " + self.file.type);
+
+            }
         }
 
          self.submitExeClicked = true;
