@@ -20,7 +20,8 @@ angular.module("myApp")
      self.bankVideoChosen = false;
      self.filterBy = "";
      self.selectedTags =[];
-
+     self.selectedTagsBnank =[];
+     self.tagsNames = [];
 
      self.nSetsRange = [];
      for (var i = 1; i <= 10; i++) {
@@ -60,7 +61,9 @@ angular.module("myApp")
      };
      $http(req).then(function (ans) {
          self.tags = ans.data;
-         console.log(self.tags);
+         self.tags.forEach(function (element) {
+             self.tagsNames.push(element.tag);
+         })
      }).catch(function (err){alert(err);})
 
      self. chooseVideo = function(title){
@@ -302,6 +305,42 @@ console.log("chosen" + self.bankVideoChosen);
              });
          })
      };
+
+
+     self.getBank = function()
+     {
+         let bankReq={
+             method: 'POST',
+             url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/getAllMediaByTags', //webAPI exposed to upload the file
+             data:{
+                 //"prog_id":programService.getProgID(), //add new service orsomething
+                 "tags":self.selectedTagsBnank
+             }
+         };
+         $http(bankReq).then(function(ans) {
+             console.log(ans);
+             if(ans.status == 200) { //validate success\\
+                 self.bankVideos = ans.data;
+                 self.bankVideos.forEach(function (element) {
+                     console.log(element);
+                     self.chosenVideo[element.title] = false;
+                     if (element.media_path != null) {
+                         self.videosURL[element.title] = "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + "/api/mediaGet/" + element.media_path;
+                         self.videosPath[element.title] = element.media_path;
+
+                         self.finishLoad = true;
+                     }});
+             }
+                 else {
+                         $window.alert('an error occured');
+                     }
+                 }).catch(function(err)
+         {
+             alert("error:" +err);
+         });
+     }
+     ;
+
     self.showTag = function (tag)
     {
       if(tag == 'undefined') {

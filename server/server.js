@@ -1343,7 +1343,8 @@ app.post('/api/getAllMediaByTags', function (req, res) {
 
         }).catch(function (reason) {
         console.log(reason);
-        res.send(reason);
+        res.json({error_code: 1, err_desc: reason});
+
     })
 });
 
