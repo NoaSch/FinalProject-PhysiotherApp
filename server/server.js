@@ -1327,7 +1327,25 @@ app.post('/api/mediaPost', function(req, res){
     })
 });
 
+app.post('/api/getAllMediaByTags', function (req, res) {
+    console.log("getByTas");
+    let tags = req.body.tags;
+    let query = (
+        squel.select()
+            .from("media_bank")
+            .where("title IN ?",  squel.select().field('title').from('media_tags').where("tag IN ?",tags).distinct())
+            .toString()
+    );
+    sql.Select(query)
+        .then(function (ans) {
+            // var pathes = ans[0].path.toString();
+            res.send(ans);
 
+        }).catch(function (reason) {
+        console.log(reason);
+        res.send(reason);
+    })
+});
 
 
 
