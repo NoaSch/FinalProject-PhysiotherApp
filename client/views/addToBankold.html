@@ -2,7 +2,7 @@
     <span>הוספת סרטון לבנק הסרטונים</span>
 </div>
 
-<div class="scrollable" ng-controller="bankController as bankController" ng-show="bankController.authService.isPhysio">
+<div class="scrollable" ng-controller="bankController as bankController">
     <div class="scrollable-content paddClass">
       <form role="form" name="bankController.upload_form">
          <fieldset>
@@ -14,17 +14,23 @@
                         placeholder="הכנס שם לסרטון">
              </div>
              <div  class="form-group has-success has-feedback" >
-             <label >תגיות</label>
-             <div><!-- ng-repeat="item in bankController.tags">-->
-                 <!--<div class="panel-heading" ui-set="{'myAccordion': item}">
+             <label >תגיות(עד 3 תגיות)</label>
+             <div class="panel panel-default" ng-repeat="item in bankController.tags">
+                 <div class="panel-heading" ui-set="{'myAccordion': item}">
                      <h4 class="panel-title">
                          {{item}}
                      </h4>
-                 </div>-->
-                 <select name="multipleSelect" id="multipleSelect" ng-options="option.tag for option in bankController.tags track by option.tag"
-                         ng-model="bankController.selectedTags" multiple>
-                 </select><br>
+                 </div>
              </div>
+             </div>
+             <div  class="form-group has-success has-feedback" >
+                 <label>הוספת תגית חדשה</label>
+                 <span><input type="text"
+                        ng-model="bankController.currTag"
+                        class="form-control"
+                        >
+                 <button class="btn btn-warning" ng-click="bankController.addTag()">הוסף תגית</button></span>
+
              </div>
              <div class="form-group has-success has-feedback">
                  <input
@@ -41,16 +47,6 @@
                  <button class="btn btn-primary btn-block" ng-disabled="bankController.upload_form.$invalid"  type="submit" ng-click="bankController.submit()">העלה את הסרטון</button>
 
              </div>
-             <div  class="form-group has-success has-feedback" >
-                 <label>הוספת תגית חדשה</label>
-                 <span><input type="text"
-                        ng-model="bankController.currTag"
-                        class="form-control"
-                        >
-                 <button class="btn btn-warning" ng-click="bankController.addTag()">הוסף תגית</button></span>
-
-             </div>
-
          </fieldset>
          <hr>
 

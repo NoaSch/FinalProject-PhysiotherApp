@@ -166,23 +166,23 @@ console.log("enter to upload");
             let newPath = changeToMP4Extention(req.file.path);
             convertTomp4(req.file.path, newPath)
             // insertVideoToDB(new_Path,prog_id,exetitle,tInWeek,nSets,nRepeats,dur,breakBet)
-                .then(insertVideoToDB(newPath, req.body.prog_id, req.body.exeTitle, req.body.onTime, req.body.timeInWeek,req.body.timeInDay, req.body.nSets, req.body.nRepeats, req.body.setDuration,req.body.setDurationUnits, req.body.break,req.body.breakUnits, req.body.description))
+                .then(insertVideoToDB(false,newPath, req.body.prog_id, req.body.exeTitle, req.body.onTime, req.body.timeInWeek,req.body.timeInDay, req.body.nSets, req.body.nRepeats, req.body.setDuration,req.body.setDurationUnits, req.body.break,req.body.breakUnits, req.body.description,req.body.tags,req.body.videoName))
                 .then(function (ans) {
                     //res.send("Done WithConvert!!!!")
                     res.json({error_code: 0, err_desc: null})
                 })
                 .catch(function (err) {
-                    res.send(err)
+                    res.json({error_code: 1, err_desc: err})
                 })
         }
         else {
             console.log(req.body.timeInWeek);
             //insertVideoToDB(req.file.path)
-            insertVideoToDB(false,req.file.path, req.body.prog_id, req.body.exeTitle, req.body.onTime, req.body.timeInWeek,req.body.timeInDay, req.body.nSets, req.body.nRepeats, req.body.setDuration,req.body.setDurationUnits, req.body.break,req.body.breakUnits, req.body.description)
+            insertVideoToDB(false,req.file.path, req.body.prog_id, req.body.exeTitle, req.body.onTime, req.body.timeInWeek,req.body.timeInDay, req.body.nSets, req.body.nRepeats, req.body.setDuration,req.body.setDurationUnits, req.body.break,req.body.breakUnits, req.body.description,req.body.tags,req.body.videoName)
                 .then(function (ans) {
                     res.json({error_code: 0, err_desc: null})
                 }).catch(function (err) {
-                reject(err)
+                res.json({error_code: 1, err_desc: err})
             });
         }
         //res.json({error_code:0,err_desc:null});
@@ -194,7 +194,7 @@ console.log("enter to upload");
 
 app.post('/uploadNoVideo', function(req, res2) {
     console.log("enter to uploadNoVideo");
-    insertVideoToDB(req.body.bank,req.body.path,req.body.prog_id,req.body.exeTitle,req.body.onTime,req.body.timeInWeek,req.body.timeInDay,req.body.nSets,req.body.nRepeats,req.body.setDuration,req.body.setDurationUnits,req.body.break,req.body.breakUnits,req.body.description).then(function(ans){
+    insertVideoToDB(req.body.bank,req.body.path,req.body.prog_id,req.body.exeTitle,req.body.onTime,req.body.timeInWeek,req.body.timeInDay,req.body.nSets,req.body.nRepeats,req.body.setDuration,req.body.setDurationUnits,req.body.break,req.body.breakUnits,req.body.description,null,null).then(function(ans){
         res2.json({error_code:0,err_desc:null})
     }).catch(function(err){
             res2.send(err)
@@ -222,7 +222,7 @@ app.post('/uploadToBank', function(req, res) {
                     res.json({error_code: 0, err_desc: null})
                 })
                 .catch(function (err) {
-                    res.send(err)
+                    res.json({error_code: 1, err_desc: err})
                 })
         }
         else {
@@ -231,7 +231,7 @@ app.post('/uploadToBank', function(req, res) {
                 .then(function (ans) {
                     res.json({error_code: 0, err_desc: null})
                 }).catch(function (err) {
-                reject(err)
+                res.json({error_code: 1, err_desc: err})
             });
         }
         //res.json({error_code:0,err_desc:null});
@@ -1380,6 +1380,19 @@ app.delete('/api/deleteProg', function(req, res) {
     });
 });
 
+app.get('/api/getTags', function (req, res) {
+
+    let query = "select * from tags order by tag ASC";
+    sql.Select(query)
+        .then(function (ans) {
+            //var curr_path = ans[0].path.toString();
+            res.send(ans);
+        }).catch(function (reason) {
+        console.log(reason);
+        res.json({error_code: 1, err_desc: reason});
+
+    })
+});
     function convertTomp4(input,output) {
         console.log("enter to covert");
         return new Promise(function(resolve,reject) {
@@ -1404,9 +1417,8 @@ app.delete('/api/deleteProg', function(req, res) {
         });
     }
 
-    function insertVideoToDB(isBank,new_Path,prog_id,exetitle,onTime,tInWeek,tInDay,nSets,nRepeats,dur,durUnits,breakBet,breakBetUnits,description){
+    function insertVideoToDB(isBank,new_Path,prog_id,exetitle,onTime,tInWeek,tInDay,nSets,nRepeats,dur,durUnits,breakBet,breakBetUnits,description,tags,videoName){
         return new Promise(function(resolve,reject) {
-            let tags = [];
             let currPath = null;
             let date = moment().format('YYYY-MM-DD hh:mm:ss');
             if(typeof new_Path != 'undefined' && new_Path!="null" && new_Path!= null) {
@@ -1448,7 +1460,7 @@ app.delete('/api/deleteProg', function(req, res) {
                 else {
                     //res.send(ans);
                     ////insert to bank
-                    insertToBankDB(currPath, exetitle, tags).then(function (ansBank) {
+                    insertToBankDB(currPath,videoName,tags).then(function (ansBank) {
                         resolve(ansBank);
                     }).catch(function (errbank) {
                         console.log("Error in insetBank: " + errbank)
@@ -1514,33 +1526,64 @@ function getFullname(username){
 
 
 
-function insertToBankDB(new_Path,title,tags){
-    return new Promise(function(resolve,reject) {
+function insertToBankDB(new_Path,title,tags) {
+    return new Promise(function (resolve, reject) {
         let currPath = null;
         //let date = moment().format('YYYY-MM-DD hh:mm:ss');
-        if(typeof new_Path != 'undefined') {
+        if (typeof new_Path != 'undefined') {
             currPath = new_Path.replace('uploads\\', '');
             console.log("before: " + new_Path);
             console.log("after: " + currPath);
         }
-        let query = (
-            squel.insert()
-                .into("[dbo].[media_bank]")
-                .set("[title]",title)
-                .set("[media_path]", currPath)
-                .set("tag0",tags[0])
-                .set("tag1",tags[1])
-                .set("tag2",tags[2])
+        let queryCheck = (
+            squel.select()
+                .from("media_bank")
+                .where("title = ?", title)
                 .toString()
         );
-        console.log(query);
-        sql.Insert(query).then(function (res) {
-            //res.send(ans);
-            resolve(res);
-        }).catch(function (err) {
-            console.log("Error in inset: " + err)
-            reject(err)})
-    })
+        //check if the
+        sql.Select(queryCheck).then(function (ans) {
+            if (ans.length == 0) {
+                let query = (
+                    squel.insert()
+                        .into("[dbo].[media_bank]")
+                        .set("[title]", title)
+                        .set("[media_path]", currPath)
+                        .toString()
+                );
+                console.log(query);
+                sql.Insert(query).then(function (res) {
+                    //res.send(ans);
+                    //add all tags
+                    tags.forEach(function (element) {
+                        let query = (
+                            squel.insert()
+                                .into("[dbo].[media_tags]")
+                                .set("[title]", title)
+                                .set("[tag]", element.tag)
+                                .toString()
+                        );
+                        console.log(query);
+                        sql.Insert(query).then(function (res) {
+                            console.log(element);
+                        }).catch(function (err) {
+                            console.log("Error in inset: " + err);
+                            reject(err);
+                        })
+                    })
+                }).then(function (res) {
+                    resolve(res);
+                })
+                    .catch(function (err) {
+                        console.log("Error in inset: " + err)
+                        reject(err)
+                    })
+            }
+            else {
+                reject("title exist");
+            }
+        })
+    });
 };
 
 

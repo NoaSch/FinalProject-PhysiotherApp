@@ -19,6 +19,7 @@ angular.module("myApp")
      self.onlyPath = null;
      self.bankVideoChosen = false;
      self.filterBy = "";
+     self.selectedTags =[];
 
 
      self.nSetsRange = [];
@@ -30,7 +31,7 @@ angular.module("myApp")
      self.videosURL = {};
      self.videosPath = {}
      //load bank details
-     let reqBank = {
+     /*let reqBank = {
          method: 'POST',
          url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/getBank',
          headers: {
@@ -52,7 +53,15 @@ angular.module("myApp")
 
      }).catch(function (err) {
          console.log(err)
-     });
+     });*/
+     let req = {
+         method: 'GET',
+         url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/getTags'
+     };
+     $http(req).then(function (ans) {
+         self.tags = ans.data;
+         console.log(self.tags);
+     }).catch(function (err){alert(err);})
 
      self. chooseVideo = function(title){
          self.chosenVideo[title] = true;
@@ -108,11 +117,16 @@ console.log("chosen" + self.bankVideoChosen);
          /*}*/
         if(self.file) {
             if(self.file.type =="video/mp4" || self.file.type =="video/quicktime" ) {
-                console.log(self.file.type);
-                self.upload(self.file);
-                self.submitExeClicked = true;
+                if(self.videoSource == "new"&& self.selectedTags.length == 0)
+                {
+                    alert("בחר תגית אחת לפחות");
+                }
+                else {
+                    console.log(self.file.type);
+                    self.upload(self.file);
+                    self.submitExeClicked = true;
 
-
+                }
             }
             else if(self.videoSource = "none")
             {
@@ -174,7 +188,9 @@ console.log("chosen" + self.bankVideoChosen);
                  "setDurationUnits":self.setDurationUnits,
                  "break":self.break,
                  "breakUnits":self.breakUnits,
-                "description":self.desc
+                "description":self.desc,
+                 "tags": self.selectedTags,
+                 "videoName":self.videoName
 
              } //pass file as data, should be user ng-model
          }).then(function (resp) { //upload function returns a promise
@@ -188,10 +204,11 @@ console.log("chosen" + self.bankVideoChosen);
                  self.progress = "";
                  self.finishLoad = true;
                  self.onlyPath = null;
+                 self.selectedTags = [];
 
 
              } else {
-                 $window.alert('an error occured');
+                 $window.alert('an error occured: '+ resp.data.err_desc);
              }
          }, function (resp) { //catch error
              console.log('Error status: ' + resp.status);

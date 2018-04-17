@@ -13,24 +13,14 @@ angular.module("myApp")
      self.authService = AuthenticationService;
      self.defaultNum = 1;
      self.desc ="";
+     self.tags =[];
      self.currTag ="";
-
-     let req = {
-         method: 'GET',
-         url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/getTags'
-     };
-     $http(req).then(function (ans) {
-         self.tags = ans.data;
-         console.log(self.tags);
-     }).catch(function (err){alert(err);})
-
-
-     /*self.addTag = function()
+     self.addTag = function()
      {
          self.tags.push(self.currTag);
          self.currTag ="";
          console.log(self.tags);
-     }*/
+     }
      self.submit = function(){ //function to call on form submit
         console.log("in submit");
         if(self.file) {
@@ -57,7 +47,7 @@ angular.module("myApp")
              data:{
                  file:file,
                  "title":self.title,
-                 "tags":self.selectedTags
+                 "tags":self.tags
              } //pass file as data, should be user ng-model
          }).then(function (resp) { //upload function returns a promise
              if(resp.data.error_code === 0){ //validate success\\
@@ -66,11 +56,11 @@ angular.module("myApp")
                  self.file = null;
                  self.progress = "";
                  self.finishLoad = true;
+                 self.tags =[];
                  self.currTag ="";
-                 self.selectedTags =[];
 
              } else {
-                 $window.alert('an error occured '+resp.data.err_desc);
+                 $window.alert('an error occured');
              }
          }, function (resp) { //catch error
              console.log('Error status: ' + resp.status);
