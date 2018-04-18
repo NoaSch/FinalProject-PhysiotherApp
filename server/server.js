@@ -494,7 +494,7 @@ app.get('/api/video/:id', function(req, res){
                 let curr_path = ans[0].path.toString();
                 if(curr_path.endsWith('.mp4')) {
                     //path2 = curr_path;
-                    showVideo(curr_path,req,res).then(function(ans){console.log("showVideo" + curr_path)})
+                    showFile(curr_path,req,res).then(function(ans){console.log("showVideo" + curr_path)})
                 }
             }).catch(function (reason) {
             console.log(reason);
@@ -685,86 +685,153 @@ app.post('/api/authenticate', function (req, res) {
 
 
 app.post('/api/register', function (req, res) {
+    let _isPhysio = 0;
     console.log("register");
     let _username = req.body.username;
     let _password = req.body.password;
     let _firstName = req.body.firstName;
     let _lastName = req.body.lastName;
     let _physio_username = req.body.physiotherapist_username;
-    let _phone= parseInt(req.body.phone);
+    let _phone = parseInt(req.body.phone);
     let _mail = req.body.mail;
-    let _isPhysio = 0;
-    if(req.body.isPhysio === true)
-    {
+    let _file = req.file;
+    let _age = req.body.age;
+    let _diagnosis = req.body.diagnosis;
+    if (req.body.isPhysio === true) {
         _isPhysio = 1;
     }
-    let query = (
-        squel.select()
-            .from("users")
-            .where("username = ?", _username)
-            .toString()
-    );
-    sql.Select(query)
-        .then(function (ans) {
-            if (ans.length === 0) {//the username not exist
-                let queryInsert = (//insert to the users table
-                    squel.insert()
-                        .into("[dbo].[users]")
-                        .set("[username]",_username)
-                        .set("[password]",_password)
-                        .set("[isPhysio]",_isPhysio)
-                        .toString()
-                );
-                console.log(query);
-                sql.Insert(queryInsert).then(function(ansUsers){//insert to pyisio or patient
-                if(_isPhysio === 1)
-                {
+
+    if (_isPhysio === 1) {
+        let query = (
+            squel.select()
+                .from("users")
+                .where("username = ?", _username)
+                .toString()
+        );
+        sql.Select(query)
+            .then(function (ans) {
+                if (ans.length === 0) {//the username not exist
+                    let queryInsert = (//insert to the users table
+                        squel.insert()
+                            .into("[dbo].[users]")
+                            .set("[username]", _username)
+                            .set("[password]", _password)
+                            .set("[isPhysio]", _isPhysio)
+                            .toString()
+                    );
+                    sql.Insert(queryInsert).then(function (ansUsers) {
                     let queryInsertPhysio = (//insert to the users table
                         squel.insert()
                             .into("[dbo].[physiotherapists]")
-                            .set("[username]",_username)
-                            .set("[first_name]",_firstName)
-                            .set("[last_name]",_lastName)
-                            .set("[mail]",_mail)
-                            .set("[phone]",_phone)
+                            .set("[username]", _username)
+                            .set("[first_name]", _firstName)
+                            .set("[last_name]", _lastName)
+                            .set("[mail]", _mail)
+                            .set("[phone]", _phone)
                             .toString()
                     );
                     console.log(queryInsertPhysio);
                     sql.Insert(queryInsertPhysio).then(function (ansIn) {
                         res.send(ansIn);
+                    }).catch(function(err){
+                        res.json({err: err});
                     })
+                }).catch(function(err){
+                        res.json({err: err});
+                })
+    }
+                else {
+                    res.json({err: "username exists"});
+
                 }
-                    else
-                    {
-                        let queryInsertPatient = (//insert to the users table
+            }).catch(function (err) {
+            res.json({err: err});
+
+        })
+    }
+    else {
+
+        ///the username not exist
+
+        upload(req, res, function (err) {
+
+            if (err) {
+                res.json({err: err});
+                return;
+            }
+            _username = req.body.username;
+            _password = req.body.password;
+            _firstName = req.body.firstName;
+            _lastName = req.body.lastName;
+            _physio_username = req.body.physiotherapist_username;
+            _phone = parseInt(req.body.phone);
+            _mail = req.body.mail;
+            _file = req.file;
+            _age = req.body.age;
+            _diagnosis = req.body.diagnosis;
+            let _newFilePath = null;
+            if(_file != null)
+            {
+                _newFilePath = _file.path.replace('uploads\\', '');
+
+            }
+            let query = (
+                squel.select()
+                    .from("users")
+                    .where("username = ?", req.body.username)
+                    .toString()
+            );
+            sql.Select(query)
+                .then(function (ans) {
+                    if (ans.length === 0) {
+                        let queryInsert = (//insert to the users table
                             squel.insert()
-                                .into("[dbo].[patients]")
-                                .set("[username]",_username)
-                                .set("[first_name]",_firstName)
-                                .set("[last_name]",_lastName)
-                                .set("[physiotherapist_username]",_physio_username)
-                                //.set("[mail]",_mail)
-                                //.set("[phone]",_phone)
+                                .into("[dbo].[users]")
+                                .set("[username]", _username)
+                                .set("[password]", _password)
+                                .set("[isPhysio]", _isPhysio)
                                 .toString()
                         );
-                        console.log(queryInsertPatient);
-                        sql.Insert(queryInsertPatient).then(function (ansIn) {
-                            res.send(ansIn);
+                        console.log(queryInsert);
+                        sql.Insert(queryInsert).then(function (ansUsers) {
+                            queryInsertPatient = (//insert to the users table
+                                squel.insert()
+                                    .into("[dbo].[patients]")
+                                    .set("[username]", _username)
+                                    .set("[first_name]", _firstName)
+                                    .set("[last_name]", _lastName)
+                                    .set("[physiotherapist_username]", _physio_username)
+                                    .set("[mail]", _mail)
+                                    .set("[phone]", _phone)
+                                    .set("[age]", _age)
+                                    .set("[diagnosis]", _diagnosis)
+                                    .set("[pic_url]", _newFilePath)
+                                    //.set("[mail]",_mail)
+                                    //.set("[phone]",_phone)
+                                    .toString()
+                            );
+                            console.log(queryInsertPatient);
+                            sql.Insert(queryInsertPatient).then(function (ansIn) {
+                                res.send(ansIn);
+                            }).catch(function (err) {
+                                res.json({err: err});
+                            })
+                        }).catch(function (err) {
+                            res.json({err: err});
                         })
-                    }
-                })
-            }
-            else
-            {
-                res.json({err:"username exists"});
-            }
-            // res.json({success:"login"});
-          //  res.send(ans);
 
-        }).catch(function (reason) {
-        console.log(reason);
-        res.send(reason);
-    })
+                    }
+                    else {
+                        res.json({err: "username exists"});
+
+                    }
+                }).catch(function (err) {
+                res.json({err: err});
+
+            })
+
+        })
+    }
 });
 
 app.post('/api/getProgramExe', function (req, res) {
@@ -1319,8 +1386,8 @@ app.post('/api/mediaPost', function(req, res){
     console.log("enter to video");
     //let curr_path = "uploads/"+req.body.path;
     let curr_path = req.body.path;
-    showVideo(curr_path,req,res).then(function(ans){
-        console.log("showVideo" + curr_path)})
+    showFile(curr_path,req,res).then(function(ans){
+        console.log("showFileo" + curr_path)})
         .catch(function (reason) {
         console.log(reason);
         res.send(reason);
@@ -1333,8 +1400,7 @@ app.post('/api/getAllMediaByTags', function (req, res) {
     let query = (
         squel.select()
             .from("media_bank")
-            .where("title IN ?",  squel.select().field('title').from('media_tags').where("tag IN ?",tags).distinct())
-            .toString()
+            .where("title IN ?",  squel.select().field('title').from('media_tags').where("tag IN ?",tags).distinct()).order("title", true).toString()
     );
     sql.Select(query)
         .then(function (ans) {
@@ -1353,16 +1419,21 @@ app.post('/api/getAllMediaByTags', function (req, res) {
 ///maybe change to post
 app.get('/api/mediaGet/:path', function(req, res){
     console.log("enter to mediaGet");
-    ///switch the /
-    //let currPath = req.params.path;
-    //let newPath = currPath.replace('\\', '/');
-    //console.log("before: " + currPath);
-    //console.log("after: " + newPath);
     let curr_path ="uploads/"+req.params.path;
-    //let curr_path = req.params.path;
-    //let curr_path = req.body.path;
-    showVideo(curr_path,req,res).then(function(ans){
+
+    showFile(curr_path,req,res).then(function(ans){
         console.log("showVideo" + curr_path)})
+        .catch(function (reason) {
+            console.log(reason);
+            res.send(reason);
+        })
+});
+
+app.get('/api/getPic/:path', function(req, res){
+    let curr_path ="uploads/"+req.params.path;
+
+    showFile(curr_path,req,res).then(function(ans){
+        console.log("pic" + curr_path)})
         .catch(function (reason) {
             console.log(reason);
             res.send(reason);
@@ -1633,7 +1704,7 @@ function insertVideoToDBbackup(new_Path){
         return new_path;
     }
 
-    function showVideo (path2,req,res){
+    function showFile(path2,req,res){
         return new Promise(function(resolve,reject) {
             console.log("enter to show video");
             //const path2 = 'uploads/test22.mp4'

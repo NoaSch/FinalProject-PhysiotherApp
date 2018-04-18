@@ -3,8 +3,8 @@
  */
 
 angular.module('myApp')
-    .controller('RegisterController',['$route','$location', 'AuthenticationService','FlashService','$http','ipconfigService','PhysiotherapistModel',
-            function ($route,$location, AuthenticationService,FlashService,$http,ipconfigService,PhysiotherapistModel) {
+    .controller('RegisterController',['$window','$route','$location', 'AuthenticationService','Upload','FlashService','$http','ipconfigService','PhysiotherapistModel',
+            function ($window,$route,$location, AuthenticationService,Upload,FlashService,$http,ipconfigService,PhysiotherapistModel) {
                 //Get the physiotherapiss
                 var self = this;
                 self.therapists = [];
@@ -26,25 +26,79 @@ angular.module('myApp')
 
 
                  self.register = function() {
+                     if(self.physioChecked)
+                     {
+                         self.dataLoading = true;
+                         var req = {
+                             method: 'POST',
+                             url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/register',
+                             headers: {
+                                 'Content-Type': "application/json"
+                             },
+                             data: {
+                                 "username": self.username,
+                                 "password":self.password ,
+                                 "firstName": self.firstName,
+                                 "lastName": self.lastName,
+                                 "mail": self.mail,
+                                 "phone": self.phone,
+                                 "physiotherapist_username": self.chosenTherapist,
+                                 "isPhysio": self.physioChecked
+                             }
+                         }
+                         $http(req).then(function (response) {
+                             //console.error($scope.selectedVslues);
+                             var res = response.data;
+                             if (response.data.hasOwnProperty('err'))
+                             {
+                                 self.isError = true;
+                                 self.error = response.data.err;
+                                 self.dataLoading = false;
+
+                             }
+                             else {
+                                 self.dataLoading = false;
+                                 alert("הרישום הצליח");
+                                 self.username ="";
+                                 self.password="";
+                                 self.firstName="";
+                                 self.lastName="";
+                                 self.mail="";
+                                 self.phone="";
+                                 self.chosenTherapist=""
+                                 $route.reload();
+                                 //$location.path('/');
+                             }}, function (errResponse) {
+                             console.error('Error while register');
+                         });
+                     }
+                     else {
+                         if (self.file) {
+                             if (self.file.type == "image/jpeg" || self.file.type == "image/png" ) {
+                                 self.upload(self.file);
+                             }
+                             else {
+                                 alert("only PICS, found: " + self.file.type);
+
+                             }
+                         }
+                     }
                     //alert("inReg")
-                    self.dataLoading = true;
-                    var req = {
-                        method: 'POST',
-                        url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/register',
-                        headers: {
-                            'Content-Type': "application/json"
-                        },
-                        /*
-                         "username": "user3",
-                         "password": "user3",
-                         "firstName": "user3Fname",
-                         "lastName": "user3Lname",
-                         "phone": "0509999999",
-                         "mail": "mail@gmail.com",
-                         "physiotherapist_username": "p1",
-                         "isPhysio":false
-                         */
-                        data: {
+
+
+                };
+                self.isAdmin = function()
+                {
+                    return self.authService.isAdmin;
+                };
+
+                self.upload = function (file) {
+                    self.finishLoad = false;
+                    //self.cuurDate
+                    Upload.upload({
+                        url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/register', //webAPI exposed to upload the file
+                        data:{
+                            file:file,
                             "username": self.username,
                             "password":self.password ,
                             "firstName": self.firstName,
@@ -52,22 +106,23 @@ angular.module('myApp')
                             "mail": self.mail,
                             "phone": self.phone,
                             "physiotherapist_username": self.chosenTherapist,
-                            "isPhysio": self.physioChecked
-                        }
-                    }
-                    $http(req).then(function (response) {
-                        //console.error($scope.selectedVslues);
-                        var res = response.data;
+                            "isPhysio": self.physioChecked,
+                            "age": self.age,
+                            "diagnosis":self.diagnosis
+                        } //pass file as data, should be user ng-model
+                    }).then(function (response) {
                         if (response.data.hasOwnProperty('err'))
                         {
                             self.isError = true;
                             self.error = response.data.err;
                             self.dataLoading = false;
 
-                        }
-                        else {
-                        self.dataLoading = false;
-                        alert("הרישום הצליח");
+                        }//upload function returns a promise
+                        else{ //validate success\\
+                            self.file = null;
+                            self.progress = "";
+                            self.finishLoad = true;
+                            alert("הרישום הצליח");
                             self.username ="";
                             self.password="";
                             self.firstName="";
@@ -76,16 +131,24 @@ angular.module('myApp')
                             self.phone="";
                             self.chosenTherapist=""
                             $route.reload();
-                        //$location.path('/');
-                    }}, function (errResponse) {
-                        console.error('Error while register');
+
+                        }
+                    }, function (resp) { //catch error
+                        console.log('Error status: ' + resp.status);
+                        $window.alert('Error status: ' + resp.status);
+                    }, function (evt) {
+                        console.log(evt);
+                        var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                        console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+                        console.log(self.finishLoad);
+                        self.progress = 'progress: ' + progressPercentage + '% '; // capture upload progress
+                        /*if(progressPercentage == 100)
+                         {
+                         self.finishLoad = true;
+                         }*/
                     });
 
                 };
-                self.isAdmin = function()
-                {
-                    return self.authService.isAdmin;
-                }
 
             }]);
 

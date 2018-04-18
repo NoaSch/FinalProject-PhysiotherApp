@@ -169,10 +169,10 @@
 <button ng-click="newProgController.getBank()">חפש</button>
 
                         <div align="right">
-                        <input type="text" ng-model="newProgController.filterBy">
+                        <!--<input type="text" ng-model="newProgController.filterBy">
                             <label>:סינון</label>
 
-                        </div>
+                        </div>-->
                         <div class="panel-group"
                              ui-shared-state="myAccordion"
                              ui-default='1'>
@@ -218,7 +218,7 @@
                             </div>
                         </div>
 
-
+                    </div>
                 <button class="btn btn-primary btn-block"  ng-hide="newProgController.clickedCreate && newProgController.submitExeClicked && newProgController.finishLoad" ng-disabled="newProgController.upload_form.$invalid"  type="submit" ng-click="newProgController.submit()">הוסף את התרגיל</button>
 
             </fieldset>

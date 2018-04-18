@@ -57,6 +57,24 @@
 
                         </div>
 
+
+                    <div class="panel panel-body" ng-show="patientsController.isEven(patient)&&patientsController.clickedPatDet">
+                        <label>פרטי מטופל</label>
+
+                            <div class="panel-body">
+                                <label>גיל:</label>
+                                {{patient.age}}
+                                <br>
+                                <img ng-src="{{patientsController.pics[patient.username]}}" width="30%" height="30%"/>
+                                <br>
+                                <label>אבחנה:</label>
+                                {{patient.diagnosis}}
+
+                            </div>
+
+                    </div>
+
+
                     <div class="panel-body" ng-show = "patientsController.isChosenMsgPat(patient.username)" > <!--ng-show =exerciseController.chosenExe[item.exe_id]-->
                         <!--<button class="ProgramDetBtn" ng-click="programsController.getExercises(item.prog_id)">פרטי תכנית</button>-->
                         <label>הודעות</label>

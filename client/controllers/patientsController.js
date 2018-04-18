@@ -6,7 +6,6 @@ angular.module("myApp")
  .controller('patientsController', ['$route','$http', '$location', '$window','$scope', '$rootScope','programService','exerciseService','patientService','ipconfigService','AuthenticationService', function ($route,$http,$location, $window,$scope,$rootScope,programService,exerciseService,patientService,ipconfigService,AuthenticationService   ) {
      let self = this;
      self.authService = AuthenticationService
-     self.chosenPatient = "";
      self.videosURL = {};
      self.chosenExe = {};
      self.chosenProgram= "";
@@ -15,7 +14,8 @@ angular.module("myApp")
      self.rep = {};
      self.corsOrder= {};
      self.clickedDet = false;
-
+     self.clickedPatDet = false;
+     self.pics = {};
 
      let req = {
          method: 'POST',
@@ -30,12 +30,12 @@ angular.module("myApp")
      };
      $http(req).then(function (ans) {
          self.patients = ans.data;
-        // self.programs = [];
-        /* for (i = 0; i < progs.length; i++) {
-             self.programs.push(progs.prog_id);
-         }*/
-         console.log(self.patients);
-
+         self.patients.forEach(function (element) {
+             if (element.pic_url != null) {
+                 self.pics[element.username] = "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + "/api/getPic/" + element.pic_url;
+             }
+             console.log(self.patients);
+         })
          //console.log(self.videsPathes);
      }).catch(function (err) {
          console.log(err)
@@ -52,12 +52,14 @@ angular.module("myApp")
          console.log("reload");
          $route.reload();
      };
-        self.clickUser = function(patient){
+        self.clickUser = function(patientUsername){
             self.clickedmsg = false;
-            self.chosenPatient = patient;
+            self.clickedPatDet = true;
+            self.chosenPatUsername = patientUsername;
             console.log("chosen patient: " +  self.chosenPatient );
         };
      self.createProgram = function(patient){
+         self.clickedPatDet = false;
          self.clickedmsg = false;
          self.clickedDet = false;
          patientService.setID(patient);
@@ -67,6 +69,7 @@ angular.module("myApp")
      self.patientProg = function(username){
          self.clickedmsg = false;
          self.clickedDet = true;
+         self.clickedPatDet = false;
 
 
          self.chosenPatUsername = username;
@@ -91,6 +94,8 @@ angular.module("myApp")
      };
      self.deleteProg = function(progID)
      {
+         self.clickedPatDet = false;
+
          self.clickedmsg = false;
          let req = {
              method: 'DELETE',
