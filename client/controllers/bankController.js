@@ -3,7 +3,7 @@
  */
 
 angular.module("myApp")
- .controller('bankController', ['AuthenticationService','Upload','$http', '$location', '$window','$scope', '$rootScope','programService','exerciseService','patientService','ipconfigService', function (AuthenticationService,Upload,$http,$location, $window,$scope,$rootScope,programService,exerciseService,patientService,ipconfigService   ) {
+ .controller('bankController', ['$route','AuthenticationService','Upload','$http', '$location', '$window','$scope', '$rootScope','programService','exerciseService','patientService','ipconfigService', function ($route,AuthenticationService,Upload,$http,$location, $window,$scope,$rootScope,programService,exerciseService,patientService,ipconfigService   ) {
      let self = this;
      self.clickedAdd = false;
      self.videoClick = false;
@@ -88,7 +88,37 @@ angular.module("myApp")
          });
 
      };
+     self.refresh = function() {
+         $route.reload();
+     };
 
+     self.addNewTag = function()
+     {
+         let req = {
+             method: 'POST',
+             url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/addTagToBank',
+         headers: {
+         'Content-Type': "application/json"
+     },
+         data: {
+             "tag": self.currTag
+         }
+     };
+     $http(req).then(function (ans) {
+         if(ans.data.error_code === 1){ //validate success\\
+             $window.alert('התגית כבר קיימת');
+             }
+             else if(ans.data.error_code === 0) {
+             $window.alert('התגית נוספה בהצלחה');
+             self.refresh();
+         }
+         else {
+             alert("error");
+         }
+     }).catch(function(err){
+         alert("error: " + err);
+     })
+     };
 
 
 

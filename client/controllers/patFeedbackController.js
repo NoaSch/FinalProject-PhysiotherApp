@@ -55,10 +55,9 @@ angular.module("myApp")
             $http(req).then(function (ans) {
                 console.log(ans);
                 alert("המשוב התקבל");
-                //console.log(self.videsPathes);
-                $location.path('exercises')
+                $location.path('exercises');
             }).catch(function (err) {
-                console.log("error: " + err)
+                console.log("error: " + err.message);
             });
 
         };

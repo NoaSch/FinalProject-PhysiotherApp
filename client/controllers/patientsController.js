@@ -49,7 +49,6 @@ angular.module("myApp")
              return false;
      }
      self.refresh = function() {
-         console.log("reload");
          $route.reload();
      };
         self.clickUser = function(patientUsername){
@@ -85,43 +84,44 @@ angular.module("myApp")
          };
          $http(req).then(function (ans) {
              self.programs = ans.data;
-             //console.log(self.programs);
-
-             //console.log(self.videsPathes);
          }).catch(function (err) {
-             console.log(err)
+             alert(err.message);
          });
      };
      self.deleteProg = function(progID)
      {
+
          self.clickedPatDet = false;
 
          self.clickedmsg = false;
-         let req = {
-             method: 'DELETE',
-             url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/deleteProg',
-             headers: {
-                 'Content-Type': "application/json"
-             },
-             data: {
-                 "prog_id": progID
-             }
-         };
-         $http(req).then(function (ans) {
-            // console.log(ans);
-            if(ans.status == "200")
-            {
-                alert("התכנית נמחקה");
-                $route.reload();
-            }
-             //console.log(self.videsPathes);
-         }).catch(function (err) {
-             console.log(err)
-         });
+         deleteUser = $window.confirm('האם למחוק את התכנית?');
 
+         if(deleteUser) {
+             let req = {
+                 method: 'DELETE',
+                 url: "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + '/api/deleteProg',
+                 headers: {
+                     'Content-Type': "application/json"
+                 },
+                 data: {
+                     "prog_id": progID
+                 }
+             };
+             $http(req).then(function (ans) {
+                 if (ans.data.error_code === 0)//validate success\\
+                 {
+                     alert("התכנית נמחקה");
+                     $route.reload();
+                 }
+                 else {
+                     alert("error");
+                 }
+             }).catch(function (err) {
+                 alert(err.message)
+             });
+         }
      };
      self.isBelongToProgram = function(exe,prog_id) {
-         //console.log("isBelong");
          if(exe.prog_id ==prog_id)
             {
                 return true;
@@ -130,9 +130,28 @@ angular.module("myApp")
                 return false;
             }
      };
+     self.notHaveMessages = function(username)
+     {
+         if(self.messages == null ||  self.messages.length ==0) {
+             return true;
+         }
+         else
+         {
+             return false;
+         }
+     };
+     self.notHaveProgs = function(username)
+     {
+         if(  self.programs == null || self.programs.length ==0) {
+             return true;
+         }
+         else
+         {
+             return false;
+         }
+     }
      self.clickExeDet = function(exe_id){
          self.clickedmsg = false;
-         //console.log("exeDet");
          self.chosenExe[exe_id] = true;
          self.exercises.forEach(function (element) {
              if(element.exe_id != exe_id)
@@ -140,9 +159,6 @@ angular.module("myApp")
                  self.chosenExe[element.exe_id] = false;
              }
          });
-
-         //console.log("exercise chosen: " + exe_id);
-         //console.log("exercise chosen: " +self.chosenExe[exe_id]);
      };
      self.isChosenProg = function(prog_id)
      {
@@ -158,7 +174,6 @@ angular.module("myApp")
      {
          if((patientUsename == self.chosenPatMsgUsername) && (self.clickedmsg == true))
          {
-             console.log("show for " + patientUsename);
              return true;
          }
          else {
@@ -169,7 +184,6 @@ angular.module("myApp")
      {
          self.clickedmsg = false;
          self.chosenProgram = prog_id;
-         console.log("progDet");
          let req = {
              method: 'POST',
              url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/getProgramExe',
@@ -182,20 +196,16 @@ angular.module("myApp")
          };
          $http(req).then(function (ans) {
              self.exercises = ans.data;
-             console.log("number of exe::::" + self.exercises.length)
-             console.log(self.exercises);
              self.exercises.forEach(function (element) {
                  self.chosenExe[element.exe_id] = false;
                  if(element.media_path != null) {
                      //self.videosURL[element.exe_id] = "http://10.100.102.11:3000/api/mediaGet/"+element.media_path;
                      self.videosURL[element.exe_id] = "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + "/api/mediaGet/" + element.media_path;
-                     //console.log("viseoPath!!!!!!!!!!!!!!!!!!!");
                  }
-                 console.log(self.videosURL[element.exe_id]);
              });
 
          }).catch(function (err) {
-             console.log(err)
+             alert(err.message);
          });
      }
 
@@ -203,7 +213,6 @@ angular.module("myApp")
      self.getMessages = function(patientUsername)
      {
          self.clickedDet = false;
-         console.log("getMessage " + patientUsername);
          self.moreMsgInCor = {};
          self.correspondences = {};
          self.corsOrder= {};
@@ -230,14 +239,12 @@ angular.module("myApp")
              {
                  if (element.type == "feedback")
                  {
-                     console.log("feedback");
                      let fixMsg = "";
                      let strArr = element.msg_content.split(",");
                      for (i = 0; i < strArr.length; i++) {
                          fixMsg += strArr[i] + "\n";
                      }
                      element.msg_content = fixMsg;
-                     console.log(element.msg_content);
                  }
                  let cor_id= element.correspondence_id;
                  if(cor_id in self.corsOrder)
@@ -246,47 +253,14 @@ angular.module("myApp")
                  }
                  else {
                      let next = Object.keys(self.corsOrder).length
-                     console.log("length: "+ next);
                      self.corsOrder[cor_id] = next;
-                     console.log("corid:" +cor_id +" , order: "+next);
                      self.correspondences[self.corsOrder[cor_id]] = [];
-                     console.log("length: "+ next);
                      self.correspondences[self.corsOrder[cor_id]].push(element);
-                     //console.log(element);
                      self.moreMsgInCor[cor_id]= false;
                      self.rep[cor_id]= false;
                  }
 
              });
-             /*self.messages.forEach(function(element)
-             {
-                 if (element.type == "feedback")
-                 {
-                     console.log("feedback");
-                     let fixMsg = "";
-                     let strArr = element.msg_content.split(",");
-                     for (i = 0; i < strArr.length; i++) {
-                         fixMsg += strArr[i] + "\n";
-                     }
-                     element.msg_content = fixMsg;
-                     console.log(element.msg_content);
-                 }
-                 let cor_id= element.correspondence_id;
-                 if(cor_id in self.correspondences)
-                 {
-                     self.correspondences[cor_id].push(element);
-                 }
-                 else {
-                     self.correspondences[cor_id] = [];
-                     self.correspondences[cor_id].push(element);
-                     self.moreMsgInCor[cor_id]= false;
-                     self.rep[cor_id]= false;
-                 }
-
-             });*/
-             //console.log("cors");
-             //console.log(self.correspondences);
-             //console.log(Object.keys(self.correspondences).length)
          }).catch(function (err) {
              console.log(err)
          });

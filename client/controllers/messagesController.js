@@ -102,30 +102,19 @@ angular.module("myApp")
      };
      self.more = function(cor_id)
      {
-         console.log("cor_id: " + cor_id);
-         console.log(self.moreMsgInCor);
-
          self.moreMsgInCor[cor_id] = true;
-         console.log(self.moreMsgInCor);
 
          for (index in self.corsOrder)//check
          {
-             console.log("index: "+index);
              if(index != cor_id)
              {
-                 console.log(""+index +" ne " + cor_id );
                  self.moreMsgInCor[index]  = false;
              }
          };
-         console.log("more");
-         console.log(self.moreMsgInCor);
 
      };
      self.reply = function(cor)
      {
-         console.log("cor: "+cor);
-         //create new message
-         //check who is the other person and he will be the recipient
         self.rep[cor.correspondence_id] = true;
      };
      self.sendNewMsg = function()
@@ -186,7 +175,7 @@ angular.module("myApp")
          }).catch(function(err)
          {
              console.log(err);
-             alert("שגיאה");
+             alert("error:" + err.message );
          })
      }
 

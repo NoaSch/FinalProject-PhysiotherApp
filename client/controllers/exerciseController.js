@@ -3,8 +3,9 @@ chosenExe = undefined;
  * Created by NOA-PC on 12/21/2017.
  */
 angular.module("myApp")
-    .controller('exerciseController', ['$http', '$location', '$window','$rootScope','$scope','programService','exerciseService','ipconfigService','patientFeedbackService', function ($http,$location, $window,$rootScope,$scope,programService,exerciseService,ipconfigService,patientFeedbackService ) {
+    .controller('exerciseController', ['AuthenticationService','$http', '$location', '$window','$rootScope','$scope','programService','exerciseService','ipconfigService','patientFeedbackService', function (AuthenticationService,$http,$location, $window,$rootScope,$scope,programService,exerciseService,ipconfigService,patientFeedbackService ) {
         let self = this;
+        self.authService = AuthenticationService;
        self.chosenExe = {};
        self.videosURL = {};
         self.feedbackService = patientFeedbackService;
@@ -21,21 +22,18 @@ angular.module("myApp")
         };
         $http(req).then(function (ans) {
             self.exercises = ans.data;
-            console.log("number of exe::::" + self.exercises.length)
-            console.log(self.exercises);
             self.exercises.forEach(function (element) {
                 self.chosenExe[element.exe_id] = false;
                 if(element.media_path != null) {
                     //self.videosURL[element.exe_id] = "http://10.100.102.11:3000/api/mediaGet/"+element.media_path;
                     self.videosURL[element.exe_id] = "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + "/api/mediaGet/" + element.media_path;
-                    //console.log("viseoPath!!!!!!!!!!!!!!!!!!!");
                 }
-                console.log(self.videosURL[element.exe_id]);
             });
 
         }).catch(function (err) {
-            console.log(err)
-        });
+            alert("error" + err.message);
+});
+
 
 
         self. clickDet = function(exe_id){
@@ -47,13 +45,10 @@ angular.module("myApp")
                 }
                 });
 
-            console.log("exercise chosen: " + exe_id);
-            console.log("exercise chosen: " +self.chosenExe[exe_id]);
         }
 
         self. clickFeedback = function(exe){
             self.feedbackService.setID(exe);
-            console.log(self.feedbackService.getExercise());
             $location.path('patFeedback')
         }
 

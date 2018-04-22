@@ -9104,3 +9104,8 @@ ui-switch {
     padding:2%;
     margin: 1%;
 }
+
+.redButton{
+    background-color: #f44336;
+    color: white;
+}

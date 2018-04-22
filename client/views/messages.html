@@ -6,7 +6,7 @@
 <div class="scrollable" ng-controller="messagesController as messagesController">
 
 
-    <div class="scrollable-content paddClass" ng-show="messagesController.isPatient()" >
+    <div class="scrollable-content paddClass" ng-show="messagesController.authService.isPatient()" >
         <div align="center">
             <button  ng-click="messagesController.refresh()"><img src="../pics/Refresh_icon.svg.png" width="10%" height="1%"/>רענן</button>
 

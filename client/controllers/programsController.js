@@ -17,15 +17,23 @@ angular.module("myApp")
      };
      $http(req).then(function (ans) {
          self.programs = ans.data;
-         console.log(self.programs);
 
-         //console.log(self.videsPathes);
      }).catch(function (err) {
-         console.log(err)
+         alert(err.message);
      });
 
         self.clickProg = function(progid){
             programService.setProgID(progid);
-            console.log("scope prog: " + programService.getProgID());
-        }
+        };
+     self.hasNoExe = function()
+     {
+         if(self.programs.length == 0)
+         {
+             return true;
+         }
+         else
+         {
+             return false;
+         }
+     };
  }]);

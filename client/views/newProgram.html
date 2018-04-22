@@ -176,44 +176,20 @@
                         <div class="panel-group"
                              ui-shared-state="myAccordion"
                              ui-default='1'>
-                            <div class="panel panel-default" ng-repeat="item in newProgController.bankVideos | filter : newProgController.filterBy">
+                            <div class="panel panel-default" ng-repeat="item in newProgController.bankVideos">
                                                             <div class="panel-heading" ui-set="{'myAccordion': item}">
                                                                 <h4 class="panel-title">
                                                                 {{item.title}}
                                                             </h4>
                                                             </div>
                                                             <div class="panel-body">
-                                                                <!--<div align="right">
-                                                                    <h5>תגיות:</h5>
-                                                                <label ng-show="newProgController.showTag(item.tag0)">{{item.tag0}}</label><br>
-                                                                <label ng-show="newProgController.showTag(item.tag1)">{{item.tag1}}</label><br>
-                                                                <label ng-show="newProgController.showTag(item.tag2)">{{item.tag2}}</label>
-                                                                </div>-->
+
                                                                     <br>
                                                                     <video class="videoClass" ng-show="newProgController.videosURL[item.title]" src= {{newProgController.videosURL[item.title]}} controls type="video/mp4">
                                                                     </video>
                                                                     <button class="btn btn-primary btn-block" ng-click="newProgController.chooseVideo(item.title)">בחר </button>
                                                                 </div>
                                                             </div>
-                            <!--<div class="panel panel-default" ng-repeat="item in newProgController.bankVideos | filter : newProgController.filterBy">
-                                <div class="panel-heading" ui-set="{'myAccordion': item}">
-                                    <h4 class="panel-title">
-                                    {{item.title}}
-                                </h4>
-                                </div>
-                                <div class="panel-body">
-                                    <div align="right">
-                                        <h5>תגיות:</h5>
-                                    <label ng-show="newProgController.showTag(item.tag0)">{{item.tag0}}</label><br>
-                                    <label ng-show="newProgController.showTag(item.tag1)">{{item.tag1}}</label><br>
-                                    <label ng-show="newProgController.showTag(item.tag2)">{{item.tag2}}</label>
-                                    </div>
-                                        <br>
-                                        <video class="videoClass" ng-show="newProgController.videosURL[item.title]" src= {{newProgController.videosURL[item.title]}} controls type="video/mp4">
-                                        </video>
-                                        <button class="btn btn-primary btn-block" ng-click="newProgController.chooseVideo(item.title)">בחר </button>
-                                    </div>
-                                </div>-->
 
                             </div>
                         </div>

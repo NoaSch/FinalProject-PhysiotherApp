@@ -2,11 +2,11 @@
  * Created by NOA-PC on 3/18/2018.
  */
 angular.module("myApp")
-    .controller('resetPasswordController', ['resetPasswordService','$http', '$location', '$window','$rootScope','$scope','ipconfigService', function (resetPasswordService,$http,$location, $window,$rootScope,$scope,ipconfigService ) {
+    .controller('resetPasswordController', ['resetPasswordService','AuthenticationService','$http', '$location', '$window','$rootScope','$scope','ipconfigService', function (resetPasswordService,AuthenticationService,$http,$location, $window,$rootScope,$scope,ipconfigService ) {
         let self = this;
         self.trueTemp = false;
         self.dataLoading = false;
-
+        self.authService = AuthenticationService;
         self.checkTemp = function () {
             self.dataLoading = true;
             let req = {
@@ -29,12 +29,11 @@ angular.module("myApp")
                 else {
                     self.dataLoading = false;
                     alert("סיסמא זמנית נכונה או לא בתוקף");
-                    //$location.path('/login');
 
 
                 }
             }).catch(function (err) {
-                alert("error");
+                alert("error: "+err.message);
             })
         };
 

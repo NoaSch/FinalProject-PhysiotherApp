@@ -208,8 +208,10 @@ console.log("chosen" + self.bankVideoChosen);
                  self.finishLoad = true;
                  self.onlyPath = null;
                  self.selectedTags = [];
-
-
+                 self.videoSource == "none";
+                 self.bankVideoChosen = false;
+                 self.selectedTagsBnank = [];
+                 self.bankVideos = {};
              } else {
                  $window.alert('an error occured: '+ resp.data.err_desc);
              }
@@ -396,14 +398,6 @@ console.log("chosen" + self.bankVideoChosen);
 
      };
      self.AddMoreExe = function(){ //function to call on form submit
-        /* self.submitExeClicked = false;
-         self.exeTitle = "";
-         self.timeInWeek = self.defaultNum;
-         self.nSets = self.defaultNum;
-         self.nRepeats = self.defaultNum;
-         self.setDuration = self.defaultNum;
-         self.break = self.defaultNum;
-         self.desc = "";*/
          self.submitExeClicked = false;
          self.exeTitle = null;
          self.timeInWeek = null;
@@ -424,58 +418,13 @@ console.log("chosen" + self.bankVideoChosen);
          self.bankVideos.forEach(function (element) {
              self.chosenVideo[element.title] = false;
          });
-
-
+         self.bankVideoChosen = false;
+         self.selectedTagsBnank = [];
+         self.bankVideos = {};
          self.desc = "";
      };
 
-   /*  $scope.uploadVideo = function () {
-         alert("file: " + $scope.userPhoto + "name: " + $scope.name);
-
-         $http({
-             method: 'POST',
-             url: 'http://10.100.102.13:4000/api/photo',
-             headers: {
-                 'Content-Type': 'multipart/form-data'
-             },
-             data: {
-                 file: $scope.userPhoto
-             },
-             transformRequest: function (data, headersGetter) {
-                 var formData = new FormData();
-                 angular.forEach(data, function (value, key) {
-                     formData.append(key, value);
-                 });
-
-                 var headers = headersGetter();
-                 delete headers['Content-Type'];
-
-                 return formData;
-             }
-         });
-
- };
-
-     $scope.uploadFile = function(){
-
-         var file = $scope.myFile;
-         alert("files: " + file);
-         var uploadUrl = "http://10.100.102.13:4000/api/photo";
-         var fd = new FormData();
-         fd.append('file', file);
-
-         $http.post(uploadUrl,fd, {
-             transformRequest: angular.identity,
-             headers: {'Content-Type': undefined}
-         });
-            /* .success(function(){
-                 console.log("success!!");
-             })
-             .error(function(){
-                 console.log("error!!");
-             });
-     };*/
-     self.testFunc = function(){
+     /*self.testFunc = function(){
          alert("testtttt");
      };
      $scope.testFunc = function(){
@@ -501,48 +450,6 @@ console.log("chosen" + self.bankVideoChosen);
              var res = ans.data;
      })};
 
+*/
 
-    /*<form id="uploadForm"
-     enctype="multipart/form-data"
-     action="http://192.168.1.15:4001/api/photo"
-     method="post">
-         <input type="file" name="userPhoto" />
-         <input type="submit" value="העלה תמונה" name="submit">
-         <span id = "status"></span>
-         </form>-->*/
-  /*  let self = this;
-     let req = {
-         method: 'POST',
-         //url: 'http://132.73.201.132:3000/api/getUserPrograms',
-         //url: 'http://10.100.102.11:3000/api/getUserPrograms',
-         url: ipAndProt+'/api/getPhysioPatients',
-
-         headers: {
-             'Content-Type': "application/json"
-         },
-         data: {
-             "physio": "p1"
-         }
-     };
-     $http(req).then(function (ans) {
-         self.patients = ans.data;
-        // self.programs = [];
-        /* for (i = 0; i < progs.length; i++) {
-             self.programs.push(progs.prog_id);
-         }*/
-    /*     console.log(self.patients);
-
-         //console.log(self.videsPathes);
-     }).catch(function (err) {
-         console.log(err)
-     });
-
-        self.clickUser = function(patient){
-            self.chosenPatient = patient;
-            console.log("chosen patient: " +  self.chosenPatient );
-        };
-     self.createProgram = function(patient){
-         patientService.setID(patient);
-         console.log("chosen patient: " +  patientService.getID());
-     }*/
  }]);

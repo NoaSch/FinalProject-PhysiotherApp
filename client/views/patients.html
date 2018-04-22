@@ -1,24 +1,9 @@
-<!--<head>
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <link rel="stylesheet" href="/angularScripts/mobile-angular-ui/dist/css/mobile-angular-ui-hover.min.css" />
-   <link rel="stylesheet" href="/angularScripts/mobile-angular-ui/dist/css/mobile-angular-ui-base.min.css" />
-    <link rel="stylesheet" href="/angularScripts/mobile-angular-ui/dist/css/mobile-angular-ui-desktop.min.css" />
-</head>-->
-
-<!--<div ng-controller="programsController as programsController">
-            <ul>
-               <li ng-repeat="item in programsController.programs">
-                   {{item}}
-                </li>
-            </ul>
-</div>
-</div>-->
 
 <div ui-content-for="title">
     <span>המטופלים שלך</span>
 </div>
 
-<div class="scrollable" ng-controller="patientsController as patientsController">
+<div class="scrollable" ng-controller="patientsController as patientsController" ng-show="patientsController.authService.isPhysio">
     <div class="scrollable-content">
         <!--<div class="section">-->
         <button  ng-click="patientsController.refresh()"><img src="../pics/Refresh_icon.svg.png" width="10%" height="1%"/>רענן</button>
@@ -32,11 +17,14 @@
 
                 </div>
 
-                <div class="panel panel-default" ng-repeat="patient in patientsController.patients | filter : patientsController.filterBy">
+                <div  class="panel panel-default" ng-repeat="patient in patientsController.patients | filter : patientsController.filterBy">
                     <div class="panel-heading" ui-set="{'myAccordion': patient}">
-                        <h4 class="panel-title">
+                        <h4 class="panel-title" align="center">
+                            <img ng-src="{{patientsController.pics[patient.username]}}" width="30%" height="30%"/>
+
                             {{patient.first_name}}
                             {{patient.last_name}}
+
                         </h4>
                     </div>
                         <div class="panel-body">
@@ -65,7 +53,7 @@
                                 <label>גיל:</label>
                                 {{patient.age}}
                                 <br>
-                                <img ng-src="{{patientsController.pics[patient.username]}}" width="30%" height="30%"/>
+                                <!--<img ng-src="{{patientsController.pics[patient.username]}}" width="30%" height="30%"/>-->
                                 <br>
                                 <label>אבחנה:</label>
                                 {{patient.diagnosis}}
@@ -77,10 +65,11 @@
 
                     <div class="panel-body" ng-show = "patientsController.isChosenMsgPat(patient.username)" > <!--ng-show =exerciseController.chosenExe[item.exe_id]-->
                         <!--<button class="ProgramDetBtn" ng-click="programsController.getExercises(item.prog_id)">פרטי תכנית</button>-->
-                        <label>הודעות</label>
+                        <label>הודעות:</label>
                         <div class="panel-group paddClass"
                              ui-shared-state="myAccordion"
                              ui-default='1'>
+                            <label ng-show="patientsController.notHaveMessages(patient.username)">אין</label>
                             <div class="panel panel-default" ng-repeat="cor in patientsController.correspondences">
                                 <div class="panel-heading" ui-set="{'myAccordion': patient}">
                                     <h4 class="panel-title">
@@ -144,7 +133,9 @@
                         </div>
                     </div>
                     <div class="panel panel-body" ng-show="patientsController.isEven(patient)&&patientsController.clickedDet">
-                        <label>תכניות שהקצתי למטופל</label>
+                        <label>תכניות שהקצתי למטופל:</label>
+                        <br>
+                        <label ng-show="patientsController.notHaveProgs(patient.username)">אין</label>
 
                         <div ng-repeat="program in patientsController.programs">
                         <div class="panel-body">
@@ -152,8 +143,8 @@
                             </label>
                             <br>
                             <button class="ProgramDetBtn" ng-click="patientsController.progDet(program.prog_id)">פרטי תכנית אימון</button>
-                            <br>
-                            <button class="ProgramDetBtn" ng-click="patientsController.deleteProg(program.prog_id)">מחק תכנית אימון</button>
+                            <br><br>
+                            <button class="ProgramDetBtn redButton" ng-click="patientsController.deleteProg(program.prog_id)">מחק תכנית אימון</button>
                             <div class="panel panel-default" ng-repeat="item in patientsController.exercises">
 
                                 <div class="panel-body" ng-show = "patientsController.isChosenProg(program.prog_id)" > <!--ng-show =exerciseController.chosenExe[item.exe_id]-->

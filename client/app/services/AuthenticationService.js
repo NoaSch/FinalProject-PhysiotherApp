@@ -84,6 +84,16 @@ angular.module('myApp')
                     $cookieStore.put('globals', $rootScope.globals);
                 };
 
+                service.isPatient = function()
+                {
+                    if(service.isPhysio == true || service.isAdmin== true||service.userId== "guest"||service.userId =="אורח")
+                    {
+                       return false;
+                    }
+                    else {
+                        return true;
+                    }
+                };
                 service.ClearCredentials = function () {
                     service.loggedIn = false;
                     service.userId="guest";

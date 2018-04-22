@@ -15,7 +15,6 @@ angular.module('myApp')
                         //////continue Here to initialize the physiothrapysts!!!!
                         physios.forEach(function(item) {
                              physio = new PhysiotherapistModel(item.username,item.first_name,item.last_name,item.phone,item.mail);
-                             console.log(physio)
                              self.therapists.push(physio);
                         });
                         ////
@@ -47,7 +46,6 @@ angular.module('myApp')
                              }
                          }
                          $http(req).then(function (response) {
-                             //console.error($scope.selectedVslues);
                              var res = response.data;
                              if (response.data.hasOwnProperty('err'))
                              {
@@ -69,7 +67,7 @@ angular.module('myApp')
                                  $route.reload();
                                  //$location.path('/');
                              }}, function (errResponse) {
-                             console.error('Error while register');
+                             alert('שגיאה בהרשמה');
                          });
                      }
                      else {
@@ -134,13 +132,9 @@ angular.module('myApp')
 
                         }
                     }, function (resp) { //catch error
-                        console.log('Error status: ' + resp.status);
                         $window.alert('Error status: ' + resp.status);
                     }, function (evt) {
-                        console.log(evt);
                         var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-                        console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
-                        console.log(self.finishLoad);
                         self.progress = 'progress: ' + progressPercentage + '% '; // capture upload progress
                         /*if(progressPercentage == 100)
                          {

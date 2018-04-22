@@ -8,10 +8,9 @@
 <!--<div class="scrollable" ng-controller="mainController as mainController">-->
         <!--<div class="scrollable-content section" ui-scroll-bottom="loadMore()">-->
     <div ui-content-for="title">
-        <span>תכניות האימון שלך</span>
+        <span>תרגילים</span>
     </div>
-
-    <div class="scrollable" ng-controller="exerciseController as exerciseController">
+    <div class="scrollable" ng-controller="exerciseController as exerciseController" ng-show="exerciseController.authService.isPatient()">
         <div class="scrollable-content">
           <!--  <div class="section">-->
                 <div class="panel-group"

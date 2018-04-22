@@ -876,6 +876,40 @@ app.post('/api/getBank', function (req, res) {
     })
 });
 
+//addTagToBank
+app.post('/api/addTagToBank', function (req, res) {
+    let tag = req.body.tag;
+    ////check the date!!!!!!//
+    let query = (
+        squel.select()
+            .from("tags")
+            .where("tag = ?", tag)
+            .toString()
+    );
+    sql.Select(query)
+        .then(function (ans) {
+            if (ans.length == 0) {
+                //insert new tag
+                let queryInsert = (//insert to the users table
+                    squel.insert()
+                        .into("[dbo].[tags]")
+                        .set("[tag]", tag)
+                        .toString()
+                );
+                sql.Insert(queryInsert).then(function (ansIn) {
+                    res.json({error_code: 0, err_desc: null})
+                }).catch(function (err) {
+                    res.json({error_code: 2, err_desc: err})
+                })
+            }
+            else {
+                res.json({error_code: 1, err_desc: "exist"})
+            }
+        }).catch(function (err) {
+        res.json({error_code: 2, err_desc: err})
+    })
+
+});
 app.post('/api/validateTempPass', function (req, res) {
     let userTemp= req.body.tempPass;
     let username = req.body.username;
@@ -1441,32 +1475,44 @@ app.get('/api/getPic/:path', function(req, res){
 });
 app.delete('/api/deleteProg', function(req, res) {
     var prog_id = req.body.prog_id;
-    let query = (
+    let queryFeed = (
         squel.delete()
-            .from("[dbo].[designated_exercises]")
+            .from("[dbo].[patients_feedback]")
             .where("prog_id = ?", prog_id)
             .toString()
     );
-    sql.Delete(query)
-        .then(function (ans) {
-            let query2 = (
-                squel.delete()
-                    .from("[dbo].[designated_programs]")
-                    .where("prog_id = ?", prog_id)
-                    .toString()
-            );
-            sql.Delete(query2)
-                .then(function (ans) {
-                    res.send(ans);
+    sql.Delete(queryFeed).then(function(ansFeedback)
+    {
+        let query = (
+            squel.delete()
+                .from("[dbo].[designated_exercises]")
+                .where("prog_id = ?", prog_id)
+                .toString()
+        );
+        sql.Delete(query)
+            .then(function (ans) {
+                let query2 = (
+                    squel.delete()
+                        .from("[dbo].[designated_programs]")
+                        .where("prog_id = ?", prog_id)
+                        .toString()
+                );
+                sql.Delete(query2)
+                    .then(function (ans) {
+                        res.json({error_code: 0, err_desc: null});
 
-                }).catch(function (err) {
-                console.log("Error in delete: " + err)
-                res.send(err);
-            })
+                    }).catch(function (err) {
+                    console.log("Error in delete: " + err)
+                    res.json({error_code: 1, err_desc: err});
+                })
 
-        }).catch(function (err) {
+            }).catch(function (err) {
+            console.log("Error in delete: " + err)
+            res.json({error_code: 1, err_desc: err});
+        });
+    }).catch(function (err) {
         console.log("Error in delete: " + err)
-        res.send(err);
+        res.json({error_code: 1, err_desc: err});
     });
 });
 
