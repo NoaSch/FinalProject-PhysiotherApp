@@ -2,11 +2,12 @@
  * Created by NOA-PC on 3/18/2018.
  */
 angular.module("myApp")
-    .controller('resetPasswordController', ['resetPasswordService','AuthenticationService','$http', '$location', '$window','$rootScope','$scope','ipconfigService', function (resetPasswordService,AuthenticationService,$http,$location, $window,$rootScope,$scope,ipconfigService ) {
+    .controller('resetPasswordController', ['regexService','resetPasswordService','AuthenticationService','$http', '$location', '$window','$rootScope','$scope','ipconfigService', function (regexService,resetPasswordService,AuthenticationService,$http,$location, $window,$rootScope,$scope,ipconfigService ) {
         let self = this;
         self.trueTemp = false;
         self.dataLoading = false;
-        self.authService = AuthenticationService;
+        self.regexService = regexService;
+        seld.authService = AuthenticationService;
         self.checkTemp = function () {
             self.dataLoading = true;
             let req = {

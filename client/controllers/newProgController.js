@@ -3,7 +3,7 @@
  */
 
 angular.module("myApp")
- .controller('newProgController', ['AuthenticationService','Upload','$http', '$location', '$window','$scope', '$rootScope','programService','exerciseService','patientService','ipconfigService','$route', function (AuthenticationService,Upload,$http,$location, $window,$scope,$rootScope,programService,exerciseService,patientService,ipconfigService,$route   ) {
+ .controller('newProgController', ['regexService','AuthenticationService','Upload','$http', '$location', '$window','$scope', '$rootScope','programService','exerciseService','patientService','ipconfigService','$route', function (regexService,AuthenticationService,Upload,$http,$location, $window,$scope,$rootScope,programService,exerciseService,patientService,ipconfigService,$route   ) {
      let self = this;
      self.clickedAdd = false;
      self.videoClick = false;
@@ -22,6 +22,7 @@ angular.module("myApp")
      self.selectedTags =[];
      self.selectedTagsBnank =[];
      self.tagsNames = [];
+     self.regexService = regexService;
 
      self.nSetsRange = [];
      for (var i = 1; i <= 10; i++) {

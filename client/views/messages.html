@@ -17,12 +17,13 @@
         <button class="btn btn-primary btn-block" ng-click="messagesController.sendNewMsgClick()">שלח הודעה חדשה לפיזיותרפיסט</button>
         <div class="form-group has-success has-feedback" align="center" ng-show="messagesController.isNewewClicked">
             <label>נושא</label>
-            <textarea name="desc" ng-model="messagesController.msgTitle" cols="30" rows="1"></textarea>
+            <textarea name="desc" ng-model="messagesController.msgTitle" cols="30" rows="1" ng-pattern="messagesController.regexService.getNotInjection()"
+            ></textarea>
             <!-- <div class="panel panel-default" >-->
             <br>
             <br>
             <label>תוכן</label>
-            <textarea name="desc" ng-model="messagesController.newMsg" cols="30" rows="5"></textarea>
+            <textarea name="desc" ng-model="messagesController.newMsg" cols="30" rows="5" ng-pattern="messagesController.regexService.getNotInjection()"></textarea>
             <br>
             <br>
             <button class="btn btn-warning" ng-click = messagesController.sendNewMsg()>שלח</button>
@@ -56,7 +57,7 @@
                     <div class="form-group has-success has-feedback" align="center" ng-show="messagesController.rep[cor[0].correspondence_id]">
 
                         <!-- <div class="panel panel-default" >-->
-                            <textarea name="desc" ng-model="messagesController.repMsg" cols="30" rows="5"></textarea>
+                            <textarea name="desc" ng-model="messagesController.repMsg" cols="30" rows="5" ng-pattern="messagesController.regexService.getNotInjection()"></textarea>
                         <br>
                         <br>
                         <button class="btn btn-warning" ng-click="messagesController.sendRep(cor[0])">שלח</button>

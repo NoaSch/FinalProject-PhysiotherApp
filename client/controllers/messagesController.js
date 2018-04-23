@@ -3,7 +3,7 @@
  */
 
 angular.module("myApp")
- .controller('messagesController', ['$route','$http', '$location', '$window','$scope', '$rootScope','programService','exerciseService','patientService','ipconfigService','AuthenticationService', function ($route,$http,$location, $window,$scope,$rootScope,programService,exerciseService,patientService,ipconfigService,AuthenticationService   ) {
+ .controller('messagesController', ['regexService','$route','$http', '$location', '$window','$scope', '$rootScope','programService','exerciseService','patientService','ipconfigService','AuthenticationService', function (regexService,$route,$http,$location, $window,$scope,$rootScope,programService,exerciseService,patientService,ipconfigService,AuthenticationService   ) {
      let self = this;
      //self.inbox  = {};
      self.moreMsgInCor = {};
@@ -11,6 +11,7 @@ angular.module("myApp")
      self.rep = {};
      self.dataLoading = true;
      self.corsOrder = {};
+     self.regexService = regexService;
      self.authService = AuthenticationService;
      function loadMessages() {
          let req = {
@@ -117,67 +118,73 @@ angular.module("myApp")
      {
         self.rep[cor.correspondence_id] = true;
      };
-     self.sendNewMsg = function()
-     {
-         ///call /api/sendMessage
-         let reqMsg = {
-             method: 'POST',
-             url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/sendMessage',
+     self.sendNewMsg = function() {
 
-             headers: {
-                 'Content-Type': "application/json"
-             },
-             data: {
-                 "isNew": true,
-                 "to": self.authService.PhysioUsername,
-                 "from": self.authService.userId,
-                 "date":Date.now(),
-                 "msgtitle":self.msgTitle,
-                 "content":self.newMsg
-             }
-         };
-         $http(reqMsg).then(function (ans) {
-             alert("ההודעה נשלחה");
-             self.newMsg = "";
-             self.msgTitle = "";
+         if (self.msgTitle == null || self.newMsg == null ||self.msgTitle == "") {
+             alert("טקסט לא חוקי");
+         }
+         else {
+             ///call /api/sendMessage
+             let reqMsg = {
+                 method: 'POST',
+                 url: "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + '/api/sendMessage',
 
-     }).catch(function(err)
-         {
-             console.log(err);
-             alert("שגיאה");
-         })
+                 headers: {
+                     'Content-Type': "application/json"
+                 },
+                 data: {
+                     "isNew": true,
+                     "to": self.authService.PhysioUsername,
+                     "from": self.authService.userId,
+                     "date": Date.now(),
+                     "msgtitle": self.msgTitle,
+                     "content": self.newMsg
+                 }
+             };
+             $http(reqMsg).then(function (ans) {
+                 alert("ההודעה נשלחה");
+                 self.newMsg = "";
+                 self.msgTitle = "";
+
+             }).catch(function (err) {
+                 console.log(err);
+                 alert("שגיאה");
+             })
+         }
      };
 
-     self.sendRep = function (cor)
-     {
-         let reqMsg = {
-             method: 'POST',
-             url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/sendMessage',
+     self.sendRep = function (cor) {
+         if (self.repMsg == null) {
+             alert("טקסט לא חוקי");
+         }
+         else {
+             let reqMsg = {
+                 method: 'POST',
+                 url: "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + '/api/sendMessage',
 
-             headers: {
-                 'Content-Type': "application/json"
-             },
-             data: {
-                 "isNew": false,
-                 "cor_id": cor.correspondence_id,
-                 "to": self.authService.PhysioUsername,
-                 "from": self.authService.userId,
-                 "msgtitle":cor.title,
-                 "date":Date.now(),
-                 "content":self.repMsg
-             }
-         };
-         $http(reqMsg).then(function (ans) {
-             alert("ההודעה נשלחה");
-             self.repMsg = "";
+                 headers: {
+                     'Content-Type': "application/json"
+                 },
+                 data: {
+                     "isNew": false,
+                     "cor_id": cor.correspondence_id,
+                     "to": self.authService.PhysioUsername,
+                     "from": self.authService.userId,
+                     "msgtitle": cor.title,
+                     "date": Date.now(),
+                     "content": self.repMsg
+                 }
+             };
+             $http(reqMsg).then(function (ans) {
+                 alert("ההודעה נשלחה");
+                 self.repMsg = "";
 
 
-         }).catch(function(err)
-         {
-             console.log(err);
-             alert("error:" + err.message );
-         })
+             }).catch(function (err) {
+                 console.log(err);
+                 alert("error:" + err.message);
+             })
+         }
      }
-
 
  }]);

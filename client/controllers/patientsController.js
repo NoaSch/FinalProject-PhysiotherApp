@@ -3,7 +3,7 @@
  */
 
 angular.module("myApp")
- .controller('patientsController', ['$route','$http', '$location', '$window','$scope', '$rootScope','programService','exerciseService','patientService','ipconfigService','AuthenticationService', function ($route,$http,$location, $window,$scope,$rootScope,programService,exerciseService,patientService,ipconfigService,AuthenticationService   ) {
+ .controller('patientsController', ['regexService','$route','$http', '$location', '$window','$scope', '$rootScope','programService','exerciseService','patientService','ipconfigService','AuthenticationService', function (regexService,$route,$http,$location, $window,$scope,$rootScope,programService,exerciseService,patientService,ipconfigService,AuthenticationService   ) {
      let self = this;
      self.authService = AuthenticationService
      self.videosURL = {};
@@ -16,7 +16,8 @@ angular.module("myApp")
      self.clickedDet = false;
      self.clickedPatDet = false;
      self.pics = {};
-
+     self.regexService = regexService;
+self.dataLoading = true;
      let req = {
          method: 'POST',
          url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/getPhysioPatients',
@@ -34,9 +35,8 @@ angular.module("myApp")
              if (element.pic_url != null) {
                  self.pics[element.username] = "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + "/api/getPic/" + element.pic_url;
              }
-             console.log(self.patients);
          })
-         //console.log(self.videsPathes);
+         self.dataLoading = false;
      }).catch(function (err) {
          console.log(err)
      });
@@ -49,6 +49,7 @@ angular.module("myApp")
              return false;
      }
      self.refresh = function() {
+
          $route.reload();
      };
         self.clickUser = function(patientUsername){
@@ -306,6 +307,9 @@ angular.module("myApp")
      };
      self.sendNewnewMsg = function()
      {
+         if (self.newMsg == null) {
+             alert("טקסט לא חוקי");
+         }
          ///call /api/sendMessage
          let reqMsg = {
              method: 'POST',
@@ -335,34 +339,37 @@ angular.module("myApp")
          })
      };
 
-     self.sendRep = function (cor)
-     {
-         let reqMsg = {
-             method: 'POST',
-             url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/sendMessage',
+     self.sendRep = function (cor) {
+         if (self.repMsg == null) {
+             alert("טקסט לא חוקי");
+         }
+         else {
+             let reqMsg = {
+                 method: 'POST',
+                 url: "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + '/api/sendMessage',
 
-             headers: {
-                 'Content-Type': "application/json"
-             },
-             data: {
-                 "isNew": false,
-                 "cor_id": cor.correspondence_id,
-                 "to": self.chosenPatMsgUsername,
-                 "from": self.authService.userId,
-                 "msgtitle":cor.title,
-                 "date":Date.now(),
-                 "content":self.repMsg
-             }
-         };
-         $http(reqMsg).then(function (ans) {
-             alert("ההודעה נשלחה");
-             self.repMsg = "";
+                 headers: {
+                     'Content-Type': "application/json"
+                 },
+                 data: {
+                     "isNew": false,
+                     "cor_id": cor.correspondence_id,
+                     "to": self.chosenPatMsgUsername,
+                     "from": self.authService.userId,
+                     "msgtitle": cor.title,
+                     "date": Date.now(),
+                     "content": self.repMsg
+                 }
+             };
+             $http(reqMsg).then(function (ans) {
+                 alert("ההודעה נשלחה");
+                 self.repMsg = "";
 
-         }).catch(function(err)
-         {
-             console.log(err);
-             alert("שגיאה");
-         })
+             }).catch(function (err) {
+                 console.log(err);
+                 alert("שגיאה");
+             })
+         }
      }
  }]);
 

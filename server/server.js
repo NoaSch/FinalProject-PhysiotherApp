@@ -614,6 +614,26 @@ app.post('/api/getPhysioPatients', function (req, res) {
     })
 });
 
+app.post('/api/getPatientDetails', function (req, res) {
+    let _username = req.body.username;
+    let query = (
+        squel.select()
+            .from("patients")
+            .where("username = ?", _username)
+            .toString()
+    );
+    sql.Select(query)
+        .then(function (ans) {
+            //console.log("program came back from the DB");
+
+            // var pathes = ans[0].path.toString();
+            res.send(ans);
+
+        }).catch(function (reason) {
+        console.log(reason);
+        res.send(reason);
+    })
+});
 
 app.post('/api/authenticate', function (req, res) {
     console.log("Login");
@@ -681,7 +701,57 @@ app.post('/api/authenticate', function (req, res) {
         res.send(reason);
     })});
 
+app.post('/api/updateUserDetails', function (req, res) {
 
+            upload(req, res, function (err) {
+                let _file = req.file;
+
+                //let _newFilePath = _file.path.replace('uploads\\', '');
+                let _username = req.body.username;
+                let _firstName = req.body.firstName;
+                let _lastName = req.body.lastName;
+                let _phone = parseInt(req.body.phone);
+                let _mail = req.body.mail;
+                if (_file != null) {
+                    let _newFilePath = _file.path.replace('uploads\\', '');
+                    let queryInsertPatient = (
+                        squel.update()
+                            .table("patients")
+                            .set("[first_name]", _firstName)
+                            .set("[last_name]", _lastName)
+                            .set("[mail]", _mail)
+                            .set("[phone]", _phone)
+                            .set("[pic_url]", _newFilePath)
+                            .where("username = ?", _username)
+                            .toString());
+                    sql.Update(queryInsertPatient).then(function (ansIn) {
+                        res.send(ansIn);
+                    }).catch(function (err) {
+                        res.json({err: err});
+                    })
+
+
+                }
+                else {
+
+                    let queryInsertPatient = (
+                        squel.update()
+                            .table("patients")
+                            .set("[first_name]", _firstName)
+                            .set("[last_name]", _lastName)
+                            .set("[mail]", _mail)
+                            .set("[phone]", _phone)
+                            .where("username = ?", _username)
+                            .toString());
+                    sql.Update(queryInsertPatient).then(function (ansIn) {
+                        res.send(ansIn);
+                    }).catch(function (err) {
+                        res.json({err: err});
+                    })
+                }
+            });
+
+    });
 
 
 app.post('/api/register', function (req, res) {

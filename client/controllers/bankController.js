@@ -3,7 +3,7 @@
  */
 
 angular.module("myApp")
- .controller('bankController', ['$route','AuthenticationService','Upload','$http', '$location', '$window','$scope', '$rootScope','programService','exerciseService','patientService','ipconfigService', function ($route,AuthenticationService,Upload,$http,$location, $window,$scope,$rootScope,programService,exerciseService,patientService,ipconfigService   ) {
+ .controller('bankController', ['regexService','$route','AuthenticationService','Upload','$http', '$location', '$window','$scope', '$rootScope','programService','exerciseService','patientService','ipconfigService', function (regexService,$route,AuthenticationService,Upload,$http,$location, $window,$scope,$rootScope,programService,exerciseService,patientService,ipconfigService   ) {
      let self = this;
      self.clickedAdd = false;
      self.videoClick = false;
@@ -14,7 +14,7 @@ angular.module("myApp")
      self.defaultNum = 1;
      self.desc ="";
      self.currTag ="";
-
+     self.regexService = regexService;
      let req = {
          method: 'GET',
          url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/getTags'

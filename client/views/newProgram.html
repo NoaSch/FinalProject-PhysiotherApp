@@ -4,7 +4,7 @@
 
 <div class="scrollable" ng-controller="newProgController as newProgController">
     <div class="scrollable-content paddClass">
-      <form role="form" ng-hide="newProgController.clickedAdd || newProgController.videoClick">
+      <form name="newProgController.progForm" role="form" ng-hide="newProgController.clickedAdd || newProgController.videoClick">
          <fieldset>
              <legend align="right"  ng-hide="newProgController.clickedCreate">יצירת תכנית אימון</legend>
              <div ng-hide="newProgController.clickedCreate" class="form-group has-success has-feedback" >
@@ -12,12 +12,13 @@
                  <input type="text" required
                         ng-model="newProgController.ProgName"
                         class="form-control"
+                        ng-pattern="newProgController.regexService.getNotInjection()"
                         placeholder="הכנס שם תכנית אימון">
              </div>
              <legend align="right" ng-show="newProgController.clickedCreate">{{newProgController.ProgName}} </legend>
              <button class="btn btn-primary btn-block" ng-show="newProgController.clickedCreate" ng-click="newProgController.AddExe()">הוסף תרגיל </button>
 
-             <button class="btn btn-primary btn-block" ng-hide="newProgController.clickedCreate" type="submit" ng-click="newProgController.createProg()">צור תכנית אימון
+             <button class="btn btn-primary btn-block" ng-disabled="newProgController.progForm.$invalid" ng-hide="newProgController.clickedCreate" type="submit" ng-click="newProgController.createProg()">צור תכנית אימון
 
              </button>
          </fieldset>
@@ -44,6 +45,7 @@
                     <input type="text"
                            ng-model="newProgController.exeTitle"
                            class="form-control"
+                           ng-pattern="newProgController.regexService.getNotInjection()"
                            placeholder="הכנס שם לתרגיל" required>
 
                 </div>
@@ -111,7 +113,7 @@
                 <div class="form-group has-success has-feedback">
 
                     <label>הוראות נוספות</label>
-                    <textarea name="desc" ng-model="newProgController.desc" cols="30" rows="5"></textarea>
+                    <textarea name="desc" ng-model="newProgController.desc" cols="30" rows="5" ng-pattern="newProgController.regexService.getNotInjection()"></textarea>
                 </div>
                     <div class="form-group has-success has-feedback">
                         <label>סרטון:</label>

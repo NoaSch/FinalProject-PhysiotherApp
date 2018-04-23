@@ -45,7 +45,6 @@ app.controller('mainController', ['AuthenticationService','$http', '$location', 
     {
         if(AuthenticationService.isPhysio == true || AuthenticationService.isAdmin== true ||AuthenticationService.userId== "guest"   ||AuthenticationService.userId =="אורח")
         {
-            console.log("userid"+ AuthenticationService.userId);
             return false;
         }
         else {
@@ -181,6 +180,9 @@ app.config( ['$routeProvider', function($routeProvider) {
     }).when('/messages', {
         controller: 'messagesController',reloadOnSearch: false,
         templateUrl: 'views/messages.html'
+    }).when('/changeDetails', {
+        controller: 'changeDetailsController',reloadOnSearch: false,
+        templateUrl: 'views/changeDetails.html'
     })
         .otherwise({redirect: '/',
         });

@@ -3,12 +3,13 @@
  */
 angular.module("myApp")
     .controller('LoginController',
-        ['$location', 'AuthenticationService','FlashService','resetPasswordService','ipconfigService','$http',
-            function ($location, AuthenticationService,FlashService,resetPasswordService,ipconfigService,$http) {
+        ['regexService','$location', 'AuthenticationService','FlashService','resetPasswordService','ipconfigService','$http',
+            function (regexService,$location, AuthenticationService,FlashService,resetPasswordService,ipconfigService,$http) {
                 // reset login status
                 AuthenticationService.ClearCredentials();
                 var self = this;
                 self.isError = false;
+                self.regexService = regexService;
                 self.login = function () {
                     self.dataLoading = true;
                     AuthenticationService.Login(self.username, self.password, function (response) {

@@ -27,7 +27,7 @@ angular.module("myApp")
         };
      self.hasNoExe = function()
      {
-         if(self.programs.length == 0)
+         if(self.programs == null || self.programs.length == 0)
          {
              return true;
          }

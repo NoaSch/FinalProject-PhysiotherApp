@@ -5,6 +5,7 @@
 
 <div class="scrollable" ng-controller="patientsController as patientsController" ng-show="patientsController.authService.isPhysio">
     <div class="scrollable-content">
+        <img ng-if="patientsController.dataLoading" margin="auto" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
         <!--<div class="section">-->
         <button  ng-click="patientsController.refresh()"><img src="../pics/Refresh_icon.svg.png" width="10%" height="1%"/>רענן</button>
 
@@ -12,7 +13,7 @@
                  ui-shared-state="myAccordion"
                  ui-default='1'>
                 <div align="right">
-                    <input type="text" ng-model="patientsController.filterBy">
+                    <input type="text" ng-model="patientsController.filterBy" ng-pattern="patientsController.regexService.getNotInjection()">
                     <label>:סינון</label>
 
                 </div>
@@ -99,7 +100,7 @@
                                 <div class="form-group has-success has-feedback" align="center" ng-show="patientsController.rep[cor[0].correspondence_id]">
 
                                     <!-- <div class="panel panel-default" >-->
-                                    <textarea name="desc" ng-model="patientsController.repMsg" cols="30" rows="5"></textarea>
+                                    <textarea name="desc" ng-model="patientsController.repMsg" cols="30" rows="5" ng-pattern="patientsController.regexService.getNotInjection()"></textarea>
                                     <br>
                                     <br>
                                     <button btn btn-warning ng-click="patientsController.sendRep(cor[0])">שלח</button>

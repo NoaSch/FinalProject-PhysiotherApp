@@ -3,10 +3,11 @@
  */
 
 angular.module('myApp')
-    .controller('RegisterController',['$window','$route','$location', 'AuthenticationService','Upload','FlashService','$http','ipconfigService','PhysiotherapistModel',
-            function ($window,$route,$location, AuthenticationService,Upload,FlashService,$http,ipconfigService,PhysiotherapistModel) {
+    .controller('RegisterController',['regexService','$window','$route','$location', 'AuthenticationService','Upload','FlashService','$http','ipconfigService','PhysiotherapistModel',
+            function (regexService,$window,$route,$location, AuthenticationService,Upload,FlashService,$http,ipconfigService,PhysiotherapistModel) {
                 //Get the physiotherapiss
                 var self = this;
+                self.regexService = regexService;
                 self.therapists = [];
                 self.authService = AuthenticationService;
                 $http.get('http://'+ipconfigService.getIP()+":"+ipconfigService.getPort()+'/api/GetAllTherapists')

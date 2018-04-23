@@ -12,7 +12,9 @@
                  <input type="text" required
                         ng-model="bankController.title"
                         class="form-control"
+                        ng-pattern="bankController.regexService.getNotInjection()"
                         placeholder="הכנס שם לסרטון">
+
              </div>
              <div  class="form-group has-success has-feedback" >
              <label >תגיות</label>
@@ -53,15 +55,19 @@
 
 
         </form>
+        <form name="bankController.addForm">
         <div  class="form-group has-success has-feedback" >
             <label>הוספת תגית חדשה</label>
             <span><input type="text"
+                         name="addField"
                          ng-model="bankController.currTag"
                          class="form-control"
+                         ng-pattern="bankController.regexService.getNotInjection()"
             >
-                 <button class="btn btn-warning" ng-click="bankController.addNewTag()">הוסף תגית</button></span>
+                 <button  class="btn btn-warning" ng-click="bankController.addNewTag()" ng-disabled="bankController.addForm.addField.$invalid">הוסף תגית</button></span>
 
         </div>
+        </form>
     </div>
 </div>
 

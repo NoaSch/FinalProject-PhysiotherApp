@@ -1,0 +1,60 @@
+<div ui-content-for="title">
+    <span>עדכון פרטים</span>
+</div>
+
+<div class="scrollable" ng-controller="changeDetailsController as changeDetailsController" ng-show="changeDetailsController.authService.isPatient()">
+    <div class="scrollable-content paddClass">
+        <button  ng-click="changeDetailsController.refresh()"><img src="../pics/Refresh_icon.svg.png" width="10%" height="1%"/>רענן</button>
+
+        <form role="form" name="form">
+    <div class="form-group">
+        <label>שם פרטי</label>
+        <input type="text" name="firstName" id="firstName" class="form-control" ng-model="changeDetailsController.firstName" ng-pattern="registerController.regexService.getNotInjection()" required />
+        <span ng-show="form.firstName.$dirty && form.firstName.$error.required" class="help-block">שם פרטי נדרש</span>
+    </div>
+    <div class="form-group">
+        <label>שם משפחה</label>
+        <input type="text" name="lastName" id="lastName" class="form-control" ng-model="changeDetailsController.lastName" ng-pattern="registerController.regexService.getNotInjection()" required />
+        <span ng-show="form.lastName.$dirty && form.lastName.$error.required" class="help-block">שם משפחה נדרש</span>
+    </div>
+    <div class="form-group">
+        <label>מספר טלפון סלולארי</label>
+        <input type="text" name="phone" id="phone" class="form-control" ng-model="changeDetailsController.phone" ng-pattern="registerController.regexService.getNotInjection()" required />
+        <span ng-show="form.phone.$dirty && form.phone.$error.required" class="help-block">מספר סלולארי נדרש</span>
+    </div>
+    <div class="form-group">
+        <label>דואר אלקטרוני</label>
+        <input type="email" name="mail" id="mail" class="form-control" ng-model="changeDetailsController.mail" required />
+        <span ng-show="form.mail.$dirty && form.mail.$error.required" class="help-block">דואר אלקטרוני נדרש</span>
+    </div>
+            <div class="form-group">
+                <label>תמונה</label>
+                <img ng-if="changeDetailsController.dataLoading" margin="auto" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+
+                <img ng-src="{{changeDetailsController.pic}}" width="30%" height="30%"/>
+
+            </div>
+    <div class="form-group has-success has-feedback"><labe>שנה תמונה</labe>
+        <input
+                type="file"
+                ngf-select
+                ng-model="changeDetailsController.file"
+                name="file"
+                ngf-max-size="10MB"
+                accept="image/*"
+        />
+        <i ng-show="form.file.$error.maxSize">File too large max 10M</i>
+        <i>{{changeDetailsController.progress}}</i><br>
+        <!--<span ng-show="form.physio_name.$dirty && form.physio_name.$error.required" class="help-block"> נדרש</span>-->
+    </div>
+            <div class="form-group">
+                <button  class="btn btn-warning" ng-click="changeDetailsController.submit()" type="submit" ng-disabled="form.$invalid || changeDetailsController.dataLoading" class="btn btn-danger">סיים</button>
+                <br>
+            </div>
+</form>
+</div>
+</div>
+
+
+
+
