@@ -9,6 +9,7 @@ angular.module("myApp")
        self.chosenExe = {};
        self.videosURL = {};
         self.feedbackService = patientFeedbackService;
+        self.dataLoading = true;
         //load exercises details
         let req = {
             method: 'POST',
@@ -29,14 +30,17 @@ angular.module("myApp")
                     self.videosURL[element.exe_id] = "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + "/api/mediaGet/" + element.media_path;
                 }
             });
-
+            self.dataLoading = false;
         }).catch(function (err) {
             alert("error" + err.message);
-});
+            self.dataLoading = false;
+
+        });
 
 
 
         self. clickDet = function(exe_id){
+
             self.chosenExe[exe_id] = true;
             self.exercises.forEach(function (element) {
                 if(element.exe_id != exe_id)

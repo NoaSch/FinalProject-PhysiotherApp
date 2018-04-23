@@ -35,7 +35,7 @@ self.dataLoading = true;
              if (element.pic_url != null) {
                  self.pics[element.username] = "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + "/api/getPic/" + element.pic_url;
              }
-         })
+         });
          self.dataLoading = false;
      }).catch(function (err) {
          console.log(err)
@@ -55,6 +55,8 @@ self.dataLoading = true;
         self.clickUser = function(patientUsername){
             self.clickedmsg = false;
             self.clickedPatDet = true;
+            self.clickedDet = false;
+
             self.chosenPatUsername = patientUsername;
             console.log("chosen patient: " +  self.chosenPatient );
         };
@@ -67,6 +69,7 @@ self.dataLoading = true;
          $location.path('/newProgram');
      };
      self.patientProg = function(username){
+         self.dataLoading = true;
          self.clickedmsg = false;
          self.clickedDet = true;
          self.clickedPatDet = false;
@@ -85,8 +88,11 @@ self.dataLoading = true;
          };
          $http(req).then(function (ans) {
              self.programs = ans.data;
+             self.dataLoading = false;
          }).catch(function (err) {
              alert(err.message);
+             self.dataLoading = false;
+
          });
      };
      self.deleteProg = function(progID)
@@ -133,7 +139,7 @@ self.dataLoading = true;
      };
      self.notHaveMessages = function(username)
      {
-         if(self.messages == null ||  self.messages.length ==0) {
+         if(self.dataLoading== false &&(self.messages == null ||  self.messages.length ==0)) {
              return true;
          }
          else
@@ -143,7 +149,7 @@ self.dataLoading = true;
      };
      self.notHaveProgs = function(username)
      {
-         if(  self.programs == null || self.programs.length ==0) {
+         if( self.dataLoading== false &&( self.programs == null || self.programs.length ==0)) {
              return true;
          }
          else
@@ -183,6 +189,7 @@ self.dataLoading = true;
      };
      self.progDet = function(prog_id)
      {
+         self.dataLoading = true;
          self.clickedmsg = false;
          self.chosenProgram = prog_id;
          let req = {
@@ -204,15 +211,20 @@ self.dataLoading = true;
                      self.videosURL[element.exe_id] = "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + "/api/mediaGet/" + element.media_path;
                  }
              });
+             self.dataLoading = false;
 
          }).catch(function (err) {
              alert(err.message);
+             self.dataLoading = false;
+
          });
      }
 
 
      self.getMessages = function(patientUsername)
      {
+         self.dataLoading = true;
+
          self.clickedDet = false;
          self.moreMsgInCor = {};
          self.correspondences = {};
@@ -261,9 +273,13 @@ self.dataLoading = true;
                      self.rep[cor_id]= false;
                  }
 
+                 self.dataLoading = false;
+
              });
          }).catch(function (err) {
-             console.log(err)
+             console.log(err);
+             self.dataLoading = false;
+
          });
      }
 

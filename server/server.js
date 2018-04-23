@@ -1623,10 +1623,40 @@ app.get('/api/getTags', function (req, res) {
         });
     }
 
-    function insertVideoToDB(isBank,new_Path,prog_id,exetitle,onTime,tInWeek,tInDay,nSets,nRepeats,dur,durUnits,breakBet,breakBetUnits,description,tags,videoName){
-        return new Promise(function(resolve,reject) {
-            let currPath = null;
-            let date = moment().format('YYYY-MM-DD hh:mm:ss');
+function insertDesignatedExercise(prog_id, exetitle, date, onTime, tInWeek, tInDay, nSets, nRepeats, dur, durUnits, breakBet, breakBetUnits, currPath, description) {
+    return new Promise (function(resolve,reject) {
+        let query = (
+            squel.insert()
+                .into("[dbo].[designated_exercises]")
+                .set("[prog_id]", prog_id)
+                .set("[title]", exetitle)
+                .set("[date]", date)
+                .set("[onTime]", onTime)
+                .set("[time_in_week]", tInWeek)
+                .set("[time_in_day]", tInDay)
+                .set("[num_sets]", nSets)
+                .set("[num_repeats]", nRepeats)
+                .set("[set_duration]", dur)
+                .set("[set_duration_units]", durUnits)
+                .set("[break_between_sets]", breakBet)
+                .set("[break_between_sets_units]", breakBetUnits)
+                .set("[media_path]", currPath)
+                .set("[description]", description)
+                .toString()
+        );
+        console.log(query);
+        sql.Insert(query).then(function (res) {
+                resolve(res);
+            }).catch(function (err) {
+            console.log("Error in inset: " + err)
+            reject(err)
+        })
+    })
+};
+function insertVideoToDB(isBank,new_Path,prog_id,exetitle,onTime,tInWeek,tInDay,nSets,nRepeats,dur,durUnits,breakBet,breakBetUnits,description,tags,videoName){
+    return new Promise(function(resolve,reject) {
+        let currPath = null;
+        let date = moment().format('YYYY-MM-DD hh:mm:ss');
             if(typeof new_Path != 'undefined' && new_Path!="null" && new_Path!= null) {
                 currPath = new_Path.replace('uploads\\', '');
                 console.log("before: " + new_Path);
@@ -1637,48 +1667,91 @@ app.get('/api/getTags', function (req, res) {
             if (typeof durUnits === 'undefined' || !durUnits || durUnits == "null") { durUnits = null};
             if (typeof breakBet === 'undefined' || !breakBet ||breakBet=='null' ) { breakBet = null};
            // if (typeof nRepeats === 'undefined' || !nRepeats) { nRepeats = null};
-            let query = (
-                squel.insert()
-                    .into("[dbo].[designated_exercises]")
-                    .set("[prog_id]",prog_id)
-                    .set("[title]",exetitle)
-                    .set("[date]",date)
-                    .set("[onTime]",onTime)
-                    .set("[time_in_week]",tInWeek)
-                    .set("[time_in_day]",tInDay)
-                    .set("[num_sets]",nSets)
-                    .set("[num_repeats]",nRepeats)
-                    .set("[set_duration]",dur)
-                    .set("[set_duration_units]",durUnits)
-                    .set("[break_between_sets]",breakBet)
-                    .set("[break_between_sets_units]",breakBetUnits)
-                    .set("[media_path]", currPath)
-                    .set("[description]",description)
-                    .toString()
-            );
-            console.log(query);
-            sql.Insert(query).then(function (res) {
+
                 if(currPath == null || isBank == true)
                 {
-                    resolve(res);
+                   insertDesignatedExercise(prog_id, exetitle, date, onTime, tInWeek, tInDay, nSets, nRepeats, dur, durUnits, breakBet, breakBetUnits, currPath, description).then(function(ans){
+                       resolve(ans);
+                   }).catch(function(err)
+                   {
+                       reject(err);
+                   })
 
                 }
                 else {
                     //res.send(ans);
                     ////insert to bank
                     insertToBankDB(currPath,videoName,tags).then(function (ansBank) {
-                        resolve(ansBank);
+                        insertDesignatedExercise(prog_id, exetitle, date, onTime, tInWeek, tInDay, nSets, nRepeats, dur, durUnits, breakBet, breakBetUnits, currPath, description).then(function(ans){
+                            resolve(ans);
                     }).catch(function (errbank) {
                         console.log("Error in insetBank: " + errbank)
                         reject(errbank)
                     })
-                }
+                }).catch(function (err) {
+                        console.log("Error in inset: " + err)
+                        reject(err)})
 
-            }).catch(function (err) {
-                console.log("Error in inset: " + err)
-                reject(err)})
+            }
         })
     };
+
+function insertVideoToDBOLD(isBank,new_Path,prog_id,exetitle,onTime,tInWeek,tInDay,nSets,nRepeats,dur,durUnits,breakBet,breakBetUnits,description,tags,videoName){
+    return new Promise(function(resolve,reject) {
+        let currPath = null;
+        let date = moment().format('YYYY-MM-DD hh:mm:ss');
+        if(typeof new_Path != 'undefined' && new_Path!="null" && new_Path!= null) {
+            currPath = new_Path.replace('uploads\\', '');
+            console.log("before: " + new_Path);
+            console.log("after: " + currPath);
+        }
+        if (typeof nRepeats === 'undefined' || !nRepeats || nRepeats=="null") { nRepeats = null};
+        if (typeof dur === 'undefined' || !dur || dur == "null") { dur = null};
+        if (typeof durUnits === 'undefined' || !durUnits || durUnits == "null") { durUnits = null};
+        if (typeof breakBet === 'undefined' || !breakBet ||breakBet=='null' ) { breakBet = null};
+        // if (typeof nRepeats === 'undefined' || !nRepeats) { nRepeats = null};
+        let query = (
+            squel.insert()
+                .into("[dbo].[designated_exercises]")
+                .set("[prog_id]",prog_id)
+                .set("[title]",exetitle)
+                .set("[date]",date)
+                .set("[onTime]",onTime)
+                .set("[time_in_week]",tInWeek)
+                .set("[time_in_day]",tInDay)
+                .set("[num_sets]",nSets)
+                .set("[num_repeats]",nRepeats)
+                .set("[set_duration]",dur)
+                .set("[set_duration_units]",durUnits)
+                .set("[break_between_sets]",breakBet)
+                .set("[break_between_sets_units]",breakBetUnits)
+                .set("[media_path]", currPath)
+                .set("[description]",description)
+                .toString()
+        );
+        console.log(query);
+        sql.Insert(query).then(function (res) {
+            if(currPath == null || isBank == true)
+            {
+                resolve(res);
+
+            }
+            else {
+                //res.send(ans);
+                ////insert to bank
+                insertToBankDB(currPath,videoName,tags).then(function (ansBank) {
+                    resolve(ansBank);
+                }).catch(function (errbank) {
+                    console.log("Error in insetBank: " + errbank)
+                    reject(errbank)
+                })
+            }
+
+        }).catch(function (err) {
+            console.log("Error in inset: " + err)
+            reject(err)})
+    })
+};
 
 function getFullname(username){
     return new Promise(function(resolve,reject) {
@@ -1786,7 +1859,7 @@ function insertToBankDB(new_Path,title,tags) {
                     })
             }
             else {
-                reject("title exist");
+                reject("השם קיים בחר שם חדש");
             }
         })
     });

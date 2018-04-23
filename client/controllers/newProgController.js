@@ -23,6 +23,10 @@ angular.module("myApp")
      self.selectedTagsBnank =[];
      self.tagsNames = [];
      self.regexService = regexService;
+     self.breakUnits = "שניות";
+     self.setDurationUnits = "שניות";
+     self.timeInWeek = "כל יום";
+
 
      self.nSetsRange = [];
      for (var i = 1; i <= 10; i++) {
@@ -415,6 +419,11 @@ console.log("chosen" + self.bankVideoChosen);
          self.videoSource="none";
          self.chosenTitle = null;
          self.onlyPath = null;
+         self.desc = "";
+         self.videoName = "";
+         self.breakUnits = "שניות";
+         self.setDurationUnits = "שניות";
+         self.timeInWeek = "כל יום";
 
          self.bankVideos.forEach(function (element) {
              self.chosenVideo[element.title] = false;
@@ -422,7 +431,6 @@ console.log("chosen" + self.bankVideoChosen);
          self.bankVideoChosen = false;
          self.selectedTagsBnank = [];
          self.bankVideos = {};
-         self.desc = "";
      };
 
      /*self.testFunc = function(){
