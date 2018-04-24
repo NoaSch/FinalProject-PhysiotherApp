@@ -314,37 +314,41 @@ console.log("chosen" + self.bankVideoChosen);
      };
 
 
-     self.getBank = function()
-     {
-         let bankReq={
-             method: 'POST',
-             url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/getAllMediaByTags', //webAPI exposed to upload the file
-             data:{
-                 //"prog_id":programService.getProgID(), //add new service orsomething
-                 "tags":self.selectedTagsBnank
-             }
-         };
-         $http(bankReq).then(function(ans) {
-             console.log(ans);
-             if(ans.status == 200) { //validate success\\
-                 self.bankVideos = ans.data;
-                 self.bankVideos.forEach(function (element) {
-                     console.log(element);
-                     self.chosenVideo[element.title] = false;
-                     if (element.media_path != null) {
-                         self.videosURL[element.title] = "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + "/api/mediaGet/" + element.media_path;
-                         self.videosPath[element.title] = element.media_path;
+     self.getBank = function() {
+         if (self.selectedTagsBnank == null || self.selectedTagsBnank.length == 0) {
+             alert("יש לבחור לפחות תגית אחת לחיפוש");
+         }
+         else {
+             let bankReq = {
+                 method: 'POST',
+                 url: "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + '/api/getAllMediaByTags', //webAPI exposed to upload the file
+                 data: {
+                     //"prog_id":programService.getProgID(), //add new service orsomething
+                     "tags": self.selectedTagsBnank
+                 }
+             };
+             $http(bankReq).then(function (ans) {
+                 console.log(ans);
+                 if (ans.status == 200) { //validate success\\
+                     self.bankVideos = ans.data;
+                     self.bankVideos.forEach(function (element) {
+                         console.log(element);
+                         self.chosenVideo[element.title] = false;
+                         if (element.media_path != null) {
+                             self.videosURL[element.title] = "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + "/api/mediaGet/" + element.media_path;
+                             self.videosPath[element.title] = element.media_path;
 
-                         self.finishLoad = true;
-                     }});
-             }
+                             self.finishLoad = true;
+                         }
+                     });
+                 }
                  else {
-                         $window.alert('an error occured');
-                     }
-                 }).catch(function(err)
-         {
-             alert("error:" +err);
-         });
+                     $window.alert('an error occured');
+                 }
+             }).catch(function (err) {
+                 alert("error:" + err);
+             });
+         }
      }
      ;
 

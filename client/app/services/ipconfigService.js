@@ -3,10 +3,10 @@
  */
 
 angular.module("myApp").service('ipconfigService', function() {
-     //var ip = '192.168.1.15';
+     var ip = '192.168.1.15';
    // var ip='132.73.197.59';
     //var ip = '10.100.102.7';
-   var ip = '192.168.43.106';
+  // var ip = '192.168.43.106';
     //var ip = '10.100.102.13';
    // var ip = '192.168.1.48';
     //var ip = '192.168.10.52';

@@ -75,6 +75,9 @@ angular.module('myApp')
                          if (self.chosenTherapist == null || self.chosenTherapist == "") {
                              alert("יש לבחור פיזיותרפיסט מטפל");
                          }
+                         else if (self.age == null) {
+                             alert("יש להזין גיל");
+                         }
                          else {
                              if (self.file) {
                                  if (self.file.type == "image/jpeg" || self.file.type == "image/png") {
