@@ -72,12 +72,64 @@ angular.module('myApp')
                          });
                      }
                      else {
-                         if (self.file) {
-                             if (self.file.type == "image/jpeg" || self.file.type == "image/png" ) {
-                                 self.upload(self.file);
+                         if (self.chosenTherapist == null || self.chosenTherapist == "") {
+                             alert("יש לבחור פיזיותרפיסט מטפל");
+                         }
+                         else {
+                             if (self.file) {
+                                 if (self.file.type == "image/jpeg" || self.file.type == "image/png") {
+                                     self.upload(self.file);
+                                 }
+                                 else {
+                                     alert("only PICS, found: " + self.file.type);
+
+                                 }
                              }
                              else {
-                                 alert("only PICS, found: " + self.file.type);
+                                 self.dataLoading = true;
+                                 var req = {
+                                     method: 'POST',
+                                     url: "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + '/api/registerNoPhoto',
+                                     headers: {
+                                         'Content-Type': "application/json"
+                                     },
+                                     data: {
+                                         "username": self.username,
+                                         "password": self.password,
+                                         "firstName": self.firstName,
+                                         "lastName": self.lastName,
+                                         "mail": self.mail,
+                                         "phone": self.phone,
+                                         "physiotherapist_username": self.chosenTherapist,
+                                         "isPhysio": self.physioChecked,
+                                         "age": self.age,
+                                         "diagnosis": self.diagnosis
+                                     }
+                                 }
+                                 $http(req).then(function (response) {
+                                     var res = response.data;
+                                     if (response.data.hasOwnProperty('err')) {
+                                         self.isError = true;
+                                         self.error = response.data.err;
+                                         self.dataLoading = false;
+
+                                     }
+                                     else {
+                                         self.dataLoading = false;
+                                         alert("הרישום הצליח");
+                                         self.username = "";
+                                         self.password = "";
+                                         self.firstName = "";
+                                         self.lastName = "";
+                                         self.mail = "";
+                                         self.phone = "";
+                                         self.chosenTherapist = ""
+                                         $route.reload();
+                                         //$location.path('/');
+                                     }
+                                 }, function (errResponse) {
+                                     alert('שגיאה בהרשמה');
+                                 });
 
                              }
                          }

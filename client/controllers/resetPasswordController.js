@@ -7,7 +7,7 @@ angular.module("myApp")
         self.trueTemp = false;
         self.dataLoading = false;
         self.regexService = regexService;
-        seld.authService = AuthenticationService;
+        self.authService = AuthenticationService;
         self.checkTemp = function () {
             self.dataLoading = true;
             let req = {

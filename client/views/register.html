@@ -31,11 +31,15 @@
             <label for="username">מספר טלפון סלולארי</label>
             <input type="text" name="phone" id="phone" class="form-control" ng-model="registerController.phone" ng-pattern="registerController.regexService.getNotInjection()" required />
             <span ng-show="form.phone.$dirty && form.phone.$error.required" class="help-block">מספר סלולארי נדרש</span>
+            <span ng-show="form.phone.$dirty && form.phone.$error.invalid" class="help-block">מספר סלולארי לא חוקי</span>
+
         </div>
         <div class="form-group">
             <label for="username">דואר אלקטרוני</label>
             <input type="email" name="mail" id="mail" class="form-control" ng-model="registerController.mail" required />
             <span ng-show="form.mail.$dirty && form.mail.$error.required" class="help-block">דואר אלקטרוני נדרש</span>
+            <span ng-show="form.mail.$dirty && form.mail.$error.$invalid" class="help-block">כתובת מייל לא חוקית</span>
+
         </div>
         <div class="form-group">
             <input type="checkbox" ng-model="registerController.physioChecked" name="isPhysio" value="Physiotherapist"> רישום פיזיותרפיסט<br>
@@ -43,7 +47,7 @@
         <div class="form-group" ng-hide="registerController.physioChecked">
 
            <!-- <input type="text" name="physio_name" id="physio_name" class="form-control" ng-model="registerController.physio_name"  />-->
-            <br><label>גיל</label>
+            <br><label>גיל (1-120)</label>
             <input type="number"  min="1" max="120"
                    ng-model="registerController.age"
                    class="form-control">

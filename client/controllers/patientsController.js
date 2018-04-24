@@ -273,9 +273,10 @@ self.dataLoading = true;
                      self.rep[cor_id]= false;
                  }
 
-                 self.dataLoading = false;
 
              });
+             self.dataLoading = false;
+
          }).catch(function (err) {
              console.log(err);
              self.dataLoading = false;
