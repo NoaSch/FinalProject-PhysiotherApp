@@ -120,7 +120,7 @@ angular.module("myApp")
      };
      self.sendNewMsg = function() {
 
-         if (self.msgTitle == null || self.newMsg == null ||self.msgTitle == "") {
+         if (self.msgTitle == null || self.newMsg == null ||self.msgTitle == "" ||self.newMsg =="" ) {
              alert("טקסט לא חוקי");
          }
          else {

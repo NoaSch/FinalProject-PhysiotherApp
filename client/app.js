@@ -177,6 +177,9 @@ app.config( ['$routeProvider', function($routeProvider) {
     }).when('/resetPassword', {
         controller: 'resetPasswordController',reloadOnSearch: false,
         templateUrl: 'views/resetPass.html'
+    }).when('/updatePassword', {
+        controller: 'updatePasswordController',reloadOnSearch: false,
+        templateUrl: 'views/updatePass.html'
     }).when('/messages', {
         controller: 'messagesController',reloadOnSearch: false,
         templateUrl: 'views/messages.html'

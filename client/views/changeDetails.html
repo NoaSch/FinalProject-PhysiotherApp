@@ -9,23 +9,30 @@
         <form role="form" name="form">
     <div class="form-group">
         <label>שם פרטי</label>
-        <input type="text" name="firstName" id="firstName" class="form-control" ng-model="changeDetailsController.firstName" ng-pattern="registerController.regexService.getNotInjection()" required />
+        <input type="text" name="firstName" id="firstName" class="form-control" ng-model="changeDetailsController.firstName" ng-pattern="changeDetailsController.regexService.getNotInjection()" required />
         <span ng-show="form.firstName.$dirty && form.firstName.$error.required" class="help-block">שם פרטי נדרש</span>
+        <span class="help-block" ng-show="form.firstName.$dirty && form.firstName.$invalid">שם לא חוקי</span>
     </div>
     <div class="form-group">
         <label>שם משפחה</label>
-        <input type="text" name="lastName" id="lastName" class="form-control" ng-model="changeDetailsController.lastName" ng-pattern="registerController.regexService.getNotInjection()" required />
+        <input type="text" name="lastName" id="lastName" class="form-control" ng-model="changeDetailsController.lastName" ng-pattern="changeDetailsController.regexService.getNotInjection()" required />
         <span ng-show="form.lastName.$dirty && form.lastName.$error.required" class="help-block">שם משפחה נדרש</span>
+        <span class="help-block" ng-show="form.lastName.$dirty && form.lastName.$invalid">שם לא חוקי</span>
+
     </div>
     <div class="form-group">
         <label>מספר טלפון סלולארי</label>
-        <input type="text" name="phone" id="phone" class="form-control" ng-model="changeDetailsController.phone" ng-pattern="registerController.regexService.getNotInjection()" required />
+        <input type="text" name="phone" id="phone" class="form-control" ng-model="changeDetailsController.phone" ng-pattern="changeDetailsController.regexService.getNotInjection()" required />
         <span ng-show="form.phone.$dirty && form.phone.$error.required" class="help-block">מספר סלולארי נדרש</span>
+        <span class="help-block" ng-show="form.phone.$dirty && form.phone.$invalid">מספר סלולארי לא חוקי</span>
+
     </div>
     <div class="form-group">
         <label>דואר אלקטרוני</label>
         <input type="email" name="mail" id="mail" class="form-control" ng-model="changeDetailsController.mail" required />
         <span ng-show="form.mail.$dirty && form.mail.$error.required" class="help-block">דואר אלקטרוני נדרש</span>
+        <span class="help-block" ng-show="form.mail.$dirty && form.mail.$invalid">כתובת מייל לא חוקית
+            </span>
     </div>
             <div class="form-group">
                 <label>תמונה</label>

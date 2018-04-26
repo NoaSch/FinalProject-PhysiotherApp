@@ -3,7 +3,7 @@
 
     <div class="col-md-6 col-md-offset-3">
 
-    <div ng-show="loginController.isError" class="alert alert-danger">{{loginController.error}}</div>
+    <div align="right" ng-show="loginController.isError" class="alert alert-danger">{{loginController.error}}</div>
     <form name="form" ng-submit="loginController.login()" role="form">
         <div class="form-group">
             <label for="username">שם משתמש</label>
@@ -28,10 +28,10 @@
         </div>
     </form>
         <br>
-        <div class="form-actions" align="right">
+      <!--  <div class="form-actions" align="right">
 
         <button ng-click="loginController.resetPassword()" ng-disabled="form.username.$invalid" class="btn btn-warning">שכחתי סיסמא</button>
-        </div>
+        </div>-->
     </div>
 
     <!--<div class="col-md-6 col-md-offset-3">

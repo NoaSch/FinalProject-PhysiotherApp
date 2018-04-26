@@ -32,7 +32,6 @@ angular.module("myApp")
      for (var i = 1; i <= 10; i++) {
          self.nSetsRange.push(i);
      }
-
      self.chosenVideo = {};
      self.videosURL = {};
      self.videosPath = {}
@@ -123,12 +122,22 @@ console.log("chosen" + self.bankVideoChosen);
             // $window.alert("time:  "+self.timeInWeek);
              self.upload(self.file) //call upload function
          /*}*/
-        if(self.file) {
+         if(self.nSets == null)
+         {
+             alert("בחר מספר סטים בתרגול");
+         }
+         else if (self.nRepeats == null && !self.onTime)
+         {
+             alert("בחר מספר חזרות בסט");
+
+         }
+        else if(self.file) {
             if(self.file.type =="video/mp4" || self.file.type =="video/quicktime" ) {
                 if(self.videoSource == "new"&& self.selectedTags.length == 0)
                 {
                     alert("בחר תגית אחת לפחות");
                 }
+
                 else {
                     console.log(self.file.type);
                     self.upload(self.file);

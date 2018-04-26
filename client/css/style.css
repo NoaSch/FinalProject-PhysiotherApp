@@ -8953,14 +8953,19 @@ textarea.ng-invalid {
     border-color: #ffad00;
 }
 
-.ng-dirty input.ng-invalid {
+.ng-dirty{
+    border-color: #ffad00;
+}
+input.ng-invalid {
     border-color: #ffad00;
 }
 
 .ng-dirty input.ng-invalid ~ span.ko {
     color: #ff3b30;
 }
-
+input.ng-dirty.ng-invalid {
+    border-color: red;
+}
 a.panel-heading {
     display: block;
 }

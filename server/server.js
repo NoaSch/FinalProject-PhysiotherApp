@@ -651,7 +651,7 @@ app.post('/api/authenticate', function (req, res) {
     sql.Select(query)
         .then(function (ans) {
             if (ans.length === 0) {
-                res.json({err:"wrong user or pasword "});
+                res.json({err:"שם משתמש או סיסמא לא נכונים"});
                 return;
             }
            // res.json({success:"login"});
@@ -1122,6 +1122,57 @@ app.post('/api/updatePassword', function (req, res) {
 
 });
 
+
+app.post('/api/updateNewPassword', function (req, res) {
+    //username,pass
+    let _username = req.body.username;
+    let _newPass = req.body.newPass;
+    let _oldPass = req.body.oldPass;
+    let query = (
+        squel.select()
+            .from("users")
+            .where("username = ?", _username)
+            .where("password = ?", _oldPass)
+            .toString()
+    );
+    sql.Select(query)
+        .then(function (ans) {
+            if(ans.length == 0)
+            {
+                res.json({"status": "wrong"});
+            }
+            //res.json({"status": "valid"});
+            else {
+                let query = (squel.update()
+                    .table("users")
+                    .set("password", _newPass)
+                    .where("username = ?",_username)
+                    .toString());
+                sql.Update(query)
+                    .then(function (ans) {
+                        res.json({"status": "update"});
+                    }).catch(function (err){
+                    res.json({"error":err});
+                })
+            }
+
+        }).catch(function (reason) {
+        console.log(reason);
+        res.send(reason);
+    })
+    /*let query = (squel.update()
+        .table("users")
+        .set("password", _newPass)
+        .where("username = ?",_username)
+        .toString());
+    sql.Update(query)
+        .then(function (ans) {
+            res.send(ans);
+        }).catch(function (err){
+        res.json({"error":1});
+    })*/
+
+});
 
 function checkdiff(dbTime)
 {

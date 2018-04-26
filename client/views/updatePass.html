@@ -1,0 +1,44 @@
+<div ui-content-for="title">
+    <span>עדכון סיסמא</span>
+</div>
+
+<div class="scrollable" ng-controller="updatePasswordController as updatePasswordController" ng-show="updatePasswordController.authService.loggedIn">
+    <div class="scrollable-content paddClass">
+        <!--<div ng-show="loginController.isError" class="alert alert-danger">{{loginController.error}}</div>-->
+        <form name="form" ng-submit="updatePasswordController.updatePass()" role="form">
+            <div class="form-group">
+                <label for="pass">הכנס סיסמא קיימת</label>
+                <i class="fa fa-lock"></i>
+                <input type="password" name="pass" id="oldpass" class="form-control" ng-model="updatePasswordController.oldPass" required />
+                <span ng-show="form.username.$dirty && form.username.$error.required" class="help-block">שדה זה נדרש</span>
+            </div>
+            <div class="form-group">
+                <label for="pass">הכנס סיסמא חדשה</label>
+                <i class="fa fa-lock"></i>
+                <input type="password" name="pass" id="pass" class="form-control" ng-model="updatePasswordController.pass1" required />
+                <span ng-show="form.username.$dirty && form.username.$error.required" class="help-block">שדה זה נדרש</span>
+            </div>
+            <div class="form-group">
+                <label for="password">  חזור על הסיסמא החדשה</label>
+                <i class="fa fa-lock"></i>
+                <input type="password" name="password" id="password" class="form-control" ng-model="updatePasswordController.pass2" required />
+                <span ng-show="form.password.$dirty && updatePasswordController.passwordDifferent()" class="help-block">סיסמאות לא זהות</span>
+    </div>
+            <br>
+            <br>
+            <div class="form-actions" align="right">
+                <button type="submit" ng-disabled="form.$invalid || updatePasswordController.dataLoading || updatePasswordController.passwordDifferent()" class="btn btn-warning">שנה סיסמא</button>
+                <br>
+                <br>
+
+                <img ng-if="updatePasswordController.dataLoading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+            </div>
+        </form>
+        <div class="form-actions" align="right">
+
+           <!-- <button ng-click="loginController.resetPassword()" ng-disabled="form.username.$invalid || loginController.dataLoading" class="btn btn-warning">שכחתי סיסמא</button>-->
+        </div>
+    </div>
+
+
+</div>
