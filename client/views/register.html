@@ -14,42 +14,46 @@
             <label for="username">שם משתמש</label>
             <i class="fa fa-key"></i>
             <input type="text" name="username" id="username" class="form-control" ng-model="registerController.username" ng-pattern="registerController.regexService.getNotInjection()" required />
-            <span ng-show="form.username.$error.required" class="help-block">שם משתמש נדרש</span>
-            <span class="help-block" ng-show="form.username.$dirty && form.username.$invalid">שם משתמש לא חוקי
+            <!--<span ng-show="form.username.$touched && form.username.$error.required" class="help-block">שם משתמש נדרש</span>-->
+            <span ng-show="form.$submitted && form.username.$error.required" class="help-block">שם משתמש נדרש</span>
+            <span class="help-block" ng-show="form.$submitted && form.firstName.$invalid">שם לא חוקי</span>
+            <span class="help-block" ng-show="!form.$submitted &&form.firstName.$dirty && form.firstName.$invalid">שם לא חוקי</span>
+
+
 
         </div>
         <div class="form-group">
             <label for="password">סיסמא</label>
             <i class="fa fa-lock"></i>
             <input type="password" name="password" id="password" class="form-control" ng-model="registerController.password" required />
-            <span ng-show="form.password.$error.required" class="help-block">סיסמא נדרשת</span>
+           <!-- <span ng-show="form.password.$touched && form.password.$error.required" class="help-block">סיסמא נדרשת</span>-->
+
         </div>
         <div class="form-group">
             <label for="username">שם פרטי</label>
             <input type="text" name="firstName" id="firstName" class="form-control" ng-model="registerController.firstName" ng-pattern="registerController.regexService.getNotInjection()" required />
-            <span ng-show="form.firstName.$error.required" class="help-block">שם פרטי נדרש</span>
-            <span class="help-block" ng-show="form.firstName.$dirty && form.firstName.$invalid">שם לא חוקי</span>
+            <span ng-show="form.firstName.$touched && form.firstName.$error.required" class="help-block">שם פרטי נדרש</span>
+            <span class="help-block" ng-show="!form.$submitted &&form.firstName.$dirty && form.firstName.$invalid">שם לא חוקי</span>
         </div>
         <div class="form-group">
             <label for="username">שם משפחה</label>
             <input type="text" name="lastName" id="lastName" class="form-control" ng-model="registerController.lastName" ng-pattern="registerController.regexService.getNotInjection()" required />
-            <span ng-show="form.lastName.$error.required" class="help-block">שם משפחה נדרש</span>
-            <span class="help-block" ng-show="form.lastName.$dirty && form.lastName.$invalid">שם לא חוקי</span>
+            <span ng-show="form.lastName.$touched && form.lastName.$error.required" class="help-block">שם משפחה נדרש</span>
+            <span class="help-block" ng-show="!form.$submitted &&form.lastName.$dirty && form.lastName.$invalid">שם לא חוקי</span>
         </div>
         <div class="form-group">
             <label for="username">מספר טלפון סלולארי</label>
-            <input type="text" name="phone" id="phone" class="form-control" ng-model="registerController.phone" ng-pattern="registerController.regexService.getNotInjection()" required />
-            <span ng-show="form.phone.$error.required" class="help-block">מספר סלולארי נדרש</span>
-            <!--<span class="help-block" ng-show="form.phone.$dirty && form.phone.$invalid">מספר סלולארי לא חוקי</span>-->
-                <span class="help-block" ng-show="form.phone.$dirty && form.phone.$invalid">מספר סלולארי לא חוקי</span>
+            <input type="text" name="phone" id="phone" class="form-control" ng-model="registerController.phone" ng-pattern="registerController.regexService.getPhone()" required />
+            <span ng-show="form.phone.$touched && form.phone.$error.required" class="help-block">מספר סלולארי נדרש</span>
+                <span class="help-block" ng-show="!form.$submitted &&form.phone.$dirty && form.phone.$invalid">מספר סלולארי לא חוקי</span>
 </span>
 
         </div>
         <div class="form-group">
             <label for="username">דואר אלקטרוני</label>
             <input type="email" name="mail" id="mail" class="form-control" ng-model="registerController.mail" required />
-            <span ng-show="form.mail.$error.required" class="help-block">דואר אלקטרוני נדרש</span>
-            <span class="help-block" ng-show="form.mail.$dirty && form.mail.$invalid">כתובת מייל לא חוקית
+            <span ng-show="form.mail.$touched && form.mail.$error.required" class="help-block">דואר אלקטרוני נדרש</span>
+            <span class="help-block" ng-show="!form.$submitted &&form.mail.$dirty && form.mail.$invalid">כתובת מייל לא חוקית
             </span>
         </div>
        <!-- <div class="form-group">
@@ -97,7 +101,7 @@
         <div class="form-actions">
             <br>
 
-            <button  class="btn btn-warning"  type="submit" ng-disabled="form.$invalid || registerController.dataLoading" class="btn btn-danger">סיים</button>
+            <button  class="btn btn-warning"  type="submit" ng-disabled="registerController.dataLoading" class="btn btn-danger">סיים</button>
             <br>
             <img ng-if="registerController.dataLoading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
         </div>

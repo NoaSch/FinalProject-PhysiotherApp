@@ -131,6 +131,11 @@ console.log("chosen" + self.bankVideoChosen);
              alert("בחר מספר חזרות בסט");
 
          }
+         else if (self.setDuration == null && self.onTime)
+         {
+             alert("בחר משך זמן סט  ");
+
+         }
         else if(self.file) {
             if(self.file.type =="video/mp4" || self.file.type =="video/quicktime" ) {
                 if(self.videoSource == "new"&& self.selectedTags.length == 0)

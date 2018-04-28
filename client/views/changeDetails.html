@@ -22,7 +22,7 @@
     </div>
     <div class="form-group">
         <label>מספר טלפון סלולארי</label>
-        <input type="text" name="phone" id="phone" class="form-control" ng-model="changeDetailsController.phone" ng-pattern="changeDetailsController.regexService.getNotInjection()" required />
+        <input type="text" name="phone" id="phone" class="form-control" ng-model="changeDetailsController.phone" ng-pattern="changeDetailsController.regexService.getPhone()" required />
         <span ng-show="form.phone.$dirty && form.phone.$error.required" class="help-block">מספר סלולארי נדרש</span>
         <span class="help-block" ng-show="form.phone.$dirty && form.phone.$invalid">מספר סלולארי לא חוקי</span>
 
