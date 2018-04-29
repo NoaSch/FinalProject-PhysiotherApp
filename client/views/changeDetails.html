@@ -49,7 +49,6 @@
                 ng-model="changeDetailsController.file"
                 name="file"
                 ngf-max-size="10MB"
-                accept="image/*"
         />
         <i ng-show="form.file.$error.maxSize">File too large max 10M</i>
         <i>{{changeDetailsController.progress}}</i><br>

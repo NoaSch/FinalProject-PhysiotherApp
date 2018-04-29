@@ -30,7 +30,7 @@ angular.module('myApp')
 
                     /* Use this for real authentication
                      ----------------------------------------------*/
-                    $http.post("http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/authenticate', { username: username, password: password })
+                    $http.post("http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/validate', { username: username, password: password })
                         .then(function (response) {
                             if (!response.data.hasOwnProperty('err'))
                             {
@@ -67,13 +67,12 @@ angular.module('myApp')
 
                 };
 //http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/
-                service.SetCredentials = function (username, password) {
-                    var authdata = Base64.encode(username + ':' + password);
+                service.SetCredentials = function (username) {
+                   //var authdata = Base64.encode(username + ':' + password);
 
                     $rootScope.globals = {
                         currentUser: {
                             username: username,
-                            authdata: authdata
                         }//,isPhysio = self.isPhysio
                     };
                     //get the user first name

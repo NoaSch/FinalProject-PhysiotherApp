@@ -44,10 +44,14 @@ angular.module("myApp")
                     alert("הסיסמא עודכנה ");
                     $location.path('/login');
                 }
-                if(ans.data.status =="wrong" ) {
+                else if(ans.data.status =="wrong" ) {
                     alert("שם משתמש או סיסמא לא נכונים");
                     self.dataLoading = false;
 
+                }
+                else {
+                    alert("שגיאה בלתי צפוייה");
+                    self.dataLoading = false;
                 }
 
             }).catch(function (err) {

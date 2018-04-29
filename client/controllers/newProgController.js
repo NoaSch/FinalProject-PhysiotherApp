@@ -117,57 +117,58 @@ console.log("chosen" + self.bankVideoChosen);
 
 
 
-     self.submit = function(){ //function to call on form submit
+     self.submit = function(valid){ //function to call on form submit
         /* if (/*self.upload_form.file.$valid && self.file) { //check if from is valid and exist
             // $window.alert("time:  "+self.timeInWeek);
              self.upload(self.file) //call upload function
          /*}*/
-         if(self.nSets == null)
+        if(!valid)
          {
-             alert("בחר מספר סטים בתרגול");
+             alert("נא הזן את כל השדות באופן חוקי");
          }
-         else if (self.nRepeats == null && !self.onTime)
-         {
-             alert("בחר מספר חזרות בסט");
-
-         }
-         else if (self.setDuration == null && self.onTime)
-         {
-             alert("בחר משך זמן סט  ");
-
-         }
-        else if(self.file) {
-            if(self.file.type =="video/mp4" || self.file.type =="video/quicktime" ) {
-                if(self.videoSource == "new"&& self.selectedTags.length == 0)
-                {
-                    alert("בחר תגית אחת לפחות");
-                }
-
-                else {
-                    console.log(self.file.type);
-                    self.upload(self.file);
-                    self.submitExeClicked = true;
-
-                }
+         else {
+            if (self.nSets == null) {
+                alert("בחר מספר סטים בתרגול");
             }
-            else if(self.videoSource = "none")
-            {
-                console.log("no file");
-                self.addExeWithoutFile();
-                self.submitExeClicked = true;
+            else if (self.nRepeats == null && !self.onTime) {
+                alert("בחר מספר חזרות בסט");
+
+            }
+            else if (self.setDuration == null && self.onTime) {
+                alert("בחר משך זמן סט  ");
+
+            }
+            else if (self.file) {
+                if (self.file.type == "video/mp4" || self.file.type == "video/quicktime") {
+                    if (self.videoSource == "new" && self.selectedTags.length == 0) {
+                        alert("בחר תגית אחת לפחות");
+                    }
+
+                    else {
+                        console.log(self.file.type);
+                        self.upload(self.file);
+                        self.submitExeClicked = true;
+
+                    }
+                }
+                else if (self.videoSource = "none") {
+                    console.log("no file");
+                    self.addExeWithoutFile();
+                    self.submitExeClicked = true;
+                }
+                else {
+                    alert("only videos, found: " + self.file.type);
+                }
             }
             else {
-                alert ("only videos, found: " + self.file.type);
-            }
-        }
-        else {
-            self.addExeWithoutFile();
-            self.submitExeClicked = true;
+                self.addExeWithoutFile();
+                self.submitExeClicked = true;
 
+            }
+            ///
+            ///check if we want to do another func without video -
+            ///
         }
-         ///
-         ///check if we want to do another func without video -
-         ///
      }
      self.upload = function (file) {
          self.finishLoad = false;

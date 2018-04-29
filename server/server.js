@@ -16,6 +16,8 @@ let cors = require('cors');
 let bodyParser = require('body-parser');
 let passwordValidator = require('password-validator');
 let nodemailer = require('nodemailer');
+let crypto = require('crypto');
+
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -27,6 +29,9 @@ app.use(cors());
 app.listen(4000,function(){
     console.log("Working on port 4000");
 });
+
+
+
 
 /*let config = {
     server: '192.168.1.15',
@@ -122,6 +127,209 @@ connection.on('connect', function (err) {
 
     });
 ///newwwww
+
+
+
+/**
+ * generates random string of characters i.e salt
+ * @function
+ * @param {number} length - Length of the random string.
+ */
+var genRandomString = function(length){
+    return crypto.randomBytes(Math.ceil(length/2))
+        .toString('hex') /** convert to hexadecimal format */
+        .slice(0,length);   /** return required number of characters */
+};
+
+/**
+ * hash password with sha512.
+ * @function
+ * @param {string} password - List of required fields.
+ * @param {string} salt - Data to be validated.
+ */
+var sha256 = function(password, salt){
+    var hash = crypto.createHmac('sha256', salt); /** Hashing algorithm sha512 */
+    hash.update(password);
+    var value = hash.digest('hex');
+    return {
+        salt:salt,
+        passwordHash:value
+    };
+};
+
+function saltHashPassword(userpassword) {
+    var salt = genRandomString(16); /** Gives us salt of length 16 */
+    var passwordData = sha256(userpassword, salt);
+    console.log('UserPassword = '+userpassword);
+    console.log('Passwordhash = '+passwordData.passwordHash);
+    console.log('nSalt = '+passwordData.salt);
+};
+
+app.post('/api/tryHash', function (req, res) {
+
+        console.log("enter create program");
+        let salt = genRandomString(16);
+        /** Gives us salt of length 16 */
+        let username = req.body.username;
+        let password = req.body.password;
+        let passwordData = sha256(password, salt);
+        let newPass = passwordData.passwordHash;
+        let newsalt = passwordData.salt;
+        console.log('Passwordhash = ' + newPass);
+        console.log('nSalt = ' + newsalt);
+        let query = (
+            squel.insert()
+                .into("[dbo].[users]")
+                .set("[username]", username)
+                .set("[password]", newPass)
+                .set("[salt]", newsalt)
+                .set("[isPhysio]", 0)
+
+                .toString()
+        );
+        console.log(query);
+        sql.Insert(query).then(function (ans) {
+            //res.send(ans);
+            res.send(ans);
+        }).catch(function (err) {
+            console.log(err);
+            res.send(err);
+        })
+    });
+
+
+//app.post('/api/tryHash', function (req, res) {
+function insertToUsers(username,password,isPhysio) {
+
+    return new Promise(function (resolve, reject) {
+        console.log("enter create program");
+        let salt = genRandomString(16);
+        /** Gives us salt of length 16 */
+        let passwordData = sha256(password, salt);
+        let newPass = passwordData.passwordHash;
+        let newsalt = passwordData.salt;
+        console.log('Passwordhash = ' + newPass);
+        console.log('nSalt = ' + newsalt);
+        let query = (
+            squel.insert()
+                .into("[dbo].[users]")
+                .set("[username]", username)
+                .set("[password]", newPass)
+                .set("[salt]", newsalt)
+                .set("[isPhysio]", isPhysio)
+
+                .toString()
+        );
+        console.log(query);
+        sql.Insert(query).then(function (ans) {
+            //res.send(ans);
+            resolve(ans);
+        }).catch(function (err) {
+            console.log(err);
+            reject(err);
+        })
+    });
+};
+
+app.post('/api/validate', function (req, res) {
+    let username = req.body.username;
+    let password = req.body.password;
+
+    let query = (
+        squel.select()
+            .from("users")
+            .where("username = ?", username)
+            .toString()
+    );
+    sql.Select(query)
+        .then(function (ans) {
+            if (ans.length == 0) {
+
+                // var pathes = ans[0].path.toString();
+                res.json({error: "notExist"})
+            }
+            else {
+                let querySalt = (
+                    squel.select()
+                        .from("users")
+                        .where("username = ?", username)
+                        .toString()
+                );
+                sql.Select(query)
+                    .then(function (ans2) {
+                        if (ans.length == 0) {
+
+                            // var pathes = ans[0].path.toString();
+                            res.json({err: "שם משתמש או סיסמא לא נכונים"})
+                        }
+                        else {
+                            let dbSalt = ans[0].salt;
+                            console.log(dbSalt);
+
+                            let passwordData = sha256(password, dbSalt);
+                            if (passwordData.passwordHash == ans[0].password) {
+                                //res.json({success: "הצלחה"});
+                                if (ans[0].isPhysio) {
+                                    console.log("physio");
+                                    let query2 = (
+                                        squel.select()
+                                            .from("physiotherapists")
+                                            .where("username = ?", username)
+                                            .toString()
+                                    );
+                                    sql.Select(query2)
+                                        .then(function (ansP) {
+                                            ansP[0].isPhysio = ans[0].isPhysio;
+                                            res.send(ansP);
+                                        }).catch(function (err1) {
+                                        console.log(err1);
+                                        res.json({err: "שם משתמש או סיסמא לא נכונים"})
+                                    });
+
+                                }
+                                else if (username == 'admin') {
+                                    res.send(ans);
+
+                                }
+                                else {
+                                    let query3 = (
+                                        squel.select()
+                                            .from("patients")
+                                            .where("username = ?", username)
+                                            .toString()
+                                    );
+                                    sql.Select(query3)
+                                        .then(function (ansP2) {
+                                            ansP2[0].isPhysio = ans[0].isPhysio;
+                                            res.send(ansP2);
+                                        }).catch(function (err2) {
+                                        console.log(err2);
+                                        res.json({err: "שם משתמש או סיסמא לא נכונים"})
+                                    });
+
+                                }
+                            }
+                            else {
+                                res.json({err: "שם משתמש או סיסמא לא נכונים"});
+                            }
+
+                        }
+
+
+                    }).catch(function (reason) {
+                    console.log(reason);
+                    res.json({err: "שם משתמש או סיסמא לא נכונים"});
+
+                })
+            }
+        }).catch(function (reason) {
+        console.log(reason);
+        res.json({err: "שם משתמש או סיסמא לא נכונים"});
+
+    })
+
+});
+
 
 //reateProgram
 app.post('/api/createPrgram', function (req, res) {
@@ -753,8 +961,144 @@ app.post('/api/updateUserDetails', function (req, res) {
 
     });
 
+/*
+ insertToUsers
+ */
 
 app.post('/api/register', function (req, res) {
+    let _isPhysio = 0;
+    console.log("register");
+    let _username = req.body.username;
+    let _password = req.body.password;
+    let _firstName = req.body.firstName;
+    let _lastName = req.body.lastName;
+    let _physio_username = req.body.physiotherapist_username;
+    let _phone = parseInt(req.body.phone);
+    let _mail = req.body.mail;
+    let _file = req.file;
+    let _age = req.body.age;
+    let _diagnosis = req.body.diagnosis;
+    if (req.body.isPhysio === true) {
+        _isPhysio = 1;
+    }
+
+    if (_isPhysio === 1) {
+        let query = (
+            squel.select()
+                .from("users")
+                .where("username = ?", _username)
+                .toString()
+        );
+        sql.Select(query)
+            .then(function (ans) {
+                if (ans.length === 0) {//the username not exist
+                    insertToUsers(_username,_password,_isPhysio)
+                        .then(function (ansUsers) {
+                        let queryInsertPhysio = (//insert to the users table
+                            squel.insert()
+                                .into("[dbo].[physiotherapists]")
+                                .set("[username]", _username)
+                                .set("[first_name]", _firstName)
+                                .set("[last_name]", _lastName)
+                                .set("[mail]", _mail)
+                                .set("[phone]", _phone)
+                                .toString()
+                        );
+                        console.log(queryInsertPhysio);
+                        sql.Insert(queryInsertPhysio).then(function (ansIn) {
+                            res.send(ansIn);
+                        }).catch(function(err){
+                            res.json({err: err});
+                        })
+                    }).catch(function(err){
+                        res.json({err: err});
+                    })
+                }
+                else {
+                    res.json({err: "username exists"});
+
+                }
+            }).catch(function (err) {
+            res.json({err: err});
+
+        })
+    }
+    else {
+
+        ///the username not exist
+
+        upload(req, res, function (err) {
+
+            if (err) {
+                res.json({err: err});
+                return;
+            }
+            _username = req.body.username;
+            _password = req.body.password;
+            _firstName = req.body.firstName;
+            _lastName = req.body.lastName;
+            _physio_username = req.body.physiotherapist_username;
+            _phone = parseInt(req.body.phone);
+            _mail = req.body.mail;
+            _file = req.file;
+            _age = req.body.age;
+            _diagnosis = req.body.diagnosis;
+            let _newFilePath = null;
+            if(_file != null)
+            {
+                _newFilePath = _file.path.replace('uploads\\', '');
+
+            }
+            let query = (
+                squel.select()
+                    .from("users")
+                    .where("username = ?", req.body.username)
+                    .toString()
+            );
+            sql.Select(query)
+                .then(function (ans) {
+                    if (ans.length === 0) {
+                        insertToUsers( _username,_password,0).then(function (ansUsers) {
+                            queryInsertPatient = (//insert to the users table
+                                squel.insert()
+                                    .into("[dbo].[patients]")
+                                    .set("[username]", _username)
+                                    .set("[first_name]", _firstName)
+                                    .set("[last_name]", _lastName)
+                                    .set("[physiotherapist_username]", _physio_username)
+                                    .set("[mail]", _mail)
+                                    .set("[phone]", _phone)
+                                    .set("[age]", _age)
+                                    .set("[diagnosis]", _diagnosis)
+                                    .set("[pic_url]", _newFilePath)
+                                    //.set("[mail]",_mail)
+                                    //.set("[phone]",_phone)
+                                    .toString()
+                            );
+                            console.log(queryInsertPatient);
+                            sql.Insert(queryInsertPatient).then(function (ansIn) {
+                                res.send(ansIn);
+                            }).catch(function (err) {
+                                res.json({err: err});
+                            })
+                        }).catch(function (err) {
+                            res.json({err: err});
+                        })
+
+                    }
+                    else {
+                        res.json({err: "username exists"});
+
+                    }
+                }).catch(function (err) {
+                res.json({err: err});
+
+            })
+
+        })
+    }
+});
+app.post('/api/registerOLD', function (req, res) {
     let _isPhysio = 0;
     console.log("register");
     let _username = req.body.username;
@@ -918,22 +1262,58 @@ app.post('/api/registerNoPhoto', function (req, res) {
     let _age = req.body.age;
     let _diagnosis = req.body.diagnosis;
 
-            _username = req.body.username;
-            _password = req.body.password;
-            _firstName = req.body.firstName;
-            _lastName = req.body.lastName;
-            _physio_username = req.body.physiotherapist_username;
-            _phone = parseInt(req.body.phone);
-            _mail = req.body.mail;
-            _file = req.file;
-            _age = req.body.age;
-            _diagnosis = req.body.diagnosis;
             let _newFilePath = null;
             if(_file != null)
             {
                 _newFilePath = _file.path.replace('uploads\\', '');
 
             }
+    let query = (
+        squel.select()
+            .from("users")
+            .where("username = ?", req.body.username)
+            .toString()
+    );
+    sql.Select(query)
+        .then(function (ans) {
+            if (ans.length === 0) {
+insertToUsers(_username,_password,_isPhysio).then(function (ansUsers) {
+                   let queryInsertPatient = (//insert to the users table
+                        squel.insert()
+                            .into("[dbo].[patients]")
+                            .set("[username]", _username)
+                            .set("[first_name]", _firstName)
+                            .set("[last_name]", _lastName)
+                            .set("[physiotherapist_username]", _physio_username)
+                            .set("[mail]", _mail)
+                            .set("[phone]", _phone)
+                            .set("[age]", _age)
+                            .set("[diagnosis]", _diagnosis)
+                            .set("[pic_url]", null)
+                            //.set("[mail]",_mail)
+                            //.set("[phone]",_phone)
+                            .toString()
+                    );
+                    console.log(queryInsertPatient);
+                    sql.Insert(queryInsertPatient).then(function (ansIn) {
+                        res.send(ansIn);
+                    }).catch(function (err) {
+                        res.json({err: err});
+                    })
+                }).catch(function (err) {
+                    res.json({err: err});
+                })
+
+            }
+            else {
+                res.json({err: "username exists"});
+
+            }
+        }).catch(function (err) {
+        res.json({err: err});
+
+    })
+            /*
             let query = (
                 squel.select()
                     .from("users")
@@ -989,7 +1369,7 @@ app.post('/api/registerNoPhoto', function (req, res) {
 
             })
 
-
+*/
 
 });
 
@@ -1128,11 +1508,11 @@ app.post('/api/updateNewPassword', function (req, res) {
     let _username = req.body.username;
     let _newPass = req.body.newPass;
     let _oldPass = req.body.oldPass;
+
     let query = (
         squel.select()
             .from("users")
             .where("username = ?", _username)
-            .where("password = ?", _oldPass)
             .toString()
     );
     sql.Select(query)
@@ -1143,17 +1523,27 @@ app.post('/api/updateNewPassword', function (req, res) {
             }
             //res.json({"status": "valid"});
             else {
-                let query = (squel.update()
-                    .table("users")
-                    .set("password", _newPass)
-                    .where("username = ?",_username)
-                    .toString());
-                sql.Update(query)
-                    .then(function (ans) {
-                        res.json({"status": "update"});
-                    }).catch(function (err){
-                    res.json({"error":err});
-                })
+                //check oldPadss
+                if(sha256(_oldPass,ans[0].salt).passwordHash == ans[0].password)
+                {
+                    let hashedPass = sha256(_newPass, ans[0].salt).passwordHash;
+                    let query = (squel.update()
+                        .table("users")
+                        .set("password", hashedPass)
+                        .where("username = ?",_username)
+                        .toString());
+                    sql.Update(query)
+                        .then(function (ans) {
+                            res.json({"status": "update"});
+                        }).catch(function (err){
+                        res.json({"error":err});
+                    })
+                }
+                else
+                {
+                    res.json({"status": "wrong"});
+                }
+
             }
 
         }).catch(function (reason) {

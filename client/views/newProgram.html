@@ -55,7 +55,7 @@
                            placeholder="הכנס שם לתרגיל" required>
                     <span class="help-block" ng-show="newProgController.upload_form.exeName.$error.required">שדה חובה</span>
 
-                    <span class="help-block" ng-show="newProgController.upload_form.exeName.$dirty && newProgController.upload_form.exeName.$invalid">שם לא חוקי</span>
+                    <span class="help-block" ng-show="(newProgController.upload_form.exeName.$dirty && newProgController.upload_form.exeName.$invalid)&& !(newProgController.upload_form.exeName.$error.required)">שם לא חוקי</span>
 
                 </div>
                 <div class="form-group">
@@ -80,7 +80,7 @@
                                class="form-control"
                                required>
                     </div>
-                    <span class="help-block" ng-show="newProgController.upload_form.nday.$dirty && newProgController.upload_form.nday.$invalid">ערך לא חוקי</span>
+                    <span class="help-block" ng-show="(newProgController.upload_form.nday.$dirty && newProgController.upload_form.nday.$invalid) && !(newProgController.upload_form.nday.$error.required)">ערך לא חוקי</span>
                     <span class="help-block" ng-show="newProgController.upload_form.nday.$error.required">שדה חובה</span>
 
                     <div class="form-group has-success has-feedback">
@@ -118,7 +118,7 @@
                            class="form-control"
                            name="break"
                            required>
-                    <span class="help-block" ng-show="newProgController.upload_form.break.$dirty && newProgController.upload_form.break.$invalid"> ערך לא חוקי</span>
+                    <span class="help-block" ng-show="(newProgController.upload_form.break.$dirty && newProgController.upload_form.break.$invalid) && !(newProgController.upload_form.break.$error.required)"> ערך לא חוקי</span>
                     <span class="help-block" ng-show="newProgController.upload_form.break.$error.required">שדה חובה</span>
                    <!-- <label>שניות</label>-->
                     <select name="repeatSelectUnit" id="repeatSelectInit" ng-model="newProgController.breakUnits">
@@ -222,7 +222,7 @@
                         </div>
 
                     </div>
-                <button class="btn btn-primary btn-block"  ng-hide="newProgController.clickedCreate && newProgController.submitExeClicked && newProgController.finishLoad" ng-disabled="newProgController.upload_form.$invalid"  type="submit" ng-click="newProgController.submit()">הוסף את התרגיל</button>
+                <button class="btn btn-primary btn-block"  ng-hide="newProgController.clickedCreate && newProgController.submitExeClicked && newProgController.finishLoad" ng-disabled="newProgController.dataLoading"  type="submit" ng-click="newProgController.submit(newProgController.upload_form.$valid)">הוסף את התרגיל</button>
                 </div>
             </fieldset>
             <hr>

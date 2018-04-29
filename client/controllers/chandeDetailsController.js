@@ -27,7 +27,12 @@ angular.module("myApp")
                 self.phone = ans.data[0].phone;
                 self.mail = ans.data[0].mail;
                 self.oldPicURL = ans.data[0].pic_url;
-                 self.pic = "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + "/api/getPic/" + self.oldPicURL;
+                if(ans.data[0].pic_url != null) {
+                    self.pic = "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + "/api/getPic/" + self.oldPicURL;
+                }
+                else {
+                    self.pic == null;
+                }
          self.dataLoading = false;
 
      }).catch(function (err) {
@@ -39,13 +44,27 @@ angular.module("myApp")
      self.submit = function () {
          self.dataLoading = true;//function to call on form submit
          console.log("in submit");
-         if (self.file &&  self.file.type == "image/png") {
+         /*if (self.file &&  self.file.type == "image/png") {
              alert("נא בחר קובץ JPEG או PNG");
              }
              else {
 
              self.upload(self.file);
+             }*/
+         if (self.file) {
+             if (self.file.type == "image/jpeg" || self.file.type == "image/png") {
+                 self.upload(self.file);
              }
+             else {
+                 alert("שגיאה: ניתן להעלות תמונות בפורמט jpg,jpeg,png בלבד");
+                 self.dataLoading = false;
+
+             }
+         }
+         else {
+             self.upload(null);
+         }
+
 
      };
      self.upload = function (file) {
@@ -74,7 +93,7 @@ angular.module("myApp")
                  self.progress = "";
                  self.finishLoad = true;
                  alert("ההעלאה הצליחה");
-                 self.dataLoading = true;
+                 self.dataLoading = false;
                  $route.reload();
 
              }

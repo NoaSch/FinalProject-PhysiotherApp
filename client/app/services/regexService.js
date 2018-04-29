@@ -4,6 +4,7 @@
 angular.module("myApp").service('regexService', function() {
     var notInjection = "^((?!(;|=|script)).)*$";
     var phone = "^[0-9]{8,10}$";
+    var pass = "^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].)(?=.*[a-z]).{4,15}$";
 
 
     return {
@@ -12,6 +13,9 @@ angular.module("myApp").service('regexService', function() {
         },
         getPhone: function() {
             return phone;
+        },
+        getPass: function() {
+            return pass;
         }
 
 

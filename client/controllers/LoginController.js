@@ -22,7 +22,7 @@ angular.module("myApp")
 
                         } else {
 
-                            AuthenticationService.SetCredentials(self.username, self.password);
+                            AuthenticationService.SetCredentials(self.username);
                             $location.path('/');
                         }
                     });
