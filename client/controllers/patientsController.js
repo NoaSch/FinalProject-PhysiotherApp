@@ -16,6 +16,7 @@ angular.module("myApp")
      self.clickedDet = false;
      self.clickedPatDet = false;
      self.pics = {};
+     self.numUnRead = {};
      self.regexService = regexService;
 self.dataLoading = true;
      let req = {
@@ -35,7 +36,28 @@ self.dataLoading = true;
              if (element.pic_url != null) {
                  self.pics[element.username] = "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + "/api/getPic/" + element.pic_url;
              }
+             let req2 = {
+                 method: 'POST',
+                 url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/getNumNewMessagesPhysio',
+
+                 headers: {
+                     'Content-Type': "application/json"
+                 },
+                 data: {
+                     "username": self.authService.userId,
+                     "patient": element.username
+                 }
+             };
+             $http(req2).then(function (ans) {
+                 self.numUnRead[element.username] = ans.data[0];
+         }).catch(function(err)
+             {
+                 console.log(err.message);
+             })
+             //getNumNewMessagesPhysio
+             ///here
          });
+         console.log(self.numUnRead);
          self.dataLoading = false;
      }).catch(function (err) {
          console.log(err)
@@ -221,20 +243,19 @@ self.dataLoading = true;
      }
 
 
-     self.getMessages = function(patientUsername)
-     {
+     self.getMessages = function(patientUsername) {
          self.dataLoading = true;
 
          self.clickedDet = false;
          self.moreMsgInCor = {};
          self.correspondences = {};
-         self.corsOrder= {};
+         self.corsOrder = {};
          self.rep = {};
          self.clickedmsg = true;
          self.chosenPatMsgUsername = patientUsername;
          let req = {
              method: 'POST',
-             url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/getAllMessagesBetweenTwo',
+             url: "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + '/api/getAllMessagesBetweenTwo',
 
              headers: {
                  'Content-Type': "application/json"
@@ -248,10 +269,8 @@ self.dataLoading = true;
              self.messages = ans.data;
 
              ///get the correspondence and tieles
-             self.messages.forEach(function(element)
-             {
-                 if (element.type == "feedback")
-                 {
+             self.messages.forEach(function (element) {
+                 if (element.type == "feedback") {
                      let fixMsg = "";
                      let strArr = element.msg_content.split(",");
                      for (i = 0; i < strArr.length; i++) {
@@ -259,9 +278,8 @@ self.dataLoading = true;
                      }
                      element.msg_content = fixMsg;
                  }
-                 let cor_id= element.correspondence_id;
-                 if(cor_id in self.corsOrder)
-                 {
+                 let cor_id = element.correspondence_id;
+                 if (cor_id in self.corsOrder) {
                      self.correspondences[self.corsOrder[cor_id]].push(element);
                  }
                  else {
@@ -269,20 +287,41 @@ self.dataLoading = true;
                      self.corsOrder[cor_id] = next;
                      self.correspondences[self.corsOrder[cor_id]] = [];
                      self.correspondences[self.corsOrder[cor_id]].push(element);
-                     self.moreMsgInCor[cor_id]= false;
-                     self.rep[cor_id]= false;
+                     self.moreMsgInCor[cor_id] = false;
+                     self.rep[cor_id] = false;
                  }
 
 
              });
-             self.dataLoading = false;
 
+             //updateReadMessagePhysio
+             let reqUpdate = {
+                 method: 'POST',
+                 url: "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + '/api/updateReadMessagePhysio',
+
+                 headers: {
+                     'Content-Type': "application/json"
+                 },
+                 data: {
+                     "physio": self.authService.userId,
+                     "patient": self.chosenPatMsgUsername
+                 }
+             };
+             $http(reqUpdate).then(function (ansUpdate) {
+                 self.numUnRead[self.chosenPatMsgUsername] = 0;
+                 self.dataLoading = false;
+
+             }).catch(function (err) {
+                 console.log(err.message);
+                 self.dataLoading = false;
+
+             });
          }).catch(function (err) {
-             console.log(err);
+             console.log(err.message);
              self.dataLoading = false;
 
          });
-     }
+     };
 
      self.more = function(cor_id)
      {

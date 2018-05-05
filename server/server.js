@@ -837,7 +837,7 @@ app.post('/api/getUserPrograms', function (req, res) {
 });
 
 
-app.post('/api/getPhysioPatients', function (req, res) {
+    app.post('/api/getPhysioPatients', function (req, res) {
     console.log("enter get physio users");
     let _physioUsername = req.body.physio;
     let query = (
@@ -1859,6 +1859,25 @@ app.post('/api/updateReadMessagePatient', function (req, res) {
         res.json({err: err});
     })
 });
+app.post('/api/updateReadMessagePhysio', function (req, res) {
+
+
+    let _physio = req.body.physio;
+    let _patient = req.body.patient;
+    let queryUpdate = (
+        squel.update()
+            .table("messages")
+            .set("[was_read]", 1)
+            .where("to_username = ?", _physio)
+            .where("from_username = ?", _patient)
+
+            .toString());
+    sql.Update(queryUpdate).then(function (ansIn) {
+        res.send(ansIn);
+    }).catch(function (err) {
+        res.json({err: err});
+    })
+});
 
 
 function getMessageOfCorrespondence(element) {
@@ -2091,6 +2110,32 @@ app.post('/api/getNumNewMessages', function (req, res) {
                 res.send(reason);
 
             })
+});
+app.post('/api/getNumNewMessagesPhysio', function (req, res) {
+    let _username = req.body.username;
+    let _patient = req.body.patient;
+    let query = (
+        squel.select()
+            .from("messages")
+            //.where("to_username = ?", _username)
+            .where("to_username = ?", _username)
+            .where("from_username = ?", _patient)
+            .where("was_read = ?", 0)
+            .toString()
+    );
+    console.log(query);
+    sql.Select(query)
+        .then(function (ans2) {
+            let size = ans2.length;
+            let ans = {};
+            ans[0] = size;
+            res.send(ans);
+
+        }).catch(function (reason) {
+        console.log(reason);
+        res.send(reason);
+
+    })
 });
 
 /*app.post('/api/getAllMessagesOfPatient', function (req, res) {

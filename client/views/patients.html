@@ -118,7 +118,7 @@
 
 
 
-                            <button class="ProgramDetBtnPat" ng-click="patientsController.getMessages(patient.username)">הודעות<img src="../pics/0998-mail.png" width="10%" height="5%"/></button>
+                            <button class="ProgramDetBtnPat" ng-click="patientsController.getMessages(patient.username)">הודעות<img src="../pics/0998-mail.png" width="10%" height="5%"/><label class="orangeLabel">{{patientsController.numUnRead[patient.username]}} חדשות</label></button>
 
                         </div>
 
