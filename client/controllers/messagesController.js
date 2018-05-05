@@ -3,7 +3,7 @@
  */
 
 angular.module("myApp")
- .controller('messagesController', ['regexService','$route','$http', '$location', '$window','$scope', '$rootScope','programService','exerciseService','patientService','ipconfigService','AuthenticationService', function (regexService,$route,$http,$location, $window,$scope,$rootScope,programService,exerciseService,patientService,ipconfigService,AuthenticationService   ) {
+ .controller('messagesController', ['messagesService','regexService','$route','$http', '$location', '$window','$scope', '$rootScope','programService','exerciseService','patientService','ipconfigService','AuthenticationService', function (messagesService,regexService,$route,$http,$location, $window,$scope,$rootScope,programService,exerciseService,patientService,ipconfigService,AuthenticationService   ) {
      let self = this;
      //self.inbox  = {};
      self.moreMsgInCor = {};
@@ -13,6 +13,7 @@ angular.module("myApp")
      self.corsOrder = {};
      self.regexService = regexService;
      self.authService = AuthenticationService;
+     self.messagesService = messagesService;
      function loadMessages() {
          let req = {
              method: 'POST',
@@ -62,10 +63,28 @@ angular.module("myApp")
              //console.log(self.correspondences);
              //console.log(Object.keys(self.correspondences).length)
              self.dataLoading = false;
+         }).then(function (ans2) {
+             let req2 = {
+                 method: 'POST',
+                 url: "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + '/api/updateReadMessagePatient',
+
+                 headers: {
+                     'Content-Type': "application/json"
+                 },
+                 data: {
+                     "username": self.authService.userId
+                 }
+             };
+             $http(req2).then(function (ans) {
+                 messagesService.setNumNew(0);
+                 //updateReadMessagePatient
+             }).catch(function (err) {
+                 console.log(err)
+             });
          }).catch(function (err) {
              console.log(err)
          });
-     }
+     };
 
      loadMessages();
 
@@ -116,6 +135,14 @@ angular.module("myApp")
      };
      self.reply = function(cor)
      {
+         self.repMsg = "";
+         for (index in self.corsOrder)//check
+         {
+             if(index != cor.correspondence_id)
+             {
+                 self.rep[index]  = false;
+             }
+         };
         self.rep[cor.correspondence_id] = true;
      };
      self.sendNewMsg = function() {
@@ -145,6 +172,8 @@ angular.module("myApp")
                  alert("ההודעה נשלחה");
                  self.newMsg = "";
                  self.msgTitle = "";
+                 $route.reload();
+
 
              }).catch(function (err) {
                  console.log(err);
@@ -153,8 +182,9 @@ angular.module("myApp")
          }
      };
 
+
      self.sendRep = function (cor) {
-         if (self.repMsg == null) {
+         if (self.repMsg == null ||self.repMsg == "") {
              alert("טקסט לא חוקי");
          }
          else {
@@ -178,6 +208,8 @@ angular.module("myApp")
              $http(reqMsg).then(function (ans) {
                  alert("ההודעה נשלחה");
                  self.repMsg = "";
+                 $route.reload();
+
 
 
              }).catch(function (err) {

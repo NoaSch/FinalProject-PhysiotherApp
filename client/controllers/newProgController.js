@@ -143,7 +143,10 @@ console.log("chosen" + self.bankVideoChosen);
                     if (self.videoSource == "new" && self.selectedTags.length == 0) {
                         alert("בחר תגית אחת לפחות");
                     }
-
+                    else if (self.videoName == "" ||self.videoName == null)
+                    {
+                        alert("בחר שם לסרטון");
+                    }
                     else {
                         console.log(self.file.type);
                         self.upload(self.file);
@@ -232,7 +235,12 @@ console.log("chosen" + self.bankVideoChosen);
                  self.bankVideoChosen = false;
                  self.selectedTagsBnank = [];
                  self.bankVideos = {};
-             } else {
+             }
+             else if(resp.data.err_desc == "name exist")
+             {
+                 alert("סרטון עם השם הזה קיים במערכת, בחר שם אחר");
+             }
+             else {
                  $window.alert('an error occured: '+ resp.data.err_desc);
              }
          }, function (resp) { //catch error
@@ -431,7 +439,7 @@ console.log("chosen" + self.bankVideoChosen);
          self.nRepeats = null;
          self.setDuration = null;
          self.setDurationUnits = null;
-
+         self.progress = "";
          self.break = null;
          self.breakUnits=null;
          self.bankVideoChosen = false;

@@ -34,34 +34,40 @@ angular.module("myApp")
         };
 
         self.submit = function () {
-            let date = Date.now();
-            let req = {
-                method: 'POST',
-                url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/setPatientFeedback',
-                headers: {
-                    'Content-Type': "application/json"
-                },
-                data: {
-                    "patUsername": self.authService.userId,
-                    "date": date,
-                    "exe": self.feedbackService.getExercise(),
-                    "exeTitle": self.feedbackService.getExerciseTitle(),
-                    "nSucc":self.nSucc,
-                    "succLvl":self.succ,
-                    "painLVvl":$scope.painSlider.value
+            if (self.succ == "some" && self.nSucc == null) {
+                alert("בחר מספר תרגולים שהצלחת");
+            }
+            else {
 
-                }
-            };
-            $http(req).then(function (ans) {
-                console.log(ans);
-                alert("המשוב התקבל");
-                $location.path('exercises');
-            }).catch(function (err) {
-                console.log("error: " + err.message);
-            });
+                let date = Date.now();
+                let req = {
+                    method: 'POST',
+                    url: "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + '/api/setPatientFeedback',
+                    headers: {
+                        'Content-Type': "application/json"
+                    },
+                    data: {
+                        "patUsername": self.authService.userId,
+                        "date": date,
+                        "exe": self.feedbackService.getExercise(),
+                        "exeTitle": self.feedbackService.getExerciseTitle(),
+                        "nSucc": self.nSucc,
+                        "succLvl": self.succ,
+                        "painLVvl": $scope.painSlider.value
 
-        };
+                    }
+                };
+                $http(req).then(function (ans) {
+                    console.log(ans);
+                    alert("המשוב התקבל");
+                    $location.path('exercises');
+                }).catch(function (err) {
+                    console.log("error: " + err.message);
+                });
 
+            }
+            ;
+        }
 
 
     }]);

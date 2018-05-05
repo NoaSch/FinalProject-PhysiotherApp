@@ -55,6 +55,7 @@
     <script src="controllers/resetPasswordController.js"></script>
     <script src="controllers/messagesController.js"></script>
     <script src="controllers/chandeDetailsController.js"></script>
+    <script src="controllers/changeUserPassController.js"></script>
     <script src="controllers/updatePasswordController.js"></script>
 
     <script src="controllers/bankController.js"></script>
@@ -73,6 +74,8 @@
     <script src="app/services/AuthenticationService.js"></script>
     <script src="app/services/flushService.js"></script>
     <script src="app/services/regexService.js"></script>
+    <script src="app/services/messagesService.js"></script>
+
 
     <script src="app/services/patientFeedbackService.js"></script>
     <script src="app/models/PhysiotherapistModel.js"></script>
@@ -122,7 +125,8 @@
         </div>
         <div class="btn-group pull-right">
             <div class="btn" ng-show="mainCtrl.isPatient()">
-                <button class="fa fa-envelope" ng-click="mainCtrl.click()"></button> הודעות
+                <button class="fa fa-envelope" ng-click="mainCtrl.click()"></button> חדשות
+                <span><label>{{mainCtrl.messageService.getNumNew()}}</label></span>
             </div>
         </div>
     </div>

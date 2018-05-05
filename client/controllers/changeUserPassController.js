@@ -2,7 +2,7 @@
  * Created by NOA-PC on 3/18/2018.
  */
 angular.module("myApp")
-    .controller('updatePasswordController', ['regexService','resetPasswordService','AuthenticationService','$http', '$location', '$window','$rootScope','$scope','ipconfigService', function (regexService,resetPasswordService,AuthenticationService,$http,$location, $window,$rootScope,$scope,ipconfigService ) {
+    .controller('changeUserPassController', ['regexService','resetPasswordService','AuthenticationService','$http', '$location', '$window','$rootScope','$scope','ipconfigService', function (regexService,resetPasswordService,AuthenticationService,$http,$location, $window,$rootScope,$scope,ipconfigService ) {
         let self = this;
         self.dataLoading = false;
         self.regexService = regexService;
@@ -27,13 +27,12 @@ angular.module("myApp")
 
             let req = {
                 method: 'POST',
-                url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/updateNewPassword',
+                url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/updatePassword',
                 headers: {
                     'Content-Type': "application/json"
                 },
                 data: {
-                    "username": self.authService.userId,
-                    "oldPass":  self.oldPass,
+                    "username": self.username,
                     "newPass": self.pass1
                 }
             };
@@ -42,12 +41,11 @@ angular.module("myApp")
                     console.log(ans);
                     self.dataLoading = false;
                     alert("הסיסמא עודכנה ");
-                    $location.path('/login');
+                    $location.path('/');
                 }
-                else if(ans.data.status =="wrong" ) {
-                    alert("סיסמא לא נכונה");
+                else if(ans.data.status =="usernotfound"){
+                    alert("שם משתמש לא קיים");
                     self.dataLoading = false;
-
                 }
                 else {
                     alert("שגיאה בלתי צפוייה");

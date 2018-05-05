@@ -3,8 +3,8 @@
  */
 angular.module("myApp")
     .controller('LoginController',
-        ['regexService','$location', 'AuthenticationService','FlashService','resetPasswordService','ipconfigService','$http',
-            function (regexService,$location, AuthenticationService,FlashService,resetPasswordService,ipconfigService,$http) {
+        ['regexService','$location', 'messagesService','AuthenticationService','FlashService','resetPasswordService','ipconfigService','$http',
+            function (regexService,$location, messagesService,AuthenticationService,FlashService,resetPasswordService,ipconfigService,$http) {
                 // reset login status
                 AuthenticationService.ClearCredentials();
                 var self = this;
@@ -23,6 +23,25 @@ angular.module("myApp")
                         } else {
 
                             AuthenticationService.SetCredentials(self.username);
+                            if(AuthenticationService.isPatient()==true) {
+                                let req = {
+                                    method: 'POST',
+                                    url: "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + '/api/getNumNewMessages',
+                                    headers: {
+                                        'Content-Type': "application/json"
+                                    },
+                                    data: {
+                                        "username": self.username,
+                                    }
+                                };
+                                $http(req).then(function (ans) {
+                                    messagesService.setNumNew(ans.data[0]);
+                                }).catch(function(error)
+                                {
+                                    alert("שגיאה");
+                                })
+
+                            }
                             $location.path('/');
                         }
                     });

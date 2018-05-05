@@ -14,6 +14,7 @@ angular.module("myApp")
      self.defaultNum = 1;
      self.desc ="";
      self.currTag ="";
+     self.selectedTags = [];
      self.regexService = regexService;
      let req = {
          method: 'GET',
@@ -33,7 +34,15 @@ angular.module("myApp")
      }*/
      self.submit = function(){ //function to call on form submit
         console.log("in submit");
-        if(self.file) {
+         if(self.selectedTags.length == 0)
+         {
+             alert("בחר לפחות תגית אחת");
+         }
+         else if (self.title == "" ||self.title == null)
+         {
+             alert("בחר שם לסרטון");
+         }
+        else if(self.file) {
             if(self.file.type =="video/mp4" || self.file.type =="video/quicktime" ) {
                 self.upload(self.file);
             }
@@ -42,6 +51,11 @@ angular.module("myApp")
 
             }
         }
+        else
+         {
+             alert("בחר סרטון");
+
+         }
 
          self.submitExeClicked = true;
 
@@ -50,7 +64,9 @@ angular.module("myApp")
          ///
      };
      self.upload = function (file) {
+
          self.finishLoad = false;
+
          //self.cuurDate
          Upload.upload({
              url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/uploadToBank', //webAPI exposed to upload the file
@@ -69,7 +85,12 @@ angular.module("myApp")
                  self.currTag ="";
                  self.selectedTags =[];
 
-             } else {
+             }
+             else if(resp.data.err_desc == "name exist")
+             {
+                 alert("סרטון עם השם הזה קיים במערכת, בחר שם אחר");
+             }
+             else {
                  $window.alert('an error occured '+resp.data.err_desc);
              }
          }, function (resp) { //catch error

@@ -292,7 +292,7 @@ self.dataLoading = true;
          self.moreMsgInCor[cor_id] = true;
          console.log(self.moreMsgInCor);
 
-         for (index in self.correspondences)
+         for (index in self.corsOrder)
          {
              console.log("index: "+index);
              if(index != cor_id)
@@ -317,9 +317,20 @@ self.dataLoading = true;
      };
      self.reply = function(cor)
      {
+         self.repMsg = "";
+
          console.log("cor: "+cor);
+
          //create new message
          //check who is the other person and he will be the recipient
+         for (index in self.corsOrder)
+         {
+             console.log("index: "+index);
+             if(index != cor.correspondence_id)
+             {
+                 self.rep[index]  = false;
+             }
+         };
          self.rep[cor.correspondence_id] = true;
      };
      self.sendNewnewMsg = function()
@@ -347,6 +358,8 @@ self.dataLoading = true;
          $http(reqMsg).then(function (ans) {
              alert("ההודעה נשלחה");
              self.newMsg = "";
+             $route.reload();
+
 
 
          }).catch(function(err)
@@ -357,7 +370,7 @@ self.dataLoading = true;
      };
 
      self.sendRep = function (cor) {
-         if (self.repMsg == null) {
+         if (self.repMsg == null|| self.repMsg == "") {
              alert("טקסט לא חוקי");
          }
          else {
@@ -381,6 +394,8 @@ self.dataLoading = true;
              $http(reqMsg).then(function (ans) {
                  alert("ההודעה נשלחה");
                  self.repMsg = "";
+                 $route.reload();
+
 
              }).catch(function (err) {
                  console.log(err);

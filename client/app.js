@@ -24,9 +24,9 @@ app.config(['$locationProvider', function($locationProvider) {
     $locationProvider.hashPrefix('');
 }]);
 
-app.controller('mainController', ['AuthenticationService','$http', '$location', '$window','$rootScope','$scope','programService', function (AuthenticationService,$http,$location, $window,$rootScope,$scope,programService) {
+app.controller('mainController', ['AuthenticationService','messagesService','$http', '$location', '$window','$rootScope','$scope','programService', function (AuthenticationService,messagesService,$http,$location, $window,$rootScope,$scope,programService) {
     let self = this;
-
+    self.messageService = messagesService;
     self.authService = AuthenticationService;
     //$window.alert("username: "+ self.authService.userId );
     self.logout = function()
@@ -186,6 +186,9 @@ app.config( ['$routeProvider', function($routeProvider) {
     }).when('/changeDetails', {
         controller: 'changeDetailsController',reloadOnSearch: false,
         templateUrl: 'views/changeDetails.html'
+    }).when('/changeUserPass', {
+        controller: 'changeUserPassController',reloadOnSearch: false,
+        templateUrl: 'views/changeUserPass.html'
     })
         .otherwise({redirect: '/',
         });

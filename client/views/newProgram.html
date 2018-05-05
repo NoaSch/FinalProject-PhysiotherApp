@@ -158,11 +158,11 @@
                         ngf-select
                         ng-model="newProgController.file"
                         name="file"
-                        ngf-max-size="20MB"
+                        ngf-max-size="60MB"
                 />
                     <i ng-show="up.upload_form.file.$error.required">*required</i><br>
                     <i ng-show="newProgController.upload_form.file.
-                    $error.maxSize">הקובץ גדול מדי(מקסימום 20M)
+                    $error.maxSize">הקובץ גדול מדי(מקסימום 60M)
                       </i>
                     <i>{{newProgController.progress}}</i><br>
                     <label>שם לסרטון:</label>
@@ -200,7 +200,9 @@
                             <label>:סינון</label>
 
                         </div>-->
-                        <div class="panel-group"
+                            <label ng-show = "newProgController.bankVideos.length == 0">לא נמצאו סרטונים</label>
+
+                            <div class="panel-group"
                              ui-shared-state="myAccordion"
                              ui-default='1'>
                             <div class="panel panel-default" ng-repeat="item in newProgController.bankVideos">

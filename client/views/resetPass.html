@@ -23,8 +23,10 @@
             <div class="form-group">
                 <label for="pass">הכנס סיסמא חדשה</label>
                 <i class="fa fa-lock"></i>
-                <input type="password" name="pass" id="pass" class="form-control" ng-model="resetPasswordController.pass1" required />
-                <span ng-show="form.username.$dirty && form.username.$error.required" class="help-block">שדה זה נדרש</span>
+                <input type="password" name="pass" id="pass" class="form-control" ng-model="resetPasswordController.pass1" ng-pattern="resetPasswordController.regexService.getPass()" required />
+                <span ng-show="form.pass.$dirty && form.pass.$error.required" class="help-block">שדה זה נדרש</span>
+                <span class="help-block" ng-show="(form.pass.$dirty && form.pass.$invalid)&&!(form.pass.$touched && form.pass.$error.required)">סיסמא צריכה להכיל לפחות אות גדולה אות קטנה מספר וסימן</span>
+
             </div>
             <div class="form-group">
                 <label for="password">חזור על הסיסמא</label>
