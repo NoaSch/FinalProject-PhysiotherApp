@@ -189,11 +189,14 @@ app.config( ['$routeProvider', function($routeProvider) {
     }).when('/changeUserPass', {
         controller: 'changeUserPassController',reloadOnSearch: false,
         templateUrl: 'views/changeUserPass.html'
+    }).when('/addExeToProg', {
+        controller: 'addExeToProgController',reloadOnSearch: false,
+        templateUrl: 'views/addExeToProg.html'
     })
         .otherwise({redirect: '/',
         });
 }]);
-
+//addExeToProgController
 
 ////New
 

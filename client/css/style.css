@@ -9114,6 +9114,12 @@ ui-switch {
     background-color: #f44336;
     color: white;
 }
+
+.greenButton
+{
+    background-color: #39dd79;
+    color: white;
+}
 .orangeLabel
 {
     color: #ffad00;

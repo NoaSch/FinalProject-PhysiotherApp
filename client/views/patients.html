@@ -67,6 +67,8 @@
                                         <br>
                                         <button class="ProgramDetBtn" ng-click="patientsController.progDet(program.prog_id)">פרטי תכנית אימון</button>
                                         <br><br>
+                                        <button class="ProgramDetBtn greenButton" ng-click="patientsController.addExeToProg(program.prog_id)">הוסף תרגיל</button>
+
                                         <button class="ProgramDetBtn redButton" ng-click="patientsController.deleteProg(program.prog_id)">מחק תכנית אימון</button>
                                         <div class="panel panel-default" ng-repeat="item in patientsController.exercises">
 
@@ -80,6 +82,9 @@
                                                     <br>
                                                     <button class="ProgramDetBtn" ng-click="patientsController.clickExeDet(item.exe_id)">פרטי תרגיל</button>
                                                 </div>
+                                                <button class="ProgramDetBtn redButton" ng-click="patientsController.deleteExe(item.exe_id)">מחק תרגיל</button>
+
+
                                                 <div ng-show = "patientsController.chosenExe[item.exe_id] && patientsController.isBelongToProgram(item,program.prog_id)">
 
                                                     <br>

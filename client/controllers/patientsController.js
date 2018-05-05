@@ -5,6 +5,7 @@
 angular.module("myApp")
  .controller('patientsController', ['regexService','$route','$http', '$location', '$window','$scope', '$rootScope','programService','exerciseService','patientService','ipconfigService','AuthenticationService', function (regexService,$route,$http,$location, $window,$scope,$rootScope,programService,exerciseService,patientService,ipconfigService,AuthenticationService   ) {
      let self = this;
+     self.programService = programService;
      self.authService = AuthenticationService
      self.videosURL = {};
      self.chosenExe = {};
@@ -140,6 +141,47 @@ self.dataLoading = true;
                  if (ans.data.error_code === 0)//validate success\\
                  {
                      alert("התכנית נמחקה");
+                     $route.reload();
+                 }
+                 else {
+                     alert("error");
+                 }
+             }).catch(function (err) {
+                 alert(err.message)
+             });
+         }
+     };
+
+     self.addExeToProg = function(prog_id)
+     {
+         self.programService.setProgID(prog_id);
+         $location.path('/addExeToProg');
+
+
+     };
+     self.deleteExe = function(exeID)
+     {
+
+         self.clickedPatDet = false;
+
+         self.clickedmsg = false;
+         deleteUser = $window.confirm('האם למחוק את התרגיל?');
+
+         if(deleteUser) {
+             let req = {
+                 method: 'DELETE',
+                 url: "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + '/api/deleteExe',
+                 headers: {
+                     'Content-Type': "application/json"
+                 },
+                 data: {
+                     "exe_id": exeID
+                 }
+             };
+             $http(req).then(function (ans) {
+                 if (ans.data.error_code === 0)//validate success\\
+                 {
+                     alert("התרגיל נמחק");
                      $route.reload();
                  }
                  else {

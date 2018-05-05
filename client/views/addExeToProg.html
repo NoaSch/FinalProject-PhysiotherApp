@@ -1,0 +1,192 @@
+<div ui-content-for="title">
+    <span>הוספת תרגיל לתכנית אימון</span>
+</div>
+
+<div class="scrollable" ng-controller="addExeToProgController as addExeToProgController" >
+    <div class="scrollable-content paddClass" ng-show="addExeToProgController.authService.isPhysio">
+        <form role="form" name="addExeToProgController.upload_form">
+            <fieldset>
+               <!-- <div  ng-show= "!newProgController.submitExeClicked || (newProgController.videoClick && !self.finishLoad)">-->
+                <div ng-hide="addExeToProgController.clickedCreate && addExeToProgController.submitExeClicked && addExeToProgController.finishLoad">
+                <!--<legend>{{newProgController.ProgName}}</legend>-->
+               <legend  align="right" >הוספת תרגיל </legend>
+                <div class="form-group has-success has-feedback">
+                    <label>שם תרגיל</label>
+                    <input type="text"
+                           ng-model="addExeToProgController.exeTitle"
+                           class="form-control"
+                           name="exeName"
+                           ng-pattern="addExeToProgController.regexService.getNotInjection()"
+                           placeholder="הכנס שם לתרגיל" required>
+                    <span class="help-block" ng-show="addExeToProgController.upload_form.exeName.$error.required">שדה חובה</span>
+
+                    <span class="help-block" ng-show="(addExeToProgController.upload_form.exeName.$dirty && addExeToProgController.upload_form.exeName.$invalid)&& !(addExeToProgController.upload_form.exeName.$error.required)">שם לא חוקי</span>
+
+                </div>
+                <div class="form-group">
+                    <label>תרגיל מבוסס זמן</label>
+                    <ui-switch
+                            ng-model="addExeToProgController.onTime"></ui-switch>
+                </div>
+                <div class="form-group has-success has-feedback">
+                <div class="form-group has-success has-feedback">
+                    <label>מספר פעמים בשבוע</label>
+                    <select name="repeatSelectWeek" id="repeatSelectWeek" ng-model="addExeToProgController.timeInWeek">
+                        <option value="כל יום">כל יום </option>
+                        <option value="יום כן יום לא">יום כן יום לא</option>
+                    </select>
+                </div>
+
+                    <div class="form-group has-success has-feedback">
+                        <label>מספר תרגולים ביום</label>
+                        <input type="number"  min="1"
+                               ng-model="addExeToProgController.timeInDay"
+                               name="nday"
+                               class="form-control"
+                               required>
+                    </div>
+                    <span class="help-block" ng-show="(addExeToProgController.upload_form.nday.$dirty && addExeToProgController.upload_form.nday.$invalid) && !(addExeToProgController.upload_form.nday.$error.required)">ערך לא חוקי</span>
+                    <span class="help-block" ng-show="addExeToProgController.upload_form.nday.$error.required">שדה חובה</span>
+
+                    <div class="form-group has-success has-feedback">
+                    <label> מספר סטים בתרגול</label>
+                    <select name="repeatSelectSets" id="repeatSelectSets" ng-model="addExeToProgController.nSets">
+                        <option ng-repeat="num in addExeToProgController.nSetsRange">{{num}}</option>
+                    </select>
+                </div>
+                <div class="form-group has-success has-feedback" ng-hide ="addExeToProgController.onTime">
+                    <label>מספר חזרות בסט</label>
+                    <input type="number"  min="1"
+                           ng-model="addExeToProgController.nRepeats"
+                           class="form-control"
+                           name="repeat"
+                            >
+                    <span class="help-block" ng-show="addExeToProgController.upload_form.repeat.$dirty && addExeToProgController.upload_form.repeat.$invalid"> ערך לא חוקי</span>
+                </div>
+                <div class="form-group has-success has-feedback" ng-show="addExeToProgController.onTime">
+                    <label>משך זמן סט</label>
+                    <span><input type="number"  min="1"
+                           ng-model="addExeToProgController.setDuration"
+                           class="form-control"
+                           >
+                      <select name="repeatSelectUnit" id="repeatSelectUnit" ng-model="addExeToProgController.setDurationUnits">
+                        <option value="שניות">שניות </option>
+                        <option value="דקות">דקות</option>
+
+                    </select>
+                    </span>
+                </div>
+                <div class="form-group has-success has-feedback">
+                    <label>משך הפסקה בין סטים</label>
+                    <input type="number"  min="1"
+                           ng-model="addExeToProgController.break"
+                           class="form-control"
+                           name="break"
+                           required>
+                    <span class="help-block" ng-show="(addExeToProgController.upload_form.break.$dirty && addExeToProgController.upload_form.break.$invalid) && !(addExeToProgController.upload_form.break.$error.required)"> ערך לא חוקי</span>
+                    <span class="help-block" ng-show="addExeToProgController.upload_form.break.$error.required">שדה חובה</span>
+                   <!-- <label>שניות</label>-->
+                    <select name="repeatSelectUnit" id="repeatSelectInit" ng-model="addExeToProgController.breakUnits">
+                        <option value="שניות">שניות </option>
+                        <option value="דקות">דקות</option>
+                        <option value="שעות">שעות</option>
+                    </select>
+                    </span>
+                </div>
+
+                <div class="form-group has-success has-feedback">
+
+                    <label>הוראות נוספות</label>
+                    <textarea name="desc" ng-model="addExeToProgController.desc" cols="30" rows="5" ng-pattern="addExeToProgController.regexService.getNotInjection()"></textarea>
+                </div>
+                    <div class="form-group has-success has-feedback">
+                        <label>סרטון:</label>
+                        <label class="radioBTN">
+                            <input   type="radio" ng-model="addExeToProgController.videoSource" value="none">
+                            ללא סרטון
+                        </label><br/>
+                    <label class="radioBTN">
+                        <input  type="radio" ng-model="addExeToProgController.videoSource" value="new">
+                        סרטון חדש
+                    </label><br/>
+                    <label class="radioBTN">
+                        <input   type="radio" ng-model="addExeToProgController.videoSource" value="bank">
+                        סרטון מהבנק
+                    </label><br/><br/>
+                        <label ng-show="addExeToProgController.videoSource == 'bank' && addExeToProgController.bankVideoChosen">סרטון נבחר: </label>
+                        <label ng-show="addExeToProgController.videoSource == 'bank' && addExeToProgController.bankVideoChosen" >{{addExeToProgController.chosenTitle}}</label>
+
+                    </div>
+                <div class="form-group has-success has-feedback" ng-show="addExeToProgController.videoSource == 'new'">
+                    <input
+                        type="file"
+                        ngf-select
+                        ng-model="addExeToProgController.file"
+                        name="file"
+                        ngf-max-size="60MB"
+                />
+                    <i ng-show="addExeToProgController.upload_form.file.
+                    $error.maxSize">הקובץ גדול מדי(מקסימום 60M)
+                      </i>
+                    <i>{{addExeToProgController.progress}}</i><br>
+                    <label>שם לסרטון:</label>
+<br>
+                    <input type="text"
+                           ng-model="addExeToProgController.videoName"
+                           class="form-control"
+                           name = "videoName"
+                           ng-pattern="addExeToProgController.regexService.getNotInjection()"
+                           placeholder="הכנס שם לסרטון">
+                    <br>
+                    <span class="help-block" ng-show="addExeToProgController.upload_form.videoName.$dirty && addExeToProgController.upload_form.videoName.$invalid">שם לא חוקי</span>
+
+                    <label>תגיות:</label>
+                    <select name="multipleSelect" id="multipleSelect" ng-options="option.tag for option in addExeToProgController.tags track by option.tag"
+                            ng-model="addExeToProgController.selectedTags" multiple>
+                    </select><br>
+                </div>
+
+                </div>
+
+                    <div class="scrollable-content form-group has-success has-feedback" ng-show="addExeToProgController.videoSource == 'bank' && !addExeToProgController.bankVideoChosen">
+                        <!--  <div class="section">-->
+                        <label>סינון לפי תגיות:</label>
+                        <select name="selectedTagsBnank" id="multipleSelectBank" ng-options="option for option in addExeToProgController.tagsNames track by option"
+                                ng-model="addExeToProgController.selectedTagsBnank" multiple>
+                        </select><br>
+<button ng-click="addExeToProgController.getBank()">חפש</button>
+
+                        <div align="right">
+                            <label ng-show = "addExeToProgController.bankVideos.length == 0">לא נמצאו סרטונים</label>
+
+                            <div class="panel-group"
+                             ui-shared-state="myAccordion"
+                             ui-default='1'>
+                            <div class="panel panel-default" ng-repeat="item in addExeToProgController.bankVideos">
+                                                            <div class="panel-heading" ui-set="{'myAccordion': item}">
+                                                                <h4 class="panel-title">
+                                                                {{item.title}}
+                                                            </h4>
+                                                            </div>
+                                                            <div class="panel-body">
+
+                                                                    <br>
+                                                                    <video class="videoClass" ng-show="addExeToProgController.videosURL[item.title]" src= {{addExeToProgController.videosURL[item.title]}} controls type="video/mp4">
+                                                                    </video>
+                                                                    <button class="btn btn-primary btn-block" ng-click="addExeToProgController.chooseVideo(item.title)">בחר </button>
+                                                                </div>
+                                                            </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                <button class="btn btn-primary btn-block"  ng-hide="addExeToProgController.clickedCreate && addExeToProgController.submitExeClicked && addExeToProgController.finishLoad" ng-disabled="addExeToProgController.dataLoading"  type="submit" ng-click="addExeToProgController.submit(addExeToProgController.upload_form.$valid)">הוסף את התרגיל</button>
+                </div>
+            </fieldset>
+            <hr>
+        </form>
+
+    </div>
+</div>
+

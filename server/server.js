@@ -368,8 +368,6 @@ app.post('/upload', function(req, res) {
             res.json({error_code: 1, err_desc: err});
             return;
         }
-
-
         let query3 = (
             squel.select()
                 .from("media_bank")
@@ -2239,6 +2237,38 @@ app.get('/api/getPic/:path', function(req, res){
             res.send(reason);
         })
 });
+//deleteExe
+app.delete('/api/deleteExe', function(req, res) {
+    var exe_id = req.body.exe_id;
+    let queryFeed = (
+        squel.delete()
+            .from("[dbo].[patients_feedback]")
+            .where("exe_id = ?", exe_id)
+            .toString()
+    );
+    sql.Delete(queryFeed).then(function(ansFeedback)
+    {
+        let query = (
+            squel.delete()
+                .from("[dbo].[designated_exercises]")
+                .where("exe_id = ?", exe_id)
+                .toString()
+        );
+        sql.Delete(query)
+            .then(function (ans) {
+
+                        res.json({error_code: 0, err_desc: null});
+
+                    }).catch(function (err) {
+                    console.log("Error in delete: " + err)
+                    res.json({error_code: 1, err_desc: err});
+                })
+    }).catch(function (err) {
+        console.log("Error in delete: " + err)
+        res.json({error_code: 1, err_desc: err});
+    });
+});
+
 app.delete('/api/deleteProg', function(req, res) {
     var prog_id = req.body.prog_id;
     let queryFeed = (
