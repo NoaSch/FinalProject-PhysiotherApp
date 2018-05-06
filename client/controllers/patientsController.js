@@ -6,6 +6,7 @@ angular.module("myApp")
  .controller('patientsController', ['regexService','$route','$http', '$location', '$window','$scope', '$rootScope','programService','exerciseService','patientService','ipconfigService','AuthenticationService', function (regexService,$route,$http,$location, $window,$scope,$rootScope,programService,exerciseService,patientService,ipconfigService,AuthenticationService   ) {
      let self = this;
      self.programService = programService;
+     self.exerciseService = exerciseService;
      self.authService = AuthenticationService
      self.videosURL = {};
      self.chosenExe = {};
@@ -159,6 +160,15 @@ self.dataLoading = true;
 
 
      };
+
+
+     self.editExe = function(exe)
+     {
+         self.exerciseService.setEXE(exe);
+         $location.path('/editExe');
+
+     }
+
      self.deleteExe = function(exeID)
      {
 

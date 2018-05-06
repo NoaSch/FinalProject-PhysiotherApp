@@ -192,6 +192,9 @@ app.config( ['$routeProvider', function($routeProvider) {
     }).when('/addExeToProg', {
         controller: 'addExeToProgController',reloadOnSearch: false,
         templateUrl: 'views/addExeToProg.html'
+    }).when('/editExe', {
+        controller: 'editExeController',reloadOnSearch: false,
+        templateUrl: 'views/editExe.html'
     })
         .otherwise({redirect: '/',
         });

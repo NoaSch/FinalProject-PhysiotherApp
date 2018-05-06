@@ -1,0 +1,102 @@
+<div ui-content-for="title">
+    <span>עדכון פרטי תרגיל</span>
+</div>
+
+<div class="scrollable" ng-controller="editExeController as editExeController" >
+    <div class="scrollable-content paddClass" ng-show="editExeController.authService.isPhysio &&editExeController.exercises.getExeID()!=0 ">
+        <form role="form" name="editExeController.upload_form">
+            <fieldset>
+               <!-- <div  ng-show= "!newProgController.submitExeClicked || (newProgController.videoClick && !self.finishLoad)">-->
+                <!--<legend>{{newProgController.ProgName}}</legend>-->
+                    <legend>{{editExeController.exeName}} </legend>
+
+                    <div class="form-group">
+                    <label>תרגיל מבוסס זמן</label>
+                    <ui-switch
+                            ng-model="editExeController.onTime"></ui-switch>
+                </div>
+                <div class="form-group has-success has-feedback">
+                <div class="form-group has-success has-feedback">
+                    <label>מספר פעמים בשבוע</label>
+                    <select name="repeatSelectWeek" id="repeatSelectWeek" ng-model="editExeController.timeInWeek">
+                        <option value="כל יום">כל יום </option>
+                        <option value="יום כן יום לא">יום כן יום לא</option>
+                    </select>
+                </div>
+
+                    <div class="form-group has-success has-feedback">
+                        <label>מספר תרגולים ביום</label>
+                        <input type="number"  min="1"
+                               ng-model="editExeController.timeInDay"
+                               name="nday"
+                               class="form-control"
+                               required>
+                    </div>
+                    <span class="help-block" ng-show="(editExeController.upload_form.nday.$dirty && editExeController.upload_form.nday.$invalid) && !(editExeController.upload_form.nday.$error.required)">ערך לא חוקי</span>
+                    <span class="help-block" ng-show="editExeController.upload_form.nday.$error.required">שדה חובה</span>
+
+                    <div class="form-group has-success has-feedback">
+                        <label>מספר סטים בתרגול</label>
+                        <input type="number"  min="1"
+                               ng-model="editExeController.nSets"
+                               name="nSets"
+                               class="form-control"
+                               >
+                    </div>
+                </div>
+                <div class="form-group has-success has-feedback" ng-hide ="editExeController.onTime">
+                    <label>מספר חזרות בסט</label>
+                    <input type="number"  min="1"
+                           ng-model="editExeController.nRepeats"
+                           class="form-control"
+                           name="repeat"
+                            >
+                    <span class="help-block" ng-show="editExeController.upload_form.repeat.$dirty && editExeController.upload_form.repeat.$invalid"> ערך לא חוקי</span>
+                </div>
+                <div class="form-group has-success has-feedback" ng-show="editExeController.onTime">
+                    <label>משך זמן סט</label>
+                    <span><input type="number"  min="1"
+                           ng-model="editExeController.setDuration"
+                           class="form-control"
+                           >
+                      <select name="repeatSelectUnit" id="repeatSelectUnit" ng-model="editExeController.setDurationUnits">
+                        <option value="שניות">שניות </option>
+                        <option value="דקות">דקות</option>
+
+                    </select>
+                    </span>
+                </div>
+                <div class="form-group has-success has-feedback">
+                    <label>משך הפסקה בין סטים</label>
+                    <input type="number"  min="1"
+                           ng-model="editExeController.break"
+                           class="form-control"
+                           name="break"
+                           required>
+                    <span class="help-block" ng-show="(editExeController.upload_form.break.$dirty && editExeController.upload_form.break.$invalid) && !(editExeController.upload_form.break.$error.required)"> ערך לא חוקי</span>
+                    <span class="help-block" ng-show="editExeController.upload_form.break.$error.required">שדה חובה</span>
+                   <!-- <label>שניות</label>-->
+                    <select name="repeatSelectUnit" id="repeatSelectInit" ng-model="editExeController.breakUnits">
+                        <option value="שניות">שניות </option>
+                        <option value="דקות">דקות</option>
+                        <option value="שעות">שעות</option>
+                    </select>
+                    </span>
+                </div>
+
+                <div class="form-group has-success has-feedback">
+
+                    <label>הוראות נוספות</label>
+                    <textarea name="desc" ng-model="editExeController.desc" cols="30" rows="5" ng-pattern="editExeController.regexService.getNotInjection()"></textarea>
+                </div>
+
+
+                <button class="btn btn-primary btn-block"  ng-hide="editExeController.submitExeClicked && editExeController.finishLoad" ng-disabled="editExeController.dataLoading"  type="submit" ng-click="editExeController.submit(editExeController.upload_form.$valid)">עדכן את התרגיל</button>
+            </fieldset>
+            <hr>
+        </form>
+    </div>
+
+    </div>
+</div>
+

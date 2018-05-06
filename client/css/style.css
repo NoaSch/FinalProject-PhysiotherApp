@@ -9117,9 +9117,15 @@ ui-switch {
 
 .greenButton
 {
-    background-color: #39dd79;
+    background-color: green;
     color: white;
 }
+.orangeButton
+{
+    background-color: #ffad00;
+    color: white;
+}
+
 .orangeLabel
 {
     color: #ffad00;

@@ -3,7 +3,7 @@
 </div>
 
 <div class="scrollable" ng-controller="addExeToProgController as addExeToProgController" >
-    <div class="scrollable-content paddClass" ng-show="addExeToProgController.authService.isPhysio">
+    <div class="scrollable-content paddClass" ng-show="addExeToProgController.authService.isPhysio &&addExeToProgController.programService.getProgID()!=0 ">
         <form role="form" name="addExeToProgController.upload_form">
             <fieldset>
                <!-- <div  ng-show= "!newProgController.submitExeClicked || (newProgController.videoClick && !self.finishLoad)">-->

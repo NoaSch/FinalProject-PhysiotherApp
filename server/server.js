@@ -426,7 +426,57 @@ app.post('/uploadNoVideo', function(req, res2) {
     })
 });
 
+app.post('/updateEXE', function(req, res) {
+    let onTime = 0;
+    let exe_id = req.body.exe_id;
+    if (req.body.onTime == true) {
+        onTime = 1;
+    }
+    let timeInWeek = req.body.timeInWeek;
+    let timeInDay = req.body.timeInDay;
+    let nSets = req.body.nSets;
+    let nRepeats = req.body.nRepeats;
+    let setDuration = req.body.setDuration;
+    let setDurationUnits = req.body.setDurationUnits;
+    let breakBet = req.body.break;
+    let breakUnits = req.body.breakUnits;
+    let description = req.body.description;
+    if (typeof nRepeats === 'undefined' || !nRepeats || nRepeats == "null") {
+        nRepeats = null;
+    }
+    if (typeof setDuration === 'undefined' || !setDuration || setDuration == "null") {
+        setDuration = null;
+    }
+    if (typeof setDurationUnits === 'undefined' || !setDurationUnits || setDurationUnits == "null") {
+        setDurationUnits = null;
+    }
+    if (typeof breakBet === 'undefined' || !breakBet || breakBet == 'null') {
+        breakBet = null;
+    }
 
+    let query = (
+        squel.update()
+            .table("designated_exercises")
+            .set("[onTime]", onTime)
+            .set("[time_in_week]", timeInWeek)
+            .set("[time_in_day]", timeInDay)
+            .set("[num_sets]", nSets)
+            .set("[num_repeats]", nRepeats)
+            .set("[set_duration]", setDuration)
+            .set("[set_duration_units]", setDurationUnits)
+            .set("[break_between_sets]", breakBet)
+            .set("[break_between_sets_units]", breakUnits)
+            .set("[description]", description)
+            .where("exe_id =?",exe_id)
+            .toString()
+    );
+    console.log(query);
+    sql.Update(query).then(function (ans) {
+        res.json({error_code:0,err_desc:null})
+    }).catch(function(err){
+        res.send(err)
+    })
+});
 
 app.post('/uploadToBank', function(req, res) {
     console.log("enter to upload to bank");
