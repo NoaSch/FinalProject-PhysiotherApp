@@ -496,33 +496,3 @@ self.dataLoading = true;
      }
  }]);
 
-/*
- let req = {
- method: 'POST',
- url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/getProgramExe',
- headers: {
- 'Content-Type': "application/json"
- },
- data: {
- "prog_id": programService.getProgID()
- }
- };
- $http(req).then(function (ans) {
- self.exercises = ans.data;
- console.log("number of exe::::" + self.exercises.length)
- console.log(self.exercises);
- self.exercises.forEach(function (element) {
- self.chosenExe[element.exe_id] = false;
- if(element.media_path != null) {
- //self.videosURL[element.exe_id] = "http://10.100.102.11:3000/api/mediaGet/"+element.media_path;
- self.videosURL[element.exe_id] = "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + "/api/mediaGet/" + element.media_path;
- //console.log("viseoPath!!!!!!!!!!!!!!!!!!!");
- }
- console.log(self.videosURL[element.exe_id]);
- });
-
- }).catch(function (err) {
- console.log(err)
- });
-
- */

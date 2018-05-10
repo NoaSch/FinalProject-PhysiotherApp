@@ -31,33 +31,6 @@ app.listen(4000,function(){
 });
 
 
-
-
-/*let config = {
- server: '192.168.1.15',
- userName: 'sa',
- password: 'Admin1!',
- database: 'physiotherDB',
- options:{
- instanceName:"PHYSIOTHER", // I've also tried LOCALDB#219A131B
- database: 'physiotherDB'
- },
- port : 1433
- };*/
-//let sql = require("mssql");
-/*let connection = new Connection(config);
- console.log("before connect");
-
- connection.on('connect', function (err) {
- if (err) {
- console.log(err)
- }
- console.log("commmmksdgkjfdgkfjfhg;");
- /*app.get('/', function (req, res) {
-
- res.send("Connected to DB.");
- });*/
-
 let storage	=	multer.diskStorage({
     destination: function (req, file, callback) {
         callback(null, './uploads');
@@ -67,86 +40,20 @@ let storage	=	multer.diskStorage({
         callback(null,Date.now() + file.originalname);
     }
 });
-app.get('/test', function (req, res) {
 
-    console.log("in test:")
-    /* let query = (
-     squel.select()
-     .from("videos")
-     .toString()
-     );*/
-    let query = "select * from videos";
-    sql.Select(query)
-        .then(function (ans) {
-            console.log("in ans")
-            //var curr_path = ans[0].path.toString();
-            res.send(ans);
-        }).catch(function (reason) {
-        console.log(reason);
-        res.send(reason);
-    })
-});
-//let upload = multer({ storage : storage}).single('userPhoto');
 let upload = multer({ storage : storage}).single('file');
 app.get('/',function(req,res){
     res.sendFile(__dirname + "/index.html");
 });
 
-app.post('/api/photo',function(req,res){
-    //upload = multer({ storage : storage}).single('userPhoto');
-    //upload = multer({ storage : storage}).single('file');
-    console.log("enter to photo");
-    upload(req,res,function(err) {
-        if(err) {
-            return res.end("Error uploading file.");
-        }
-        if (typeof req.file === 'undefined')
-            return res.end("No file");
-        // res.end("File is uploaded");
-        console.log(req.file.filename);
-        ////add to DB
-        if(req.file.mimetype == "video/quicktime")
-        {
-            let newPath = changeToMP4Extention(req.file.path);
-            convertTomp4(req.file.path,newPath)
-                .then(insertVideoToDB(newPath))
-                .then(function(ans){
-                    res.send("Done WithConvert!!!!")
-                })
-                .catch(function(err){
-                    res.send(err)
-                })
-        }
-        else {
-            insertVideoToDB(req.file.path)
-                .then(function(ans){
-                    res.send("DoneWithOutConvert")}).catch(function (err) {
-                reject(err)});
-        }
-    });
-
-});
-///newwwww
-
-
-
-/**
- * generates random string of characters i.e salt
- * @function
- * @param {number} length - Length of the random string.
- */
+//generates random string of characters i.e salt
 var genRandomString = function(length){
     return crypto.randomBytes(Math.ceil(length/2))
         .toString('hex') /** convert to hexadecimal format */
         .slice(0,length);   /** return required number of characters */
 };
 
-/**
- * hash password with sha512.
- * @function
- * @param {string} password - List of required fields.
- * @param {string} salt - Data to be validated.
- */
+//hash password with sha256.
 var sha256 = function(password, salt){
     var hash = crypto.createHmac('sha256', salt); /** Hashing algorithm sha512 */
     hash.update(password);
@@ -157,6 +64,7 @@ var sha256 = function(password, salt){
     };
 };
 
+//return hashed password
 function saltHashPassword(userpassword) {
     var salt = genRandomString(16); /** Gives us salt of length 16 */
     var passwordData = sha256(userpassword, salt);
@@ -165,40 +73,8 @@ function saltHashPassword(userpassword) {
     console.log('nSalt = '+passwordData.salt);
 };
 
-app.post('/api/tryHash', function (req, res) {
 
-    console.log("enter create program");
-    let salt = genRandomString(16);
-    /** Gives us salt of length 16 */
-    let username = req.body.username;
-    let password = req.body.password;
-    let passwordData = sha256(password, salt);
-    let newPass = passwordData.passwordHash;
-    let newsalt = passwordData.salt;
-    console.log('Passwordhash = ' + newPass);
-    console.log('nSalt = ' + newsalt);
-    let query = (
-        squel.insert()
-            .into("[dbo].[users]")
-            .set("[username]", username)
-            .set("[password]", newPass)
-            .set("[salt]", newsalt)
-            .set("[isPhysio]", 0)
-
-            .toString()
-    );
-    console.log(query);
-    sql.Insert(query).then(function (ans) {
-        //res.send(ans);
-        res.send(ans);
-    }).catch(function (err) {
-        console.log(err);
-        res.send(err);
-    })
-});
-
-
-//app.post('/api/tryHash', function (req, res) {
+//add new user and password
 function insertToUsers(username,password,isPhysio) {
 
     return new Promise(function (resolve, reject) {
@@ -231,108 +107,8 @@ function insertToUsers(username,password,isPhysio) {
     });
 };
 
-/*app.post('/api/validate', function (req, res) {
-    let username = req.body.username;
-    let password = req.body.password;
 
-    let query = (
-        squel.select()
-            .from("users")
-            .where("username = ?", username)
-            .toString()
-    );
-    sql.Select(query)
-        .then(function (ans) {
-            if (ans.length == 0) {
-
-                // var pathes = ans[0].path.toString();
-                res.json({err: "שם משתמש או סיסמא לא נכונים"})
-            }
-            else {
-                let querySalt = (
-                    squel.select()
-                        .from("users")
-                        .where("username = ?", username)
-                        .toString()
-                );
-                sql.Select(query)
-                    .then(function (ans2) {
-                        if (ans.length == 0) {
-
-                            // var pathes = ans[0].path.toString();
-                            res.json({err: "שם משתמש או סיסמא לא נכונים"})
-                        }
-                        else {
-                            let dbSalt = ans[0].salt;
-                            console.log(dbSalt);
-
-                            let passwordData = sha256(password, dbSalt);
-                            if (passwordData.passwordHash == ans[0].password) {
-                                //res.json({success: "הצלחה"});
-                                if (ans[0].isPhysio) {
-                                    console.log("physio");
-                                    let query2 = (
-                                        squel.select()
-                                            .from("physiotherapists")
-                                            .where("username = ?", username)
-                                            .toString()
-                                    );
-                                    sql.Select(query2)
-                                        .then(function (ansP) {
-                                            ansP[0].isPhysio = ans[0].isPhysio;
-                                            res.send(ansP);
-                                        }).catch(function (err1) {
-                                        console.log(err1);
-                                        res.json({err: "שם משתמש או סיסמא לא נכונים"})
-                                    });
-
-                                }
-                                else if (username == 'admin') {
-                                    res.send(ans);
-
-                                }
-                                else {
-                                    let query3 = (
-                                        squel.select()
-                                            .from("patients")
-                                            .where("username = ?", username)
-                                            .toString()
-                                    );
-                                    sql.Select(query3)
-                                        .then(function (ansP2) {
-                                            ansP2[0].isPhysio = ans[0].isPhysio;
-                                            res.send(ansP2);
-                                        }).catch(function (err2) {
-                                        console.log(err2);
-                                        res.json({err: "שם משתמש או סיסמא לא נכונים"})
-                                    });
-
-                                }
-                            }
-                            else {
-                                res.json({err: "שם משתמש או סיסמא לא נכונים"});
-                            }
-
-                        }
-
-
-                    }).catch(function (reason) {
-                    console.log(reason);
-                    res.json({err: "שם משתמש או סיסמא לא נכונים"});
-
-                })
-            }
-        }).catch(function (reason) {
-        console.log(reason);
-        res.json({err: "שם משתמש או סיסמא לא נכונים"});
-
-    })
-
-});
-
-*/
-
-
+//check if the user's password is correct
 app.post('/api/validate', function (req, res) {
     let username = req.body.username;
     let password = req.body.password;
@@ -450,7 +226,7 @@ app.post('/api/validate', function (req, res) {
 
 });
 
-//reateProgram
+//radd new program to patient
 app.post('/api/createPrgram', function (req, res) {
     console.log("enter create program");
     let _physioUsername = req.body.physio;
@@ -477,6 +253,7 @@ app.post('/api/createPrgram', function (req, res) {
     )
 });
 
+//add new exercise with video to the DB
 app.post('/upload', function(req, res) {
     console.log("enter to upload");
     console.log("in upload");
@@ -535,7 +312,7 @@ app.post('/upload', function(req, res) {
 
 });
 
-
+//add new exercise without a video
 app.post('/uploadNoVideo', function(req, res2) {
     console.log("enter to uploadNoVideo");
     insertVideoToDB(req.body.bank,req.body.path,req.body.prog_id,req.body.exeTitle,req.body.onTime,req.body.timeInWeek,req.body.timeInDay,req.body.nSets,req.body.nRepeats,req.body.setDuration,req.body.setDurationUnits,req.body.break,req.body.breakUnits,req.body.description,null,null).then(function(ans){
@@ -545,6 +322,7 @@ app.post('/uploadNoVideo', function(req, res2) {
     })
 });
 
+//updates exerccise's details
 app.post('/updateEXE', function(req, res) {
     let onTime = 0;
     let exe_id = req.body.exe_id;
@@ -597,6 +375,7 @@ app.post('/updateEXE', function(req, res) {
     })
 });
 
+//upload new video to the bank
 app.post('/uploadToBank', function(req, res) {
     console.log("enter to upload to bank");
 
@@ -651,47 +430,7 @@ app.post('/uploadToBank', function(req, res) {
 
 });
 
-/*function InsertMessage(cor_id,to,from,date,title,content,type) {
- return new Promise(function(resolve,reject) {
- let _toName = "";
- let _fromName = "";
- getFullname(to).then(function (ansTo) {
- _toName = ansTo[0];
- }).then(getFullname(from)
- .then(function (ansFrom) {
- _fromName = ansFrom[0];
- })
- .then(function (ans2) {
- console.log("ans2");
- let query = (
- squel.insert()
- .into("[dbo].[messages]")
- .set("[correspondence_id]", cor_id)
- .set("[to_first_name]", _toName.first_name)
- .set("[to_last_name]", _toName.last_name)
- .set("[to_username]", to)
- .set("[from_username]", from)
- .set("[from_first_name]", _fromName.first_name)
- .set("[from_last_name]", _fromName.last_name)
- .set("[date]", date)
- .set("[title]", title)
- .set("[msg_content]", content)
- .set("[type]", type)
- .toString()
- );
- console.log("query");
- sql.Insert(query).then(function (ans) {
- //res.send(ans);
- resolve(ans);
- }).catch(function (err) {
- console.log("Error in inset: " + err);
- reject(err);
- })}).catch(function (err) {
- console.log("Error in inset: " + err);
- reject(err);
- }))})
- };*/
-
+//insert new message to the DB
 function InsertMessage(cor_id,to,from,date,title,content,type) {
     return new Promise(function(resolve,reject) {
         let _toName = "";
@@ -734,6 +473,7 @@ function InsertMessage(cor_id,to,from,date,title,content,type) {
 
 };
 
+//add new message to the DB
 app.post('/api/sendMessage', function (req, res) {
     let _isNew = req.body.isNew;
     let _to = req.body.to;
@@ -763,7 +503,7 @@ app.post('/api/sendMessage', function (req, res) {
         })}
 });
 
-
+//get next free correspondence id
 function genNextCorId() {
     return new Promise(function (resolve, reject) {
         let query = "select Max(correspondence_id) from dbo.messages";
@@ -785,8 +525,7 @@ function genNextCorId() {
 }
 
 
-
-//setPatientFeedback
+//store the patient's feedback
 app.post('/api/setPatientFeedback', function (req, res) {
     let createDate = moment().format('YYYY-MM-DD HH:mm:ss');
     let pat_username = req.body.patUsername;
@@ -849,11 +588,6 @@ app.post('/api/setPatientFeedback', function (req, res) {
                     res.send(err2);
                 })
             })
-
-            // var pathes = ans[0].path.toString();
-            //res.send(ansInsert);
-            ///create message for the physiotherpaist
-
                 .catch(function (reason) {
                     console.log(reason);
                     res.send(reason);
@@ -864,6 +598,7 @@ app.post('/api/setPatientFeedback', function (req, res) {
     });
 });
 
+//get program id and date and patient user's name
 app.post('/api/getEXEidByDateAndPat', function (req, res) {
     console.log("enter test users");
     let _patientUsername = req.body.patUsername;
@@ -890,55 +625,8 @@ app.post('/api/getEXEidByDateAndPat', function (req, res) {
     })
 });
 
-app.get('/api/video/:id', function(req, res){
-    console.log("enter to video");
-    let id = req.params.id;
-    let query = (
-        squel.select()
-            .from("videos")
-            .field("path")
-            .where("id = ?", id)
-            .toString()
-    );
-    sql.Select(query)
-        .then(function (ans) {
-            console.log("enter to return select");
 
-            let curr_path = ans[0].path.toString();
-            if(curr_path.endsWith('.mp4')) {
-                //path2 = curr_path;
-                showFile(curr_path,req,res).then(function(ans){console.log("showVideo" + curr_path)})
-            }
-        }).catch(function (reason) {
-        console.log(reason);
-        res.send(reason);
-    })
-});
-
-
-
-app.get('/api/GetAllVideosPathes', function (req, res) {
-    console.log("enter to all video");
-    let query = (
-        squel.select()
-            .from("videos")
-            .field("id")
-            .field("path")
-            .toString()
-    );
-    sql.Select(query)
-        .then(function (ans) {
-            console.log("videos came back from the DB");
-
-            // var pathes = ans[0].path.toString();
-            res.send(ans);
-
-        }).catch(function (reason) {
-        console.log(reason);
-        res.send(reason);
-    })
-});
-
+//get all the therapist details
 app.get('/api/GetAllTherapists', function (req, res) {
     console.log("enter to all video");
     let query = (
@@ -960,27 +648,7 @@ app.get('/api/GetAllTherapists', function (req, res) {
 });
 
 
-app.get('/api/testUsers', function (req, res) {
-    console.log("enter test users");
-    let query = (
-        squel.select()
-            .from("Users")
-            .field("username")
-            .toString()
-    );
-    sql.Select(query)
-        .then(function (ans) {
-            console.log("users came back from the DB");
-
-            // var pathes = ans[0].path.toString();
-            res.send(ans);
-
-        }).catch(function (reason) {
-        console.log(reason);
-        res.send(reason);
-    })
-});
-
+//get all patient's programs
 app.post('/api/getUserPrograms', function (req, res) {
     console.log("enter test users");
     let _username = req.body.username;
@@ -1003,7 +671,7 @@ app.post('/api/getUserPrograms', function (req, res) {
     })
 });
 
-
+//get the patients of given physiotherapist
     app.post('/api/getPhysioPatients', function (req, res) {
     console.log("enter get physio users");
     let _physioUsername = req.body.physio;
@@ -1027,6 +695,7 @@ app.post('/api/getUserPrograms', function (req, res) {
     })
 });
 
+//gets all the patient's details
 app.post('/api/getPatientDetails', function (req, res) {
     let _username = req.body.username;
     let query = (
@@ -1048,72 +717,7 @@ app.post('/api/getPatientDetails', function (req, res) {
     })
 });
 
-app.post('/api/authenticate', function (req, res) {
-    console.log("Login");
-    let _username = req.body.username;
-    let _password = req.body.password;
-
-    let query = (
-        squel.select()
-            .field("isPhysio")
-            .from("users")
-            .where("username = ?", _username)
-            .where("password = ?", _password)
-            .toString()
-    );
-    sql.Select(query)
-        .then(function (ans) {
-            if (ans.length === 0) {
-                res.json({err:"שם משתמש או סיסמא לא נכונים"});
-                return;
-            }
-            // res.json({success:"login"});
-            if(ans[0].isPhysio)
-            {
-                console.log("physio");
-                let query2 = (
-                    squel.select()
-                        .from("physiotherapists")
-                        .where("username = ?", _username)
-                        .toString()
-                );
-                sql.Select(query2)
-                    .then(function (ansP) {
-                        ansP[0].isPhysio = ans[0].isPhysio;
-                        res.send(ansP);
-                    }).catch(function (err1) {
-                    console.log(err1);
-                    res.send(err1);
-                });
-
-            }
-            else if(_username == 'admin')
-            {
-                res.send(ans);
-
-            }
-            else{
-                let query3 = (
-                    squel.select()
-                        .from("patients")
-                        .where("username = ?", _username)
-                        .toString()
-                );
-                sql.Select(query3)
-                    .then(function (ansP2) {
-                        ansP2[0].isPhysio = ans[0].isPhysio;
-                        res.send(ansP2);
-                    }).catch(function (err2) {
-                    console.log(err2);
-                    res.send(err2);
-                });
-
-
-            }}).catch(function (reason) {
-        console.log(reason);
-        res.send(reason);
-    })});
-
+//change user's details
 app.post('/api/updateUserDetails', function (req, res) {
 
     upload(req, res, function (err) {
@@ -1166,10 +770,7 @@ app.post('/api/updateUserDetails', function (req, res) {
 
 });
 
-/*
- insertToUsers
- */
-
+//add new user to the system
 app.post('/api/register', function (req, res) {
     let _isPhysio = 0;
     console.log("register");
@@ -1303,156 +904,8 @@ app.post('/api/register', function (req, res) {
         })
     }
 });
-app.post('/api/registerOLD', function (req, res) {
-    let _isPhysio = 0;
-    console.log("register");
-    let _username = req.body.username;
-    let _password = req.body.password;
-    let _firstName = req.body.firstName;
-    let _lastName = req.body.lastName;
-    let _physio_username = req.body.physiotherapist_username;
-    let _phone = parseInt(req.body.phone);
-    let _mail = req.body.mail;
-    let _file = req.file;
-    let _age = req.body.age;
-    let _diagnosis = req.body.diagnosis;
-    if (req.body.isPhysio === true) {
-        _isPhysio = 1;
-    }
 
-    if (_isPhysio === 1) {
-        let query = (
-            squel.select()
-                .from("users")
-                .where("username = ?", _username)
-                .toString()
-        );
-        sql.Select(query)
-            .then(function (ans) {
-                if (ans.length === 0) {//the username not exist
-                    let queryInsert = (//insert to the users table
-                        squel.insert()
-                            .into("[dbo].[users]")
-                            .set("[username]", _username)
-                            .set("[password]", _password)
-                            .set("[isPhysio]", _isPhysio)
-                            .toString()
-                    );
-                    sql.Insert(queryInsert).then(function (ansUsers) {
-                        let queryInsertPhysio = (//insert to the users table
-                            squel.insert()
-                                .into("[dbo].[physiotherapists]")
-                                .set("[username]", _username)
-                                .set("[first_name]", _firstName)
-                                .set("[last_name]", _lastName)
-                                .set("[mail]", _mail)
-                                .set("[phone]", _phone)
-                                .toString()
-                        );
-                        console.log(queryInsertPhysio);
-                        sql.Insert(queryInsertPhysio).then(function (ansIn) {
-                            res.send(ansIn);
-                        }).catch(function(err){
-                            res.json({err: err});
-                        })
-                    }).catch(function(err){
-                        res.json({err: err});
-                    })
-                }
-                else {
-                    res.json({err: "username exists"});
-
-                }
-            }).catch(function (err) {
-            res.json({err: err});
-
-        })
-    }
-    else {
-
-        ///the username not exist
-
-        upload(req, res, function (err) {
-
-            if (err) {
-                res.json({err: err});
-                return;
-            }
-            _username = req.body.username;
-            _password = req.body.password;
-            _firstName = req.body.firstName;
-            _lastName = req.body.lastName;
-            _physio_username = req.body.physiotherapist_username;
-            _phone = parseInt(req.body.phone);
-            _mail = req.body.mail;
-            _file = req.file;
-            _age = req.body.age;
-            _diagnosis = req.body.diagnosis;
-            let _newFilePath = null;
-            if(_file != null)
-            {
-                _newFilePath = _file.path.replace('uploads\\', '');
-
-            }
-            let query = (
-                squel.select()
-                    .from("users")
-                    .where("username = ?", req.body.username)
-                    .toString()
-            );
-            sql.Select(query)
-                .then(function (ans) {
-                    if (ans.length === 0) {
-                        let queryInsert = (//insert to the users table
-                            squel.insert()
-                                .into("[dbo].[users]")
-                                .set("[username]", _username)
-                                .set("[password]", _password)
-                                .set("[isPhysio]", _isPhysio)
-                                .toString()
-                        );
-                        console.log(queryInsert);
-                        sql.Insert(queryInsert).then(function (ansUsers) {
-                            queryInsertPatient = (//insert to the users table
-                                squel.insert()
-                                    .into("[dbo].[patients]")
-                                    .set("[username]", _username)
-                                    .set("[first_name]", _firstName)
-                                    .set("[last_name]", _lastName)
-                                    .set("[physiotherapist_username]", _physio_username)
-                                    .set("[mail]", _mail)
-                                    .set("[phone]", _phone)
-                                    .set("[age]", _age)
-                                    .set("[diagnosis]", _diagnosis)
-                                    .set("[pic_url]", _newFilePath)
-                                    //.set("[mail]",_mail)
-                                    //.set("[phone]",_phone)
-                                    .toString()
-                            );
-                            console.log(queryInsertPatient);
-                            sql.Insert(queryInsertPatient).then(function (ansIn) {
-                                res.send(ansIn);
-                            }).catch(function (err) {
-                                res.json({err: err});
-                            })
-                        }).catch(function (err) {
-                            res.json({err: err});
-                        })
-
-                    }
-                    else {
-                        res.json({err: "username exists"});
-
-                    }
-                }).catch(function (err) {
-                res.json({err: err});
-
-            })
-
-        })
-    }
-});
-
+//register user without a picture
 app.post('/api/registerNoPhoto', function (req, res) {
     let _isPhysio = 0;
     console.log("register");
@@ -1518,66 +971,10 @@ app.post('/api/registerNoPhoto', function (req, res) {
         res.json({err: err});
 
     })
-    /*
-     let query = (
-     squel.select()
-     .from("users")
-     .where("username = ?", req.body.username)
-     .toString()
-     );
-     sql.Select(query)
-     .then(function (ans) {
-     if (ans.length === 0) {
-     let queryInsert = (//insert to the users table
-     squel.insert()
-     .into("[dbo].[users]")
-     .set("[username]", _username)
-     .set("[password]", _password)
-     .set("[isPhysio]", _isPhysio)
-     .toString()
-     );
-     console.log(queryInsert);
-     sql.Insert(queryInsert).then(function (ansUsers) {
-     queryInsertPatient = (//insert to the users table
-     squel.insert()
-     .into("[dbo].[patients]")
-     .set("[username]", _username)
-     .set("[first_name]", _firstName)
-     .set("[last_name]", _lastName)
-     .set("[physiotherapist_username]", _physio_username)
-     .set("[mail]", _mail)
-     .set("[phone]", _phone)
-     .set("[age]", _age)
-     .set("[diagnosis]", _diagnosis)
-     .set("[pic_url]", null)
-     //.set("[mail]",_mail)
-     //.set("[phone]",_phone)
-     .toString()
-     );
-     console.log(queryInsertPatient);
-     sql.Insert(queryInsertPatient).then(function (ansIn) {
-     res.send(ansIn);
-     }).catch(function (err) {
-     res.json({err: err});
-     })
-     }).catch(function (err) {
-     res.json({err: err});
-     })
-
-     }
-     else {
-     res.json({err: "username exists"});
-
-     }
-     }).catch(function (err) {
-     res.json({err: err});
-
-     })
-
-     */
 
 });
 
+//get the exercises inside a given program
 app.post('/api/getProgramExe', function (req, res) {
     console.log("enter getProgramExe");
     let _prog_id = req.body.prog_id;
@@ -1600,27 +997,7 @@ app.post('/api/getProgramExe', function (req, res) {
     })
 });
 
-
-app.post('/api/getBank', function (req, res) {
-    console.log("enter toGet bank");
-    let query = (
-        squel.select()
-            .from("media_bank")
-            .toString()
-    );
-    sql.Select(query)
-        .then(function (ans) {
-            console.log("video came back from the DB");
-            // var pathes = ans[0].path.toString();
-            res.send(ans);
-
-        }).catch(function (reason) {
-        console.log(reason);
-        res.send(reason);
-    })
-});
-
-//addTagToBank
+//add new tag to the tags list
 app.post('/api/addTagToBank', function (req, res) {
     let tag = req.body.tag;
     ////check the date!!!!!!//
@@ -1654,6 +1031,8 @@ app.post('/api/addTagToBank', function (req, res) {
     })
 
 });
+
+//validate that user's temp pass is equal to the temp pass that is stored in the DB
 app.post('/api/validateTempPass', function (req, res) {
     let userTemp= req.body.tempPass;
     let username = req.body.username;
@@ -1688,6 +1067,7 @@ app.post('/api/validateTempPass', function (req, res) {
     })
 });
 
+//update user's password
 app.post('/api/updatePassword', function (req, res) {
     ///change to hash pass
     //username,pass
@@ -1728,7 +1108,7 @@ app.post('/api/updatePassword', function (req, res) {
 
 });
 
-
+//update user's password
 app.post('/api/updateNewPassword', function (req, res) {
     //username,pass
     let _username = req.body.username;
@@ -1776,20 +1156,9 @@ app.post('/api/updateNewPassword', function (req, res) {
         console.log(reason);
         res.send(reason);
     })
-    /*let query = (squel.update()
-     .table("users")
-     .set("password", _newPass)
-     .where("username = ?",_username)
-     .toString());
-     sql.Update(query)
-     .then(function (ans) {
-     res.send(ans);
-     }).catch(function (err){
-     res.json({"error":1});
-     })*/
-
 });
 
+//check the difference between two times
 function checkdiff(dbTime)
 {
     var now = new Date();
@@ -1803,6 +1172,8 @@ function checkdiff(dbTime)
     }
     return false;
 };
+
+//check if user's have a temp pass
 function  checkIfTempExist(username) {
     return new Promise(function(resolve,reject) {
         let query = (
@@ -1827,6 +1198,8 @@ function  checkIfTempExist(username) {
         })
     })
 }
+
+//send mail by google account
 function sendMail(mailOptions, mail, r) {
     return new Promise(function(resolve,reject) {
 
@@ -1859,6 +1232,8 @@ function sendMail(mailOptions, mail, r) {
         return mailOptions;
     })
 }
+
+//get the user's temp pass
 app.post('/api/getTempPass', function (req, res) {
     console.log("enter toGet tempPass");
     let _username = req.body.username;
@@ -1873,7 +1248,6 @@ app.post('/api/getTempPass', function (req, res) {
             .where("username = ?", _username)
             .toString()
     );
-    //check if the
     sql.Select(query)
         .then(function (ansPat) {
                 if(ansPat.length == 0) {
@@ -1993,8 +1367,6 @@ app.post('/api/getTempPass', function (req, res) {
                     })
                 }
 
-                // to be continued
-
             }
             //}
         ).catch(function (reason) {
@@ -2008,8 +1380,7 @@ app.post('/api/getTempPass', function (req, res) {
 });
 
 
-//getInbox
-
+//update messages that read by patient
 app.post('/api/updateReadMessagePatient', function (req, res) {
 
 
@@ -2026,9 +1397,8 @@ app.post('/api/updateReadMessagePatient', function (req, res) {
         res.json({err: err});
     })
 });
+//update that physiotherapist read messages from certain patient
 app.post('/api/updateReadMessagePhysio', function (req, res) {
-
-
     let _physio = req.body.physio;
     let _patient = req.body.patient;
     let queryUpdate = (
@@ -2046,7 +1416,7 @@ app.post('/api/updateReadMessagePhysio', function (req, res) {
     })
 });
 
-
+//get all message of a given correspondence
 function getMessageOfCorrespondence(element) {
     return new Promise(function(resolve,reject) {
         let _cor_id = element.correspondence_id;
@@ -2069,34 +1439,7 @@ function getMessageOfCorrespondence(element) {
         )
     })};
 
-app.post('/api/getMessagesTest', function (req, res) {
-    let _username = req.body.username;
-    let ansFinal = [];
-    let query = (
-        squel.select()
-            .field("correspondence_id")
-            //  .field("Min(date)","max_date")
-            .from("messages")
-            .where("to_username = ?", _username)
-            .group("correspondence_id")
-            .toString()
-    );
-    sql.Select(query)
-        .then(function (ans) {
-            for(var i = 0; i < ans.length; i++){
-                var tmp = getMessageOfCorrespondence(ans[i]).then(function(ansNew){ansFinal.push(ansNew);})
-
-            }}).then(function (ansTry) {
-        res.send(ansFinal);
-    }).catch(function (reason) {
-        console.log(reason);
-        res.send(reason);
-    });
-
-});
-
-
-
+//get the messages of a gicen correspondence
 app.post('/api/getMessageByCorrespondence', function (req, res) {
     let _cor_id = req.body.cor_id;
     let query = (
@@ -2116,45 +1459,9 @@ app.post('/api/getMessageByCorrespondence', function (req, res) {
         res.send(reason);
     })
 });
-app.post('/api/getAllMessagesByCorrespondenceID', function (req, res) {
-    let _cor_id = req.body.cor_id;
-    let query = (
-        squel.select()
-            .from("messages")
-            .where("correspondence_id = ?", _cor_id)
-            .order("date", false)
-            .toString()
-    );
-    sql.Select(query)
-        .then(function (ans) {
-            res.send(ans);
-
-        }).catch(function (reason) {
-        console.log(reason);
-        res.send(reason);
-    })
-});
 
 
-app.post('/api/getAllMessagesByCorrespondenceID', function (req, res) {
-    let _cor_id = req.body.cor_id;
-    let query = (
-        squel.select()
-            .from("messages")
-            .where("correspondence_id = ?", _cor_id)
-            .order("date", false)
-            .toString()
-    );
-    sql.Select(query)
-        .then(function (ans) {
-            res.send(ans);
-
-        }).catch(function (reason) {
-        console.log(reason);
-        res.send(reason);
-    })
-});
-
+//get all messages between two users
 app.post('/api/getAllMessagesBetweenTwo', function (req, res) {
     let user1 = req.body.user1;
     let user2 = req.body.user2;
@@ -2177,44 +1484,7 @@ app.post('/api/getAllMessagesBetweenTwo', function (req, res) {
     })
 });
 
-app.post('/api/getOutbox', function (req, res) {
-    let _username = req.body.username;
-    let query = (
-        squel.select()
-            .from("messages")
-            .where("from_username = ?", _username)
-            .order("date", false)
-            .toString()
-    );
-    sql.Select(query)
-        .then(function (ans) {
-            res.send(ans);
-
-        }).catch(function (reason) {
-        console.log(reason);
-        res.send(reason);
-    })
-});
-app.post('/api/getInbox', function (req, res) {
-    let _username = req.body.username;
-    let query = (
-        squel.select()
-            .from("messages")
-            .where("to_username = ?", _username)
-            .order("date", false)
-            .toString()
-    );
-    sql.Select(query)
-        .then(function (ans) {
-            res.send(ans);
-
-        }).catch(function (reason) {
-        console.log(reason);
-        res.send(reason);
-    })
-});
-
-
+//get the inbox and outbox messaes of user
 app.post('/api/getAllMessagesOfUser', function (req, res) {
     let _username = req.body.username;
     let query = (
@@ -2254,6 +1524,7 @@ app.post('/api/getAllMessagesOfUser', function (req, res) {
 
 });
 
+//get number of unreaded messages by specific user
 app.post('/api/getNumNewMessages', function (req, res) {
     let _username = req.body.username;
             let query = (
@@ -2278,6 +1549,8 @@ app.post('/api/getNumNewMessages', function (req, res) {
 
             })
 });
+
+//get the un read messages between physiotherapist and certain patient
 app.post('/api/getNumNewMessagesPhysio', function (req, res) {
     let _username = req.body.username;
     let _patient = req.body.patient;
@@ -2305,27 +1578,7 @@ app.post('/api/getNumNewMessagesPhysio', function (req, res) {
     })
 });
 
-/*app.post('/api/getAllMessagesOfPatient', function (req, res) {
- let _patirnt = req.body.patName;
- let _physio = req.body.physio;
- let query = (
- squel.select()
- .from("messages")
- //.where("from_username = ?", _patName)
- .where(squel.expr().and("to_username = ?", _physio).or("from_username = ?", _username))
- .order("date", false)
- .toString()
- );
- sql.Select(query)
- .then(function (ans) {
- res.send(ans);
-
- }).catch(function (reason) {
- console.log(reason);
- res.send(reason);
- })
- });*/
-
+//get exercise's full details by exe_id
 app.post('/api/getExeDetails', function (req, res) {
     console.log("enter test users");
     let _exe_id = req.body.exe_id;
@@ -2348,19 +1601,7 @@ app.post('/api/getExeDetails', function (req, res) {
     })
 });
 
-///maybe change to post
-app.post('/api/mediaPost', function(req, res){
-    console.log("enter to video");
-    //let curr_path = "uploads/"+req.body.path;
-    let curr_path = req.body.path;
-    showFile(curr_path,req,res).then(function(ans){
-        console.log("showFileo" + curr_path)})
-        .catch(function (reason) {
-            console.log(reason);
-            res.send(reason);
-        })
-});
-
+//get all videos that are tagged by at least one of the given tags
 app.post('/api/getAllMediaByTags', function (req, res) {
     console.log("getByTas");
     let tags = req.body.tags;
@@ -2381,9 +1622,7 @@ app.post('/api/getAllMediaByTags', function (req, res) {
     })
 });
 
-
-
-///maybe change to post
+///get a video or picure by given path
 app.get('/api/mediaGet/:path', function(req, res){
     console.log("enter to mediaGet");
     let curr_path ="uploads/"+req.params.path;
@@ -2396,6 +1635,7 @@ app.get('/api/mediaGet/:path', function(req, res){
         })
 });
 
+//get the user pic's url
 app.get('/api/getPic/:path', function(req, res){
     let curr_path ="uploads/"+req.params.path;
 
@@ -2406,7 +1646,7 @@ app.get('/api/getPic/:path', function(req, res){
             res.send(reason);
         })
 });
-//deleteExe
+//delete an exercise from the system
 app.delete('/api/deleteExe', function(req, res) {
     var exe_id = req.body.exe_id;
     let queryFeed = (
@@ -2438,6 +1678,7 @@ app.delete('/api/deleteExe', function(req, res) {
     });
 });
 
+//delete a program from the db
 app.delete('/api/deleteProg', function(req, res) {
     var prog_id = req.body.prog_id;
     let queryFeed = (
@@ -2481,6 +1722,7 @@ app.delete('/api/deleteProg', function(req, res) {
     });
 });
 
+//get all the tags n
 app.get('/api/getTags', function (req, res) {
 
     let query = "select * from tags order by tag ASC";
@@ -2494,6 +1736,8 @@ app.get('/api/getTags', function (req, res) {
 
     })
 });
+
+//convert video to mp4
 function convertTomp4(input,output) {
     console.log("enter to covert");
     return new Promise(function(resolve,reject) {
@@ -2518,6 +1762,7 @@ function convertTomp4(input,output) {
     });
 }
 
+//add exercise to the DB
 function insertDesignatedExercise(prog_id, exetitle, date, onTime, tInWeek, tInDay, nSets, nRepeats, dur, durUnits, breakBet, breakBetUnits, currPath, description) {
     return new Promise (function(resolve,reject) {
         let query = (
@@ -2548,6 +1793,8 @@ function insertDesignatedExercise(prog_id, exetitle, date, onTime, tInWeek, tInD
         })
     })
 };
+
+//add exercise vith video to the DB
 function insertVideoToDB(isBank,new_Path,prog_id,exetitle,onTime,tInWeek,tInDay,nSets,nRepeats,dur,durUnits,breakBet,breakBetUnits,description,tags,videoName){
     return new Promise(function(resolve,reject) {
         let currPath = null;
@@ -2591,63 +1838,7 @@ function insertVideoToDB(isBank,new_Path,prog_id,exetitle,onTime,tInWeek,tInDay,
     })
 };
 
-function insertVideoToDBOLD(isBank,new_Path,prog_id,exetitle,onTime,tInWeek,tInDay,nSets,nRepeats,dur,durUnits,breakBet,breakBetUnits,description,tags,videoName){
-    return new Promise(function(resolve,reject) {
-        let currPath = null;
-        let date = moment().format('YYYY-MM-DD hh:mm:ss');
-        if(typeof new_Path != 'undefined' && new_Path!="null" && new_Path!= null) {
-            currPath = new_Path.replace('uploads\\', '');
-            console.log("before: " + new_Path);
-            console.log("after: " + currPath);
-        }
-        if (typeof nRepeats === 'undefined' || !nRepeats || nRepeats=="null") { nRepeats = null};
-        if (typeof dur === 'undefined' || !dur || dur == "null") { dur = null};
-        if (typeof durUnits === 'undefined' || !durUnits || durUnits == "null") { durUnits = null};
-        if (typeof breakBet === 'undefined' || !breakBet ||breakBet=='null' ) { breakBet = null};
-        // if (typeof nRepeats === 'undefined' || !nRepeats) { nRepeats = null};
-        let query = (
-            squel.insert()
-                .into("[dbo].[designated_exercises]")
-                .set("[prog_id]",prog_id)
-                .set("[title]",exetitle)
-                .set("[date]",date)
-                .set("[onTime]",onTime)
-                .set("[time_in_week]",tInWeek)
-                .set("[time_in_day]",tInDay)
-                .set("[num_sets]",nSets)
-                .set("[num_repeats]",nRepeats)
-                .set("[set_duration]",dur)
-                .set("[set_duration_units]",durUnits)
-                .set("[break_between_sets]",breakBet)
-                .set("[break_between_sets_units]",breakBetUnits)
-                .set("[media_path]", currPath)
-                .set("[description]",description)
-                .toString()
-        );
-        console.log(query);
-        sql.Insert(query).then(function (res) {
-            if(currPath == null || isBank == true)
-            {
-                resolve(res);
-
-            }
-            else {
-                //res.send(ans);
-                ////insert to bank
-                insertToBankDB(currPath,videoName,tags).then(function (ansBank) {
-                    resolve(ansBank);
-                }).catch(function (errbank) {
-                    console.log("Error in insetBank: " + errbank)
-                    reject(errbank)
-                })
-            }
-
-        }).catch(function (err) {
-            console.log("Error in inset: " + err)
-            reject(err)})
-    })
-};
-
+//get user's full name by username
 function getFullname(username){
     return new Promise(function(resolve,reject) {
         let ans = [];
@@ -2697,9 +1888,7 @@ function getFullname(username){
 
 };
 
-
-
-
+//insert viseo to the video's bank
 function insertToBankDB(new_Path,title,tags) {
     return new Promise(function (resolve, reject) {
         let currPath = null;
@@ -2715,7 +1904,6 @@ function insertToBankDB(new_Path,title,tags) {
                 .where("title = ?", title)
                 .toString()
         );
-        //check if the
         sql.Select(queryCheck).then(function (ans) {
             if (ans.length == 0) {
                 let query = (
@@ -2760,6 +1948,7 @@ function insertToBankDB(new_Path,title,tags) {
     });
 };
 
+//save the time that user's loged in to the system
 function insertToLog(username){
     return new Promise(function(resolve,reject) {
         let date = moment().format('YYYY-MM-DD HH:mm:ss');
@@ -2779,26 +1968,7 @@ function insertToLog(username){
     })
 };
 
-
-function insertVideoToDBbackup(new_Path){
-    return new Promise(function(resolve,reject) {
-        let date = moment().format('YYYY-MM-DD hh:mm:ss');
-        let query = (
-            squel.insert()
-                .into("[dbo].[videos]")
-                .set("[id]", date)
-                .set("[path]", new_Path)
-                .toString()
-        );
-        sql.Insert(query).then(function (res) {
-            //res.send(ans);
-            resolve(res);
-        }).catch(function (err) {
-            cosole.log("Error in inset: " + err)
-            reject(err)})
-    })
-};
-
+//convert mov to mp4
 function changeToMP4Extention(path)
 {
     let idx = path.indexOf(".MOV");
@@ -2807,6 +1977,7 @@ function changeToMP4Extention(path)
     return new_path;
 }
 
+//return the file
 function showFile(path2,req,res){
     return new Promise(function(resolve,reject) {
         console.log("enter to show video");

@@ -61,48 +61,6 @@ app.controller('mainController', ['AuthenticationService','messagesService','$ht
         $rootScope.loading = false;
     });
 
-
-    //self.userName = "noa";
-  /*  let ip = "192.168.1.15";
-    let port = 4001;
-    let testURL = "2017-12-08 03:04:44.000";
-    //self.videoURL = "http:192.168.1.15:4001/api/video/2017-12-08 03:04:44.000";
-    self.videoURL = "http://" + ip + ":" + port + "/api/video/" + testURL;
-    console.log("videoURL"+self.videoURL);
-    let req2 = "http://192.168.1.15:4001/api/GetAllVideosPathes";
-    //let req = {
-        // method: 'GET',
-        //url: "http://" + ip + ":" + port + "/api/GetAllVideosPathes",
-       // headers: {
-        //    'Content-Type': "application/json"
-       // },
-       // data: {
-        //    "username": userid,
-        //    "password": pass
-       // }
-    //};
-    $http.get(req2).then(function (ans) {
-        self.videos = ans.data;
-        self.videosURL = [];
-        for (i = 0; i < self.videos.length; i++) {
-            self.videosURL.push("http://" + ip + ":" + port + "/api/video/"+self.videos[i].id);
-        }
-        console.log(self.videosURL);
-
-        //console.log(self.videsPathes);
-        });
-
-    //console.log(self.videosPathes);
-    let req3 = "http://" + ip + ":" + port + "/api/testUsers";
-    $http.get(req3).then(function (ans) {
-        self.userName = ans.data[0].username;
-
-        //console.log(self.videsPathes);
-    });
-    self.changeVideo = function (user) {
-        self.videoURL = "http://" + ip + ":" + port + "/api/video/2017-12-20 10:15:37.000";
-      // self.videoURL = "http://192.168.1.15:4001/api/video/2017-12-20 10:15:37.000";
-    };*/
 }]);
 
 app.run(['$rootScope', '$location', '$cookieStore', '$http',
