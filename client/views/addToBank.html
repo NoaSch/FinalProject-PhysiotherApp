@@ -38,8 +38,8 @@
                          ngf-max-size="60MB"
                  />
                  <i ng-show="up.upload_form.file.$error.required">*required</i><br>
-                 <i ng-show="up.upload_form.file.$error.maxSize">File too large
-                     {{up.file.size / 1000000|number:1}}MB: max 60M</i>
+                 <i ng-show="bankController.upload_form.file.$error.maxSize">הקובץ גדול מדי! גודל מקסימלי 60MB
+                    </i>
                  <i>{{bankController.progress}}</i><br>
                  <button class="btn btn-primary btn-block" ng-disabled="bankController.upload_form.$invalid"  type="submit" ng-click="bankController.submit()">העלה את הסרטון</button>
 

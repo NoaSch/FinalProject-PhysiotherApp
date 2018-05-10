@@ -231,7 +231,7 @@ function insertToUsers(username,password,isPhysio) {
     });
 };
 
-app.post('/api/validate', function (req, res) {
+/*app.post('/api/validate', function (req, res) {
     let username = req.body.username;
     let password = req.body.password;
 
@@ -330,6 +330,125 @@ app.post('/api/validate', function (req, res) {
 
 });
 
+*/
+
+
+app.post('/api/validate', function (req, res) {
+    let username = req.body.username;
+    let password = req.body.password;
+
+    let query = (
+        squel.select()
+            .from("users")
+            .where("username = ?", username)
+            .toString()
+    );
+    sql.Select(query)
+        .then(function (ans) {
+            if (ans.length == 0) {
+
+                // var pathes = ans[0].path.toString();
+                res.json({err: "שם משתמש או סיסמא לא נכונים"})
+            }
+            else {
+                let querySalt = (
+                    squel.select()
+                        .from("users")
+                        .where("username = ?", username)
+                        .toString()
+                );
+                sql.Select(query)
+                    .then(function (ans2) {
+                        if (ans.length == 0) {
+
+                            // var pathes = ans[0].path.toString();
+                            res.json({err: "שם משתמש או סיסמא לא נכונים"})
+                        }
+                        else {
+                            let dbSalt = ans[0].salt;
+                            console.log(dbSalt);
+
+                            let passwordData = sha256(password, dbSalt);
+                            if (passwordData.passwordHash == ans[0].password) {
+                                //res.json({success: "הצלחה"});
+                                if (ans[0].isPhysio) {
+                                    console.log("physio");
+                                    let query2 = (
+                                        squel.select()
+                                            .from("physiotherapists")
+                                            .where("username = ?", username)
+                                            .toString()
+                                    );
+                                    sql.Select(query2)
+                                        .then(function (ansP) {
+                                            ansP[0].isPhysio = ans[0].isPhysio;
+                                            insertToLog(username).then(function(ans3)
+                                            {
+                                                res.send(ansP);
+
+                                            }).catch(function (err1) {
+                                                console.log(err1);
+                                                res.json({err: "שגיאה"})
+                                            }).catch(function (err1) {
+                                                console.log(err1);
+                                                res.json({err: "שם משתמש או סיסמא לא נכונים"})
+                                            })
+                                        });
+
+                                }
+                                else if (username == 'admin') {
+
+                                    insertToLog(username).then(function(ans3) {
+
+                                        res.send(ans);
+                                    }).catch(function (err1) {
+                                        console.log(err1);
+                                        res.json({err: "שגיאה"})})
+
+                                }
+                                else {
+                                    let query3 = (
+                                        squel.select()
+                                            .from("patients")
+                                            .where("username = ?", username)
+                                            .toString()
+                                    );
+                                    sql.Select(query3)
+                                        .then(function (ansP2) {
+                                            ansP2[0].isPhysio = ans[0].isPhysio;
+                                            insertToLog(username).then(function (ans3) {
+
+                                                res.send(ansP2);
+                                            }).catch(function (err3) {
+                                                res.json({err: "שגיאה"})
+                                            })
+                                        }).catch(function (err2) {
+                                        console.log(err2);
+                                        res.json({err: "שם משתמש או סיסמא לא נכונים"})
+                                    });
+
+                                }
+                            }
+                            else {
+                                res.json({err: "שם משתמש או סיסמא לא נכונים"});
+                            }
+
+                        }
+
+
+                    }).catch(function (reason) {
+                    console.log(reason);
+                    res.json({err: "שם משתמש או סיסמא לא נכונים"});
+
+                })
+            }
+        }).catch(function (reason) {
+        console.log(reason);
+        res.json({err: "שם משתמש או סיסמא לא נכונים"});
+
+    })
+
+});
 
 //reateProgram
 app.post('/api/createPrgram', function (req, res) {
@@ -2639,6 +2758,25 @@ function insertToBankDB(new_Path,title,tags) {
             }
         })
     });
+};
+
+function insertToLog(username){
+    return new Promise(function(resolve,reject) {
+        let date = moment().format('YYYY-MM-DD HH:mm:ss');
+        let query = (
+            squel.insert()
+                .into("[dbo].[log]")
+                .set("[username]", username)
+                .set("[date]", date)
+                .toString()
+        );
+        sql.Insert(query).then(function (res) {
+            //res.send(ans);
+            resolve(res);
+        }).catch(function (err) {
+            console.log("Error in inset: " + err)
+            reject(err)})
+    })
 };
 
 
