@@ -1,7 +1,7 @@
 /**
  * Created by NOA-PC on 1/13/2018.
  */
-
+//handle registration form
 angular.module('myApp')
     .controller('RegisterController',['regexService','$window','$route','$location', 'AuthenticationService','Upload','FlashService','$http','ipconfigService','PhysiotherapistModel',
             function (regexService,$window,$route,$location, AuthenticationService,Upload,FlashService,$http,ipconfigService,PhysiotherapistModel) {
@@ -10,21 +10,19 @@ angular.module('myApp')
                 self.regexService = regexService;
                 self.therapists = [];
                 self.authService = AuthenticationService;
+                //gets list of all physiotherpists
                 $http.get('http://'+ipconfigService.getIP()+":"+ipconfigService.getPort()+'/api/GetAllTherapists')
                     .then(function (response) {
                          var physios = response.data;
-                        //////continue Here to initialize the physiothrapysts!!!!
                         physios.forEach(function(item) {
                              physio = new PhysiotherapistModel(item.username,item.first_name,item.last_name,item.phone,item.mail);
                              self.therapists.push(physio);
                         });
-                        ////
-                        ////
                             }, function (errResponse) {
                                 console.error(errResponse);
                             });
 
-
+                //send the new user's details to the server
                  self.register = function(valid) {
                      if(!valid)
                      {
@@ -141,15 +139,14 @@ angular.module('myApp')
                              }
 
                          }
-                         //alert("inReg")
-
                      }
                 };
+                 //chack if logged user is admin
                 self.isAdmin = function()
                 {
                     return self.authService.isAdmin;
                 };
-
+                //send picture and details to the server for registration
                 self.upload = function (file) {
                     self.finishLoad = false;
                     //self.cuurDate
@@ -196,10 +193,6 @@ angular.module('myApp')
                     }, function (evt) {
                         var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
                         self.progress = 'progress: ' + progressPercentage + '% '; // capture upload progress
-                        /*if(progressPercentage == 100)
-                         {
-                         self.finishLoad = true;
-                         }*/
                     });
 
                 };

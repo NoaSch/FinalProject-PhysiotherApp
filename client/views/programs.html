@@ -11,7 +11,6 @@
     </div>
 
     <div class="scrollable-content paddClass">
-        <!--<div class="section">-->
             <div class="panel-group"
                  ui-shared-state="myAccordion"
                  ui-default='1'>
@@ -23,9 +22,6 @@
                         </h4>
                     </div>
                         <div class="panel-body">
-                           <!-- {{item.prog_id}}מספר תכנית-->
-                           <!-- <br>>>
-                            <!--<button class="ProgramDetBtn" ng-click="programsController.getExercises(item.prog_id)">פרטי תכנית</button>-->
                             <a href="#/exercises"><button class="ProgramDetBtn" ng-click="programsController.clickProg(item.prog_id)">פרטי תכנית</button></a>
                         </div>
 
@@ -35,147 +31,6 @@
     </div>
 </div>
 
-
-
-
-
-
-
-   <!-- <button ng-click="programsController.changeVideo()">get Details</button>-->
-
-
-
-
-    <!--<h2 class="labelClass"> Best Sellers</h2>
-
-    <div class="box-table" width="500"  >
-    <table>
-        <tr ng-repeat="popcar in mainController.popCars">
-            <td>{{popcar.CarSeriesID}}</td>
-            <td><button ng-click="open(popcar.CarSeriesID)">Show Details</button> </td>
-           <!-- <td><button ng-show="mainController.userService.isLoggedIn" ng-click="mainController.addToCart(popcar.CarSeriesID)"><img src="pics/add-to-cart-dark.png" /></button> </td>-->
-
-
-            <!--<td><button ng-click="mainController.addToCart(popcar.CarSeriesID)" ng-hide="mainController.userService.notLoggedIn"><img src="pics/add-to-cart-dark.png" /></button> </td>-->
-           <!-- <td><button ng-click="mainController.buyCar(popcar.CarSeriesID)">Buy</button> </td>-->
-
-
-            <!--<td><button ng-click="storeCtrl.removeCart(product)">Remove Cart</button> </td>-->
-      <!--  </tr>
-    </table>-->
-
-
-    <!--<div modal="showModal" close="cancel()">
-        <div class="modal-header">
-            <h4>Car's Details</h4>
-        </div>
-        <div class="modal-body">
-            <div>
-
-                <table>
-                    <thead>
-                    <tr>
-        <th>Category</th>
-        <th>Menufacturer</th>
-        <th>Year</th>
-        <th>Color</th>
-        <th>Price</th>
-        <th>NumInStock</th>
-    </tr>
-    </thead>
-    <tr ng-repeat="car in mainController.carDetails">
-        <td>{{car.Category}}</td>
-        <td>{{car.Manufacturer}}</td>
-        <td>{{car.Year}}</td>
-        <td>{{car.Color}}</td>
-        <td>{{car.PriceNIS|currency: "NIS"}}</td>
-        <td>{{car.NumInStock}}</td>
-
-        <!--<td><button ng-click="storeCtrl.removeCart(product)">Remove Cart</button> </td>-->
-   <!-- </tr>
-    </table>
-</div>
-        </div>
-    </div>
-
-<!--<div ng-show="mainCtrl.userService.isLoggedIn">-->
-
-
-    <!--<div class="box-table" ng-hide="mainController.userService.notLoggedIn" width="500" >
-        <h2 class="labelClass"> new cars</h2>
-        <table>
-            <tr ng-repeat="newCar in mainController.newCars">
-                <td>{{newCar.CarSeriesID}}</td>
-               <!--<td><button ng-click="mainController.getCarDetails(newCar.CarSeriesID)">Show Details</button> </td>-->
-             <!-- <td><button ng-click="open(newCar.CarSeriesID)">Show Details</button> </td>
-                <td><button ng-click="mainController.addToCart(newCar.CarSeriesID)"><img src="pics/add-to-cart-dark.png" /></button> </td>
-                <!-- <td><button ng-click="mainController.buyCar(popcar.CarSeriesID)">Buy</button> </td>-->
-
-
-                <!--<td><button ng-click="storeCtrl.removeCart(product)">Remove Cart</button> </td>-->
-           <!-- </tr>
-        </table>
-    </div>
-
-
-        <div modal="showModal" close="cancel()">
-            <div class="modal-header">
-                <h4>Car's Details</h4>
-            </div>
-            <div class="modal-body">
-                <div>
-
-                    <table>
-                        <thead>
-                        <tr>
-                            <th>Category</th>
-                            <th>Menufacturer</th>
-                            <th>Year</th>
-                            <th>Color</th>
-                            <th>Price</th>
-                            <th>NumInStock</th>
-                        </tr>
-                        </thead>
-                        <tr ng-repeat="car in mainController.carDetails">
-                            <td>{{car.Category}}</td>
-                            <td>{{car.Manufacturer}}</td>
-                            <td>{{car.Year}}</td>
-                            <td>{{car.Color}}</td>
-                            <td>{{car.PriceNIS|currency: "NIS"}}</td>
-                            <td>{{car.NumInStock}}</td>
-                        </tr>
-                    </table>
-
-                </div>
-            </div>
-            </div>
-        </div>
-    <!--<div class="box-table" width="500">
-
-        <table>
-            <thead>
-            <tr>
-                <th>Category</th>
-                <th>Menufacturer</th>
-                <th>Year</th>
-                <th>Color</th>
-                <th>Price</th>
-                <th>NumInStock</th>
-            </tr>
-            </thead>
-            <tr ng-repeat="car in mainController.carDetails">
-                <td>{{car.Category}}</td>
-                <td>{{car.Manufacturer}}</td>
-                <td>{{car.Year}}</td>
-                <td>{{car.Color}}</td>
-                <td>{{car.PriceNIS|currency: "NIS"}}</td>
-                <td>{{car.NumInStock}}</td>
-            </tr>
-        </table>
-
-    </div>-->
-</div>
-<!--</div>-->
 
 
 

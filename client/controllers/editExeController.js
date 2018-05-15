@@ -1,7 +1,7 @@
 /**
  * Created by NOA-PC on 12/21/2017.
  */
-
+//handle with change of exercise details
 angular.module("myApp")
  .controller('editExeController', ['regexService','AuthenticationService','Upload','$http', '$location', '$window','$scope', '$rootScope','programService','exerciseService','patientService','ipconfigService','$route', function (regexService,AuthenticationService,Upload,$http,$location, $window,$scope,$rootScope,programService,exerciseService,patientService,ipconfigService,$route   ) {
      let self = this;
@@ -42,10 +42,7 @@ angular.module("myApp")
 
 
      self.submit = function(valid){ //function to call on form submit
-        /* if (/*self.upload_form.file.$valid && self.file) { //check if from is valid and exist
-            // $window.alert("time:  "+self.timeInWeek);
-             self.upload(self.file) //call upload function
-         /*}*/
+
         if(!valid)
          {
              alert("נא הזן את כל השדות באופן חוקי");
@@ -68,9 +65,7 @@ angular.module("myApp")
                 self.submitExeClicked = true;
 
             }
-            ///
-            ///check if we want to do another func without video -
-            ///
+
      }
 
 

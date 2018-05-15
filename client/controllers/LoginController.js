@@ -1,10 +1,11 @@
 /**
  * Created by NOA-PC on 1/4/2018.
  */
+//handle with the authentication
 angular.module("myApp")
     .controller('LoginController',
-        ['regexService','$location', 'messagesService','AuthenticationService','FlashService','resetPasswordService','ipconfigService','$http',
-            function (regexService,$location, messagesService,AuthenticationService,FlashService,resetPasswordService,ipconfigService,$http) {
+        ['regexService','$location', 'messagesService','AuthenticationService','resetPasswordService','ipconfigService','$http',
+            function (regexService,$location, messagesService,AuthenticationService,resetPasswordService,ipconfigService,$http) {
                 // reset login status
                 AuthenticationService.ClearCredentials();
                 var self = this;

@@ -1,7 +1,7 @@
 /**
  * Created by NOA-PC on 12/21/2017.
  */
-
+//handle with the physiotherapist's patients
 angular.module("myApp")
  .controller('patientsController', ['regexService','$route','$http', '$location', '$window','$scope', '$rootScope','programService','exerciseService','patientService','ipconfigService','AuthenticationService', function (regexService,$route,$http,$location, $window,$scope,$rootScope,programService,exerciseService,patientService,ipconfigService,AuthenticationService   ) {
      let self = this;
@@ -35,6 +35,7 @@ self.dataLoading = true;
      $http(req).then(function (ans) {
          self.patients = ans.data;
          self.patients.forEach(function (element) {
+             //get the number of new messages from that patient
              if (element.pic_url != null) {
                  self.pics[element.username] = "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + "/api/getPic/" + element.pic_url;
              }
@@ -56,8 +57,6 @@ self.dataLoading = true;
              {
                  console.log(err.message);
              })
-             //getNumNewMessagesPhysio
-             ///here
          });
          console.log(self.numUnRead);
          self.dataLoading = false;
@@ -92,13 +91,12 @@ self.dataLoading = true;
          console.log("chosen patient: " +  patientService.getID());
          $location.path('/newProgram');
      };
+     //get the patient's programs
      self.patientProg = function(username){
          self.dataLoading = true;
          self.clickedmsg = false;
          self.clickedDet = true;
          self.clickedPatDet = false;
-
-
          self.chosenPatUsername = username;
          let req = {
              method: 'POST',
@@ -119,14 +117,13 @@ self.dataLoading = true;
 
          });
      };
+     //send request for deleting program
      self.deleteProg = function(progID)
      {
 
          self.clickedPatDet = false;
-
          self.clickedmsg = false;
          deleteUser = $window.confirm('האם למחוק את התכנית?');
-
          if(deleteUser) {
              let req = {
                  method: 'DELETE',
@@ -152,7 +149,7 @@ self.dataLoading = true;
              });
          }
      };
-
+     //change location to add exercise form
      self.addExeToProg = function(prog_id)
      {
          self.programService.setProgID(prog_id);
@@ -160,18 +157,16 @@ self.dataLoading = true;
 
 
      };
-
-
+     //change location to edit exercise form
      self.editExe = function(exe)
      {
          self.exerciseService.setEXE(exe);
          $location.path('/editExe');
 
      }
-
+     //send request for deleting an exercise
      self.deleteExe = function(exeID)
      {
-
          self.clickedPatDet = false;
 
          self.clickedmsg = false;
@@ -202,6 +197,7 @@ self.dataLoading = true;
              });
          }
      };
+     //chack if an exercise is belong to the program
      self.isBelongToProgram = function(exe,prog_id) {
          if(exe.prog_id ==prog_id)
             {
@@ -211,6 +207,7 @@ self.dataLoading = true;
                 return false;
             }
      };
+     //check if there are no messages from a patient
      self.notHaveMessages = function(username)
      {
          if(self.dataLoading== false &&(self.messages == null ||  self.messages.length ==0)) {
@@ -221,6 +218,7 @@ self.dataLoading = true;
              return false;
          }
      };
+     //check if paient doesn't have programs
      self.notHaveProgs = function(username)
      {
          if( self.dataLoading== false &&( self.programs == null || self.programs.length ==0)) {
@@ -231,6 +229,7 @@ self.dataLoading = true;
              return false;
          }
      }
+     //handle user click on exercise details
      self.clickExeDet = function(exe_id){
          self.clickedmsg = false;
          self.chosenExe[exe_id] = true;
@@ -241,6 +240,7 @@ self.dataLoading = true;
              }
          });
      };
+     //chack if a program is the chosen program by the physiotherapist
      self.isChosenProg = function(prog_id)
      {
          if(prog_id == self.chosenProgram)
@@ -251,6 +251,7 @@ self.dataLoading = true;
              return false;
          }
      };
+     //check if showing messages from certain pationt
      self.isChosenMsgPat = function(patientUsename)
      {
          if((patientUsename == self.chosenPatMsgUsername) && (self.clickedmsg == true))
@@ -261,6 +262,7 @@ self.dataLoading = true;
              return false;
          }
      };
+     //get program's exercise from the server
      self.progDet = function(prog_id)
      {
          self.dataLoading = true;
@@ -293,8 +295,7 @@ self.dataLoading = true;
 
          });
      }
-
-
+     //get list of messages form and to a certain patient
      self.getMessages = function(patientUsername) {
          self.dataLoading = true;
 
@@ -345,8 +346,6 @@ self.dataLoading = true;
 
 
              });
-
-             //updateReadMessagePhysio
              let reqUpdate = {
                  method: 'POST',
                  url: "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + '/api/updateReadMessagePhysio',
@@ -374,7 +373,7 @@ self.dataLoading = true;
 
          });
      };
-
+     //show more messages of correspondence
      self.more = function(cor_id)
      {
          console.log("cor_id: " + cor_id);
@@ -396,7 +395,7 @@ self.dataLoading = true;
          console.log(self.moreMsgInCor);
 
      };
-
+    //check if message is not the last in the correspondence
      self.notFirst = function(msg,cor)
      {
          if(msg == cor[0]) {
@@ -406,6 +405,7 @@ self.dataLoading = true;
              return true;
          }
      };
+     //handle reply to message
      self.reply = function(cor)
      {
          self.repMsg = "";
@@ -424,6 +424,7 @@ self.dataLoading = true;
          };
          self.rep[cor.correspondence_id] = true;
      };
+     //handle sending new message
      self.sendNewnewMsg = function()
      {
          if (self.newMsg == null) {
@@ -451,15 +452,13 @@ self.dataLoading = true;
              self.newMsg = "";
              $route.reload();
 
-
-
          }).catch(function(err)
          {
              console.log(err);
              alert("שגיאה");
          })
      };
-
+     //sending reply
      self.sendRep = function (cor) {
          if (self.repMsg == null|| self.repMsg == "") {
              alert("טקסט לא חוקי");
@@ -486,7 +485,6 @@ self.dataLoading = true;
                  alert("ההודעה נשלחה");
                  self.repMsg = "";
                  $route.reload();
-
 
              }).catch(function (err) {
                  console.log(err);

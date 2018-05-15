@@ -1,12 +1,4 @@
-<!--<head>
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <link rel="stylesheet" href="/angularScripts/mobile-angular-ui/dist/css/mobile-angular-ui-hover.min.css" />
-    <link rel="stylesheet" href="/angularScripts/mobile-angular-ui/dist/css/mobile-angular-ui-base.min.css" />
-    <link rel="stylesheet" href="/angularScripts/mobile-angular-ui/dist/css/mobile-angular-ui-desktop.min.css" />
-</head>-->
 
-<!--<div class="scrollable" ng-controller="mainController as mainController">-->
-        <!--<div class="scrollable-content section" ui-scroll-bottom="loadMore()">-->
     <div ui-content-for="title">
         <span>תרגילים</span>
     </div>
@@ -26,8 +18,7 @@
                                 {{item.title}}
                             </h4>
                         </div>
-                        <div class="panel-body"> <!--ng-show =exerciseController.chosenExe[item.exe_id]-->
-                                <!--<button class="ProgramDetBtn" ng-click="programsController.getExercises(item.prog_id)">פרטי תכנית</button>-->
+                        <div class="panel-body">
                                 <a href="#/exercises"><button class="ProgramDetBtn" ng-click="exerciseController.clickDet(item.exe_id)">פרטי תרגיל</button></a>
                         <div ng-show = exerciseController.chosenExe[item.exe_id] >
                             <br>
@@ -58,17 +49,9 @@
                             <video class="videoClass" ng-show="exerciseController.videosURL[item.exe_id]" src= {{exerciseController.videosURL[item.exe_id]}} controls type="video/mp4">
                             </video>
                             <button  ng-click="exerciseController.clickFeedback(item)" class="btn btn-primary btn-block">דווח על ביצוע </button>
-                           <!-- <button class="btn btn-primary btn-block">שלח הודעה לפיזיותרפיסט </button>-->
                         </div>
                             </div>
-                        <!--<div class="panel-body">
-                            {{item.prog_id}}מספר תכנית
-                            <br>
-                            <!--<button class="ProgramDetBtn" ng-click="programsController.getExercises(item.prog_id)">פרטי תכנית</button>-->
-                            <!--<a href="#/exercises"><button class="ProgramDetBtn" ng-click="programsController.clickProg(item.prog_id)">פרטי תכנית</button></a>-->
-                        <!--</div>-->
 
-                    <!--</div>-->
                 </div>
             </div>
         </div>

@@ -2,6 +2,7 @@ chosenExe = undefined;
 /**
  * Created by NOA-PC on 12/21/2017.
  */
+//handle with showing program's exercises
 angular.module("myApp")
     .controller('exerciseController', ['AuthenticationService','$http', '$location', '$window','$rootScope','$scope','programService','exerciseService','ipconfigService','patientFeedbackService', function (AuthenticationService,$http,$location, $window,$rootScope,$scope,programService,exerciseService,ipconfigService,patientFeedbackService ) {
         let self = this;
@@ -26,7 +27,6 @@ angular.module("myApp")
             self.exercises.forEach(function (element) {
                 self.chosenExe[element.exe_id] = false;
                 if(element.media_path != null) {
-                    //self.videosURL[element.exe_id] = "http://10.100.102.11:3000/api/mediaGet/"+element.media_path;
                     self.videosURL[element.exe_id] = "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + "/api/mediaGet/" + element.media_path;
                 }
             });
@@ -36,8 +36,6 @@ angular.module("myApp")
             self.dataLoading = false;
 
         });
-
-
 
         self. clickDet = function(exe_id){
 

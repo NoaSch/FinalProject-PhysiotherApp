@@ -2,14 +2,13 @@
  * Created by NOA-PC on 12/21/2017.
  */
 
+//handle with change of user's details
 angular.module("myApp")
  .controller('changeDetailsController', ['regexService','$route','AuthenticationService','Upload','$http', '$location', '$window','$scope', '$rootScope','programService','exerciseService','patientService','ipconfigService', function (regexService,$route,AuthenticationService,Upload,$http,$location, $window,$scope,$rootScope,programService,exerciseService,patientService,ipconfigService   ) {
      let self = this;
      self.authService = AuthenticationService;
      self.regexService = regexService;
     self.dataLoading = true;
-
-
      let req = {
          method: 'POST',
          url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/getPatientDetails',

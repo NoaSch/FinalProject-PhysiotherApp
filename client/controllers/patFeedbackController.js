@@ -1,6 +1,7 @@
 /**
  * Created by NOA-PC on 12/21/2017.
  */
+//handle with patient's feedback
 angular.module("myApp")
     .controller('patFeedbackController', ['AuthenticationService','$http', '$location', '$window','$rootScope','$scope','programService','exerciseService','ipconfigService','patientFeedbackService', function (AuthenticationService,$http,$location, $window,$rootScope,$scope,programService,exerciseService,ipconfigService,patientFeedbackService ) {
         let self = this;

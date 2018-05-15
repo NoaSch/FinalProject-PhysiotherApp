@@ -1,7 +1,7 @@
 /**
  * Created by NOA-PC on 12/21/2017.
  */
-
+//handle with adding new exercise to program
 angular.module("myApp")
  .controller('addExeToProgController', ['regexService','AuthenticationService','Upload','$http', '$location', '$window','$scope', '$rootScope','programService','exerciseService','patientService','ipconfigService','$route', function (regexService,AuthenticationService,Upload,$http,$location, $window,$scope,$rootScope,programService,exerciseService,patientService,ipconfigService,$route   ) {
      let self = this;
@@ -29,7 +29,7 @@ angular.module("myApp")
      self.timeInWeek = "כל יום";
      self.ProgName = "הוספת תרגיל לתכנית";
 
-
+        //generate the number of sets options
          self.nSetsRange = [];
      for (var i = 1; i <= 10; i++) {
          self.nSetsRange.push(i);
@@ -37,7 +37,7 @@ angular.module("myApp")
      self.chosenVideo = {};
      self.videosURL = {};
      self.videosPath = {}
-
+    //get the tags from the server
      let req = {
          method: 'GET',
          url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/getTags'
@@ -48,8 +48,8 @@ angular.module("myApp")
              self.tagsNames.push(element.tag);
          })
      }).catch(function (err){alert(err);})
-
-     self. chooseVideo = function(title){
+     //store the chosen video
+     self.chooseVideo = function(title){
          self.chosenVideo[title] = true;
          self.chosenTitle = title;
          self.bankVideos.forEach(function (element) {
@@ -59,22 +59,10 @@ angular.module("myApp")
              }
          });
          self.bankVideoChosen = true;
-console.log("chosen" + self.bankVideoChosen);
      }
 
-    /* $scope.rememberMe = true;
-     $scope.userPhoto;
-     $scope.email = 'heyyy@example.com';
-     $scope.name = 'gsrfg   ';*/
-
-     /////new
-
-
+    //send the new exercise to the server
      self.submit = function(valid){ //function to call on form submit
-        /* if (/*self.upload_form.file.$valid && self.file) { //check if from is valid and exist
-            // $window.alert("time:  "+self.timeInWeek);
-             self.upload(self.file) //call upload function
-         /*}*/
         if(!valid)
          {
              alert("נא הזן את כל השדות באופן חוקי");
@@ -121,11 +109,10 @@ console.log("chosen" + self.bankVideoChosen);
                 self.submitExeClicked = true;
 
             }
-            ///
-            ///check if we want to do another func without video -
-            ///
+
         }
      }
+     //upload new exercise to the server
      self.upload = function (file) {
          self.finishLoad = false;
          let _onTime = 0;
@@ -133,8 +120,6 @@ console.log("chosen" + self.bankVideoChosen);
          {
              _onTime = 1;
          }
-         ////get the programID
-         //self.cuurDate
          Upload.upload({
              url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/upload', //webAPI exposed to upload the file
              data:{
@@ -159,9 +144,6 @@ console.log("chosen" + self.bankVideoChosen);
          }).then(function (resp) { //upload function returns a promise
              if(resp.data.error_code === 0){ //validate success\\
 
-                 ////call insert to DB!!!
-                /* $window.alert('Success ' + resp.config.data.file.name + 'uploaded. ');*/
-                 //self.finishLoad = true;
                  $window.alert('התרגיל נוסף בהצלחה');
                  self.file = null;
                  self.progress = "";
@@ -191,24 +173,14 @@ console.log("chosen" + self.bankVideoChosen);
              console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
              console.log(self.finishLoad);
              self.progress = 'progress: ' + progressPercentage + '% '; // capture upload progress
-             /*if(progressPercentage == 100)
-             {
-                 self.finishLoad = true;
-             }*/
          });
 
      };
-
+     //send new exercise to the server without new video
      self.addExeWithoutFile = function () {
          self.finishLoad = false;
          console.log(self.bankVideoChosen);
-        /* self.chosenVideo.forEach(function (element) {
-             console.log(element);
-             if(element == true)
-             {
-                 onlyPath = self.videosURL[element.title];
-             }
-             })*/
+
         if(self.videoSource == "bank") {
             self.onlyPath = self.videosPath[self.chosenTitle];
         }
@@ -239,13 +211,11 @@ console.log("chosen" + self.bankVideoChosen);
                      "bank" : self.bankVideoChosen
 
 
-                 } //pass file as data, should be user ng-model
+                 }
              };
              $http(exeReq).then(function(resp) { //upload function returns a promise
                  if(resp.data.error_code === 0){ //validate success\\
 
-                     ////call insert to DB!!!
-                     /* $window.alert('Success ' + resp.config.data.file.name + 'uploaded. ');*/
 
                      $window.alert('התרגיל נוסף בהצלחה');
                      self.finishLoad = true;
@@ -259,7 +229,7 @@ console.log("chosen" + self.bankVideoChosen);
 
      };
 
-
+    //get all the videos with specific tags fro mthe server
      self.getBank = function() {
          if (self.selectedTagsBnank == null || self.selectedTagsBnank.length == 0) {
              alert("יש לבחור לפחות תגית אחת לחיפוש");
@@ -269,7 +239,6 @@ console.log("chosen" + self.bankVideoChosen);
                  method: 'POST',
                  url: "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + '/api/getAllMediaByTags', //webAPI exposed to upload the file
                  data: {
-                     //"prog_id":programService.getProgID(), //add new service orsomething
                      "tags": self.selectedTagsBnank
                  }
              };
@@ -308,44 +277,6 @@ console.log("chosen" + self.bankVideoChosen);
           return true;
       }
     };
-
-
-     self.uploadWork = function (file) {
-         Upload.upload({
-             url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/upload', //webAPI exposed to upload the file
-             data:{file:file} //pass file as data, should be user ng-model
-         }).then(function (resp) { //upload function returns a promise
-             if(resp.data.error_code === 0){ //validate success\\
-
-                 ////call insert to DB!!!
-                 $window.alert('התרגיל נוסף בהצלחה');
-                 self.finishLoad = true;
-                 $location.path('/patients');
-
-
-
-                 /* $window.alert('Success ' + resp.config.data.file.name + 'uploaded. Response: ');*/
-             } else {
-                 $window.alert('an error occured');
-             }
-         }, function (resp) { //catch error
-             console.log('Error status: ' + resp.status);
-             $window.alert('Error status: ' + resp.status);
-         }, function (evt) {
-             console.log(evt);
-             if(typeof evt.config.data.file != undefined) {
-                 var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-                 console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
-                 self.progress = 'progress: ' + progressPercentage + '% '; // capture upload progress
-             }
-         });
-     };
-
-     $scope.login = function() {
-         alert( $scope.email);
-         self.clicked = true;
-
-     };
 
      self.AddExe = function(){ //function to call on form submit
         self.clickedAdd = true;

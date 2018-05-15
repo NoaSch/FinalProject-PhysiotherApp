@@ -1,7 +1,7 @@
 /**
  * Created by NOA-PC on 12/21/2017.
  */
-
+//handle with adding videos to the bank
 angular.module("myApp")
  .controller('bankController', ['regexService','$route','AuthenticationService','Upload','$http', '$location', '$window','$scope', '$rootScope','programService','exerciseService','patientService','ipconfigService', function (regexService,$route,AuthenticationService,Upload,$http,$location, $window,$scope,$rootScope,programService,exerciseService,patientService,ipconfigService   ) {
      let self = this;
@@ -26,12 +26,7 @@ angular.module("myApp")
      }).catch(function (err){alert(err);})
 
 
-     /*self.addTag = function()
-     {
-         self.tags.push(self.currTag);
-         self.currTag ="";
-         console.log(self.tags);
-     }*/
+    //send the new video to the server
      self.submit = function(){ //function to call on form submit
         console.log("in submit");
          if(self.selectedTags.length == 0)
@@ -58,16 +53,13 @@ angular.module("myApp")
          }
 
          self.submitExeClicked = true;
-
-         ///
-         ///check if we want to do another func without video -
-         ///
      };
+
+     //send the upload request to the server
      self.upload = function (file) {
 
          self.finishLoad = false;
 
-         //self.cuurDate
          Upload.upload({
              url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/uploadToBank', //webAPI exposed to upload the file
              data:{
@@ -102,17 +94,13 @@ angular.module("myApp")
              console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
              console.log(self.finishLoad);
              self.progress = 'progress: ' + progressPercentage + '% '; // capture upload progress
-             /*if(progressPercentage == 100)
-             {
-                 self.finishLoad = true;
-             }*/
          });
 
      };
      self.refresh = function() {
          $route.reload();
      };
-
+        //send request for adding new tag to the bank
      self.addNewTag = function()
      {
          let req = {
@@ -140,7 +128,5 @@ angular.module("myApp")
          alert("error: " + err);
      })
      };
-
-
 
  }]);

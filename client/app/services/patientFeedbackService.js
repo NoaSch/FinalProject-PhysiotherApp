@@ -1,9 +1,8 @@
 /**
  * Created by NOA-PC on 12/23/2017.
  */
-
+//service that store the exercise details for a feedback
 angular.module("myApp").service('patientFeedbackService', function() {
-     //var patientUsername = 'test string value';
     var chosenExercise = null;
     var chosenExerciseTitle = null;
 return {

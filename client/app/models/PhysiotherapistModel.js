@@ -1,3 +1,4 @@
+//store a physiotherapist details
 angular.module('myApp')
     .factory('PhysiotherapistModel', [ function () {
         function Physiotherapist(object) {

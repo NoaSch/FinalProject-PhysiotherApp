@@ -4,19 +4,10 @@
     <meta charset="utf-8">
     <title>Physiother</title>
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
-
     <link rel="stylesheet" href="angularScripts/mobile-angular-ui/dist/css/mobile-angular-ui-base.min.css" />
-
     <link rel="stylesheet" type="text/css" href="css/style.css" /> <!--my style-->
-
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
 
-    <!-- Only required for desktop -->
-   <!--<link rel="stylesheet" href="angularScripts/mobile-angular-ui/dist/css/mobile-angular-ui-hover.min.css" />
-    <!-- Always required -->
-    <!--<link rel="stylesheet" href="angularScripts/mobile-angular-ui/dist/css/mobile-angular-ui-base.min.css" />-->
-    <!-- Only required for desktop -->
-    <!--<link rel="stylesheet" href="angularScripts/mobile-angular-ui/dist/css/mobile-angular-ui-desktop.min.css" />-->
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -41,7 +32,6 @@
 
 
 
-    <!--<script src="app/models/ProductModel.js"></script>-->
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.0-beta.2/angular-sanitize.js"></script>
     <script src="angularScripts/mobile-angular-ui/dist/js/mobile-angular-ui.gestures.min.js"></script>
 
@@ -74,14 +64,12 @@
     <script src="app/services/ipconfigService.js"></script>
     <script src="app/services/ipconfigService.js"></script>
     <script src="app/services/AuthenticationService.js"></script>
-    <script src="app/services/flushService.js"></script>
     <script src="app/services/regexService.js"></script>
     <script src="app/services/messagesService.js"></script>
 
 
     <script src="app/services/patientFeedbackService.js"></script>
     <script src="app/models/PhysiotherapistModel.js"></script>
-    <script type="text/javascript" src="app/services/restService.js"> </script>
     <script type="text/javascript" src="app/services/resetPassService.js"> </script>
 
 
@@ -106,8 +94,6 @@
      ui-track-as-search-param="true"
      class="sidebar sidebar-left"></div>
 
-<div ng-include="'/views/sidebarRight.html'"
-     class="sidebar sidebar-right"></div>
 
 <div class="app"
 
@@ -137,11 +123,7 @@
 
     <div class='app-body'>
         <div class='app-content' ng-controller="mainController as mainCtrl">
-           <!-- <div >put if donttwant to return t ologin-->
-               <!-- <span class="lClass">Hello: </span>
-                <span class="bClass">{{mainCtrl.authService.userId}}</span>
-            <br>
-            <!--</div>-->
+
             <ng-view></ng-view>
         </div>
     </div>
@@ -152,7 +134,6 @@
     <img  class="logo" src="pics/logo1-01.png">
 </div>
 
-<!-- Modals and Overlays -->
 <div ui-yield-to="modals"></div>
 </body>
 </html>

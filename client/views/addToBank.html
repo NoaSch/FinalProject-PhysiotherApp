@@ -18,12 +18,7 @@
              </div>
              <div  class="form-group has-success has-feedback" >
              <label >תגיות</label>
-             <div><!-- ng-repeat="item in bankController.tags">-->
-                 <!--<div class="panel-heading" ui-set="{'myAccordion': item}">
-                     <h4 class="panel-title">
-                         {{item}}
-                     </h4>
-                 </div>-->
+             <div>
                  <select name="multipleSelect" id="multipleSelect" ng-options="option.tag for option in bankController.tags track by option.tag"
                          ng-model="bankController.selectedTags" multiple>
                  </select><br>
@@ -45,15 +40,10 @@
 
              </div>
 
-
          </fieldset>
          <hr>
-
-
-                  <div ui-content-for="navbarAction">
+      <div ui-content-for="navbarAction">
                     </div>
-
-
         </form>
         <form name="bankController.addForm">
         <div  class="form-group has-success has-feedback" >

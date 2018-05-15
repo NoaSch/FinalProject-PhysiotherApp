@@ -35,30 +35,7 @@ angular.module("myApp")
      self.chosenVideo = {};
      self.videosURL = {};
      self.videosPath = {}
-     //load bank details
-     /*let reqBank = {
-         method: 'POST',
-         url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/getBank',
-         headers: {
-             'Content-Type': "application/json"
-         },
-
-     };
-     $http(reqBank).then(function (ans) {
-         self.bankVideos = ans.data;
-         self.bankVideos.forEach(function (element) {
-             console.log(element);
-             self.chosenVideo[element.title] = false;
-             if(element.media_path != null) {
-                 self.videosURL[element.title] = "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + "/api/mediaGet/" + element.media_path;
-                 self.videosPath[element.title] = element.media_path;
-             }
-             console.log(self.videosPath[element.title]);
-         });
-
-     }).catch(function (err) {
-         console.log(err)
-     });*/
+   //get the bank's tags
      let req = {
          method: 'GET',
          url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/getTags'
@@ -69,7 +46,6 @@ angular.module("myApp")
              self.tagsNames.push(element.tag);
          })
      }).catch(function (err){alert(err);})
-
      self. chooseVideo = function(title){
          self.chosenVideo[title] = true;
          self.chosenTitle = title;
@@ -80,18 +56,10 @@ angular.module("myApp")
              }
          });
          self.bankVideoChosen = true;
-console.log("chosen" + self.bankVideoChosen);
      }
 
-    /* $scope.rememberMe = true;
-     $scope.userPhoto;
-     $scope.email = 'heyyy@example.com';
-     $scope.name = 'gsrfg   ';*/
-
-     /////new
-
-     self. createProg = function(){ //function to call on form submit
-        // alert(self.ProgName);\
+     //send request for creating a new program
+     self. createProg = function(){
          let date = new Date();
          self.currDate = date;
          let req = {
@@ -108,20 +76,14 @@ console.log("chosen" + self.bankVideoChosen);
                  "title": self.ProgName
              }
          };
-         //alert(self.ProgName);
          self.clickedCreate = true;
          $http(req).then(function (ans)
          {
-             //alert("new program inserted")
          })};
 
 
 
      self.submit = function(valid){ //function to call on form submit
-        /* if (/*self.upload_form.file.$valid && self.file) { //check if from is valid and exist
-            // $window.alert("time:  "+self.timeInWeek);
-             self.upload(self.file) //call upload function
-         /*}*/
         if(!valid)
          {
              alert("נא הזן את כל השדות באופן חוקי");
@@ -168,11 +130,9 @@ console.log("chosen" + self.bankVideoChosen);
                 self.submitExeClicked = true;
 
             }
-            ///
-            ///check if we want to do another func without video -
-            ///
         }
      }
+     //send request for uploading the video with the ecercise details
      self.upload = function (file) {
          self.finishLoad = false;
          ////get the programID
@@ -189,15 +149,13 @@ console.log("chosen" + self.bankVideoChosen);
              }
          };
          $http(req).then(function (ans) {
-            /* console.log("desc:" + self.desc);*/
-             /*alert("desc:" + self.desc);*/
          let currProgIDLocal = ans.data[0].prog_id;
              let _onTime = 0;
              if(self.onTime === true)
              {
                  _onTime = 1;
              }
-         //self.cuurDate
+
          Upload.upload({
              url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/upload', //webAPI exposed to upload the file
              data:{
@@ -221,10 +179,6 @@ console.log("chosen" + self.bankVideoChosen);
              } //pass file as data, should be user ng-model
          }).then(function (resp) { //upload function returns a promise
              if(resp.data.error_code === 0){ //validate success\\
-
-                 ////call insert to DB!!!
-                /* $window.alert('Success ' + resp.config.data.file.name + 'uploaded. ');*/
-                 //self.finishLoad = true;
                  $window.alert('התרגיל נוסף בהצלחה');
                  self.file = null;
                  self.progress = "";
@@ -252,24 +206,13 @@ console.log("chosen" + self.bankVideoChosen);
              console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
              console.log(self.finishLoad);
              self.progress = 'progress: ' + progressPercentage + '% '; // capture upload progress
-             /*if(progressPercentage == 100)
-             {
-                 self.finishLoad = true;
-             }*/
          });
          })
      };
-
+    //send request to the server to add exercise without a video
      self.addExeWithoutFile = function () {
          self.finishLoad = false;
          console.log(self.bankVideoChosen);
-        /* self.chosenVideo.forEach(function (element) {
-             console.log(element);
-             if(element == true)
-             {
-                 onlyPath = self.videosURL[element.title];
-             }
-             })*/
         if(self.videoSource == "bank") {
             self.onlyPath = self.videosPath[self.chosenTitle];
         }
@@ -277,7 +220,6 @@ console.log("chosen" + self.bankVideoChosen);
          let req = {
              method: 'POST',
              url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/api/getEXEidByDateAndPat',
-             // url: 'http://132.73.201.132:4000/api/getUserPrograms',
              headers: {
                  'Content-Type': "application/json"
              },
@@ -287,8 +229,6 @@ console.log("chosen" + self.bankVideoChosen);
              }
          };
          $http(req).then(function (ans) {
-             /* console.log("desc:" + self.desc);*/
-             /*alert("desc:" + self.desc);*/
              let currProgIDLocal = ans.data[0].prog_id;
              let _onTime = 0;
              if(self.onTime === true)
@@ -296,12 +236,10 @@ console.log("chosen" + self.bankVideoChosen);
                  _onTime = 1;
              }
 
-             //self.cuurDate
              let exeReq={
                  method: 'POST',
                  url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/uploadNoVideo', //webAPI exposed to upload the file
                  data:{
-                     //"prog_id":programService.getProgID(), //add new service orsomething
                      "prog_id":currProgIDLocal,
                      "exeTitle":self.exeTitle,
                      "onTime":_onTime,
@@ -318,13 +256,10 @@ console.log("chosen" + self.bankVideoChosen);
                      "bank" : self.bankVideoChosen
 
 
-                 } //pass file as data, should be user ng-model
+                 } //pass file as data
              };
              $http(exeReq).then(function(resp) { //upload function returns a promise
                  if(resp.data.error_code === 0){ //validate success\\
-
-                     ////call insert to DB!!!
-                     /* $window.alert('Success ' + resp.config.data.file.name + 'uploaded. ');*/
 
                      $window.alert('התרגיל נוסף בהצלחה');
                      self.finishLoad = true;
@@ -336,7 +271,7 @@ console.log("chosen" + self.bankVideoChosen);
          })
      };
 
-
+    //get the bank's video by tags
      self.getBank = function() {
          if (self.selectedTagsBnank == null || self.selectedTagsBnank.length == 0) {
              alert("יש לבחור לפחות תגית אחת לחיפוש");
@@ -390,46 +325,12 @@ console.log("chosen" + self.bankVideoChosen);
          alert("תכנית האימון נוצרה בהצלחה");
      }
 
-     self.uploadWork = function (file) {
-         Upload.upload({
-             url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/upload', //webAPI exposed to upload the file
-             data:{file:file} //pass file as data, should be user ng-model
-         }).then(function (resp) { //upload function returns a promise
-             if(resp.data.error_code === 0){ //validate success\\
 
-                 ////call insert to DB!!!
-                 $window.alert('התרגיל נוסף בהצלחה');
-                 self.finishLoad = true;
-
-
-                 /* $window.alert('Success ' + resp.config.data.file.name + 'uploaded. Response: ');*/
-             } else {
-                 $window.alert('an error occured');
-             }
-         }, function (resp) { //catch error
-             console.log('Error status: ' + resp.status);
-             $window.alert('Error status: ' + resp.status);
-         }, function (evt) {
-             console.log(evt);
-             if(typeof evt.config.data.file != undefined) {
-                 var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-                 console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
-                 self.progress = 'progress: ' + progressPercentage + '% '; // capture upload progress
-             }
-         });
-     };
-
-     $scope.login = function() {
-         alert( $scope.email);
-         self.clicked = true;
-
-     };
-
-     self.AddExe = function(){ //function to call on form submit
+     self.AddExe = function(){
         self.clickedAdd = true;
-
      };
-     self.AddMoreExe = function(){ //function to call on form submit
+     //if the user want to add more exercise reset the form's details
+     self.AddMoreExe = function(){
          self.submitExeClicked = false;
          self.exeTitle = null;
          self.timeInWeek = null;
@@ -460,32 +361,5 @@ console.log("chosen" + self.bankVideoChosen);
          self.bankVideos = {};
      };
 
-     /*self.testFunc = function(){
-         alert("testtttt");
-     };
-     $scope.testFunc = function(){
-         alert("testtttt");
-     };
-     $scope.addExe = function() {
-         alert("adding Exe");
-         self.videoClick = true;
-         self.clicked = false;
-
-     };
-     $scope.addExe2 = function() {
-         alert( "adding Exe");
-         var req = {
-      method: 'POST',
-      url: 'http://10.100.102.13:4000/api/photo',
-      headers: {
-      'Content-Type': "multipart/form-data"
-      },
-             "file": $scope.userPhoto
-         }
-         $http(req).then(function (ans) {
-             var res = ans.data;
-     })};
-
-*/
 
  }]);

@@ -1,6 +1,8 @@
 /**
  * Created by NOA-PC on 4/22/2018.
  */
+
+////service that stores regular expressions for validation
 angular.module("myApp").service('regexService', function() {
     var notInjection = "^((?!(;|=|script)).)*$";
     var phone = "^[0-9]{8,10}$";

@@ -1,7 +1,7 @@
 /**
  * Created by NOA-PC on 12/21/2017.
  */
-
+//handle with show user's messages window
 angular.module("myApp")
  .controller('messagesController', ['messagesService','regexService','$route','$http', '$location', '$window','$scope', '$rootScope','programService','exerciseService','patientService','ipconfigService','AuthenticationService', function (messagesService,regexService,$route,$http,$location, $window,$scope,$rootScope,programService,exerciseService,patientService,ipconfigService,AuthenticationService   ) {
      let self = this;
@@ -59,9 +59,6 @@ angular.module("myApp")
                  }
 
              });
-             //console.log("cors");
-             //console.log(self.correspondences);
-             //console.log(Object.keys(self.correspondences).length)
              self.dataLoading = false;
          }).then(function (ans2) {
              let req2 = {
@@ -95,10 +92,12 @@ angular.module("myApp")
          self.isNewewClicked =true;
 
      }
+     //reload the page
      self.refresh = function() {
          console.log("reload");
          $route.reload();
      };
+     //check if user's is patient
      self.isPatient = function()
      {
          if(AuthenticationService.isPhysio == true || AuthenticationService.isAdmin== true||AuthenticationService.userId== "guest"||AuthenticationService.userId =="אורח")
@@ -110,7 +109,7 @@ angular.module("myApp")
              return true;
          }
      }
-
+     //check if message is not first in the correspondence
      self.notFirst = function(msg,cor)
      {
          if(msg == cor[0]) {
@@ -120,6 +119,7 @@ angular.module("myApp")
              return true;
          }
      };
+     //check if message has prvious messages
      self.more = function(cor_id)
      {
          self.moreMsgInCor[cor_id] = true;
@@ -133,6 +133,7 @@ angular.module("myApp")
          };
 
      };
+     //handle reply
      self.reply = function(cor)
      {
          self.repMsg = "";
@@ -145,6 +146,7 @@ angular.module("myApp")
          };
         self.rep[cor.correspondence_id] = true;
      };
+     //send new message to the physiotherapist
      self.sendNewMsg = function() {
 
          if (self.msgTitle == null || self.newMsg == null ||self.msgTitle == "" ||self.newMsg =="" ) {
@@ -182,7 +184,7 @@ angular.module("myApp")
          }
      };
 
-
+    //send reply for a message
      self.sendRep = function (cor) {
          if (self.repMsg == null ||self.repMsg == "") {
              alert("טקסט לא חוקי");
@@ -209,9 +211,7 @@ angular.module("myApp")
                  alert("ההודעה נשלחה");
                  self.repMsg = "";
                  $route.reload();
-
-
-
+                 
              }).catch(function (err) {
                  console.log(err);
                  alert("error:" + err.message);

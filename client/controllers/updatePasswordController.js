@@ -1,6 +1,7 @@
 /**
  * Created by NOA-PC on 3/18/2018.
  */
+//handle update password by user
 angular.module("myApp")
     .controller('updatePasswordController', ['regexService','resetPasswordService','AuthenticationService','$http', '$location', '$window','$rootScope','$scope','ipconfigService', function (regexService,resetPasswordService,AuthenticationService,$http,$location, $window,$rootScope,$scope,ipconfigService ) {
         let self = this;
@@ -8,7 +9,7 @@ angular.module("myApp")
         self.regexService = regexService;
         self.authService = AuthenticationService;
 
-        //function to check the two pass are same- use ng-show
+        //function to check the two pass are same
 
         self.passwordDifferent = function ()
         {
@@ -21,6 +22,7 @@ angular.module("myApp")
                 return true;
             }
         }
+        //send the update request to the server
         self.updatePass = function()
         {
             self.dataLoading = true;
@@ -59,7 +61,6 @@ angular.module("myApp")
                 self.dataLoading = false;
 
             })
-          //call /api/updatePassword
         };
 
     }]);

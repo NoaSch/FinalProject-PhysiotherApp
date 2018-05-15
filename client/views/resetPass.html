@@ -1,12 +1,10 @@
 <div class="scrollable" ng-controller="resetPasswordController as resetPasswordController">
     <div class="col-md-6 col-md-offset-3">
-        <!--<div ng-show="loginController.isError" class="alert alert-danger">{{loginController.error}}</div>-->
        <form ng-hide="resetPasswordController.trueTemp" name="formReset" ng-submit="resetPasswordController.checkTemp()" role="form">
             <div class="form-group">
                 <label for="temp">הכנס סיסמא זמנית</label>
                 <i class="fa fa-key"></i>
                 <input type="text" name="pass" pattern="[0-9]*" inputmode="numeric" id="temp" class="form-control" ng-model="resetPasswordController.tempPass" required />
-               <!-- <span ng-show="form.username.$dirty && form.username.$error.required" class="help-block">שם משתמש נדרש</span>-->
             </div>
 
             <br>
@@ -46,7 +44,6 @@
         </form>
         <div class="form-actions" align="right">
 
-           <!-- <button ng-click="loginController.resetPassword()" ng-disabled="form.username.$invalid || loginController.dataLoading" class="btn btn-warning">שכחתי סיסמא</button>-->
         </div>
     </div>
 
