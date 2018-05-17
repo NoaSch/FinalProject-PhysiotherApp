@@ -3,8 +3,8 @@
  */
 //handle registration form
 angular.module('myApp')
-    .controller('RegisterController',['regexService','$window','$route','$location', 'AuthenticationService','Upload','FlashService','$http','ipconfigService','PhysiotherapistModel',
-            function (regexService,$window,$route,$location, AuthenticationService,Upload,FlashService,$http,ipconfigService,PhysiotherapistModel) {
+    .controller('RegisterController',['regexService','$window','$route','$location', 'AuthenticationService','Upload','$http','ipconfigService','PhysiotherapistModel',
+            function (regexService,$window,$route,$location, AuthenticationService,Upload,$http,ipconfigService,PhysiotherapistModel) {
                 //Get the physiotherapiss
                 var self = this;
                 self.regexService = regexService;

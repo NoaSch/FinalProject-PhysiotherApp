@@ -128,11 +128,6 @@
 
                             <button class="ProgramDetBtnPat" ng-click="patientsController.getMessages(patient.username)">הודעות<img src="../pics/0998-mail.png" width="10%" height="5%"/><label class="orangeLabel">{{patientsController.numUnRead[patient.username]}} חדשות</label></button>
 
-                        </div>
-
-
-
-
 
                     <div class="panel-body" ng-show = "patientsController.isChosenMsgPat(patient.username)" > <!--ng-show =exerciseController.chosenExe[item.exe_id]-->
                         <label>הודעות:</label>
@@ -169,7 +164,7 @@
                                 <div class="form-group has-success has-feedback" align="center" ng-show="patientsController.rep[cor[0].correspondence_id]">
 
                                     <!-- <div class="panel panel-default" >-->
-                                    <textarea name="desc" ng-model="patientsController.repMsg" cols="30" rows="5" ng-pattern="patientsController.regexService.getNotInjection()"></textarea>
+                                    <textarea name="desc" ng-model="patientsController.repMsg" cols="26" rows="5" ng-pattern="patientsController.regexService.getNotInjection()"></textarea>
                                     <br>
                                     <br>
                                     <button btn btn-warning ng-click="patientsController.sendRep(cor[0])">שלח</button>
@@ -202,10 +197,9 @@
                             </div>
                         </div>
                     </div>
-
-
-                </div>
+                        </div>
             </div>
+    </div>
     </div>
 </div>
 

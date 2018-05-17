@@ -461,7 +461,8 @@ self.dataLoading = true;
      //sending reply
      self.sendRep = function (cor) {
          if (self.repMsg == null|| self.repMsg == "") {
-             alert("טקסט לא חוקי");
+             alert("טקסט לא חוקי" + self.repMsg);
+
          }
          else {
              let reqMsg = {
