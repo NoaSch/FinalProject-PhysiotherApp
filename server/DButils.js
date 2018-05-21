@@ -11,6 +11,7 @@ let config = {
     server: '192.168.1.15',
     //server: '192.168.43.106',
     // server: '10.100.102.9',
+    //server: '192.168.1.154',
  userName: 'sa',
  password: 'Admin1!',
  database: 'physiotherDB',

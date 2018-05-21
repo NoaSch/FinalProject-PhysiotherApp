@@ -297,6 +297,7 @@ app.post('/upload', function(req, res) {
                     insertVideoToDB(false, req.file.path, req.body.prog_id, req.body.exeTitle, req.body.onTime, req.body.timeInWeek, req.body.timeInDay, req.body.nSets, req.body.nRepeats, req.body.setDuration, req.body.setDurationUnits, req.body.break, req.body.breakUnits, req.body.description, req.body.tags, req.body.videoName)
                         .then(function (ans) {
                             res.json({error_code: 0, err_desc: null})
+                            res.json({error_code: 0, err_desc: null})
                         }).catch(function (err) {
                         res.json({error_code: 1, err_desc: err})
                     });
@@ -461,8 +462,24 @@ function InsertMessage(cor_id,to,from,date,title,content,type) {
                     );
                     console.log("query");
                     sql.Insert(query).then(function (ans) {
-                        //res.send(ans);
-                        resolve(ans);
+                        let subject = null;
+                        let content = null;
+                        if(type == "new" || type == "rep") {
+                            let to_full = _fromName.first_name + " " + _fromName.last_name;
+                            subject = "התקבלה הודעה במערכת פיזיותר מאת: " + to_full;
+
+                            sendMailToUser(_toName.mail, subject, "נא היכנס למערכת על מנת לצפות בתוכן ההודעה").then(function (ans2) {
+                                //res.send(ans);
+                                resolve(ans);
+
+                            }).catch(function (err) {
+                                console.log("Error in inset: " + err);
+                                reject(err);
+                            })
+                        }
+                        else {
+                            resolve(ans);
+                        }
                     }).catch(function (err) {
                         console.log("Error in inset: " + err);
                         reject(err);
@@ -488,7 +505,14 @@ app.post('/api/sendMessage', function (req, res) {
         genNextCorId().then(function (ans) {
             new_cor_id = ans;
             InsertMessage(new_cor_id,_to,_from,_date,_title,_content,"new").then(function (ans) {
-                res.send(ans);
+
+                //sendMailToUser(ansPhysio[0].mail,"התקבלה הודעה במערכת פיזיותר מאת: " + patient_name, "נא היכנס למערכת על מנת לצפות בתוכן ההודעה").then(function (ans2) {
+                    res.send(ans);
+                /*}).catch(function (err) {
+                    console.log("Error in inset: " + err);
+                    res.send(err);
+                })*/
+
             }).catch(function (err) {
                 console.log("Error in inset: " + err);
                 res.send(err);
@@ -533,9 +557,10 @@ app.post('/api/setPatientFeedback', function (req, res) {
     let succ_Level = req.body.succLvl;
     let painLVvl = req.body.painLVvl;
     let nSucc = req.body.nSucc;
+    let physio_username = null;
+    let patient_name = null;
 
-    if(typeof nSucc == 'undefined' || nSucc=="null" || nSucc== null)
-    {
+    if (typeof nSucc == 'undefined' || nSucc == "null" || nSucc == null) {
         nSucc = null;
     }
     //get the physiotherapist
@@ -543,14 +568,16 @@ app.post('/api/setPatientFeedback', function (req, res) {
         squel.select()
             .from("patients")
             .field("physiotherapist_username")
+            .field("first_name")
+            .field("last_name")
             .where("username = ?", pat_username)
             .toString()
     );
     sql.Select(query)
         .then(function (ans) {
-            let physio_username = ans[0].physiotherapist_username;
+            patient_name = ""+ans[0].first_name +" " + ans[0].last_name;
+            physio_username = ans[0].physiotherapist_username;
             let queryInsert = (
-
                 squel.insert()
                     .into("[dbo].[patients_feedback]")
                     .set("[date]", createDate)
@@ -572,30 +599,48 @@ app.post('/api/setPatientFeedback', function (req, res) {
                     new_cor_id = ansCor;
                     let new_title = "פידבק על ביצוע: " + exe.title;
                     let _content = "מידת הצלחת הביצוע: ";
-                    _content = _content+ succ_Level+","
+                    _content = _content + succ_Level + ","
                     if (nSucc != null) {
-                        _content = _content + " תרגולים שבוצעו בהצלחה: " + nSucc+ "/" + exe.time_in_day;
+                        _content = _content + " תרגולים שבוצעו בהצלחה: " + nSucc + "/" + exe.time_in_day;
                     }
                     _content = _content + " , רמת הכאב: " + painLVvl;
                     InsertMessage(new_cor_id, physio_username, pat_username, createDate, new_title, _content, "feedback").then(function (ans) {
-                        res.send(ans);
-                    }).catch(function (err) {
-                        console.log("Error in inset: " + err);
-                        res.send(err);
+                        //get the physio mail
+                        let query = (
+                            squel.select()
+                                .from("physiotherapists")
+                                .field("mail")
+                                .where("username = ?", physio_username)
+                                .toString()
+                        );
+                        sql.Select(query)
+                            .then(function (ansPhysio) {
+                                sendMailToUser(ansPhysio[0].mail,"התקבל פידבק מאת:  " + patient_name, _content).then(function (ans2) {
+                                    res.send(ans2);
+                                }).catch(function (err) {
+                                    console.log("Error in send: " + err);
+                                    res.send(err);
+                                })
+                            }).catch(function (err) {
+                            console.log("Error in inset: " + err);
+                            res.send(err);
+                        })
+                    }).catch(function (err2) {
+                        console.log("Error in inset: " + err2);
+                        res.send(err2);
                     })
-                }).catch(function (err2) {
-                    console.log("Error in inset: " + err);
-                    res.send(err2);
-                })
-            })
-                .catch(function (reason) {
+                }).catch(function (reason) {
                     console.log(reason);
                     res.send(reason);
                 })
+            }).catch(function (reason2) {
+                console.log(reason2);
+                res.send(reason2);
+            });
         }).catch(function (reason2) {
         console.log(reason2);
         res.send(reason2);
-    });
+    })
 });
 
 //get program id and date and patient user's name
@@ -1198,6 +1243,76 @@ function  checkIfTempExist(username) {
         })
     })
 }
+
+
+function sendMailToUser(mail, subject,message) {
+    return new Promise(function(resolve,reject) {
+
+        var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'physiotherapp@gmail.com',
+                pass: 'Physio123#'
+            }
+        });
+
+        //let message =  "סיסמתך הזמנית היא: " + r.toString()+"\n שים לב הסיסמא תקפה לשעה";
+        console.log(message);
+        let mailOptions = {
+            from: 'physiotherapp@gmail.com',
+            to: mail,
+            subject: subject,
+            text: message
+        }
+
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error);
+                reject("error");
+            } else {
+                console.log('Email sent: ' + info.response);
+                resolve("send");
+            }
+        });
+        return mailOptions;
+    })
+}
+
+
+//send mail to user
+function sendMail(mailOptions, mail, r) {
+    return new Promise(function(resolve,reject) {
+
+        var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'physiotherapp@gmail.com',
+                pass: 'Physio123#'
+            }
+        });
+
+        let message =  "סיסמתך הזמנית היא: " + r.toString()+"\n שים לב הסיסמא תקפה לשעה";
+        console.log(message);
+        mailOptions = {
+            from: 'physiotherapp@gmail.com',
+            to: mail,
+            subject: 'סיסמא זמנית',
+            text: message
+        }
+
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error);
+                reject("error");
+            } else {
+                console.log('Email sent: ' + info.response);
+                resolve("send");
+            }
+        });
+        return mailOptions;
+    })
+}
+
 
 //send mail by google account
 function sendMail(mailOptions, mail, r) {
@@ -1848,6 +1963,7 @@ function getFullname(username){
                 .from("patients")
                 .field("first_name")
                 .field("last_name")
+                .field("mail")
                 .where("username = ?", username)
                 .toString()
         );
@@ -1859,6 +1975,7 @@ function getFullname(username){
                             .from("physiotherapists")
                             .field("first_name")
                             .field("last_name")
+                            .field("mail")
                             .where("username = ?", username)
                             .toString()
                     );
