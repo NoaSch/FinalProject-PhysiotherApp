@@ -24,7 +24,7 @@ angular.module("myApp")
                         } else {
 
                             AuthenticationService.SetCredentials(self.username);
-                            if(AuthenticationService.isPatient()==true) {
+                           /* if(AuthenticationService.isPatient()==true) {
                                 let req = {
                                     method: 'POST',
                                     url: "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + '/api/getNumNewMessages',
@@ -42,7 +42,7 @@ angular.module("myApp")
                                     alert("שגיאה");
                                 })
 
-                            }
+                            }*/
                             $location.path('/');
                         }
                     });

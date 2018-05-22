@@ -85,7 +85,7 @@
 
 <body
         ng-app="myApp"
-        ng-controller="mainController"
+        ng-controller="mainController as mainController"
         ui-prevent-touchmove-defaults>
 
 <!--sideBars-->
@@ -112,9 +112,10 @@
             </div>
         </div>
         <div class="btn-group pull-right">
-            <div class="btn" ng-show="mainCtrl.isPatient()">
-                <button class="fa fa-envelope" ng-click="mainCtrl.click()"></button> חדשות
-                <span><label>{{mainCtrl.messageService.getNumNew()}}</label></span>
+            <!--<div class="btn" ng-show="mainCtrl.isPatient()">-->
+            <div class="btn" ng-hide="!mainCtrl.authService.loggedIn ||mainCtrl.authService.isAdmin">
+            <button class="fa fa-envelope" ng-click="mainCtrl.click()"></button> חדשות
+                <span><label>{{mainCtrl.numnew}}</label></span>
             </div>
         </div>
     </div>

@@ -59,7 +59,7 @@ angular.module("myApp")
      }
 
      //send request for creating a new program
-     self. createProg = function(){
+     self.createProg = function(){
          let date = new Date();
          self.currDate = date;
          let req = {
@@ -113,7 +113,6 @@ angular.module("myApp")
                         console.log(self.file.type);
                         self.upload(self.file);
                         self.submitExeClicked = true;
-
                     }
                 }
                 else if (self.videoSource = "none") {

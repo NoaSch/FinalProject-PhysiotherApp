@@ -330,6 +330,7 @@ app.post('/updateEXE', function(req, res) {
     if (req.body.onTime == true) {
         onTime = 1;
     }
+    let exe_title = req.body.exe_title;
     let timeInWeek = req.body.timeInWeek;
     let timeInDay = req.body.timeInDay;
     let nSets = req.body.nSets;
@@ -339,6 +340,14 @@ app.post('/updateEXE', function(req, res) {
     let breakBet = req.body.break;
     let breakUnits = req.body.breakUnits;
     let description = req.body.description;
+    let pat_name = null;
+    let phy_name = null;
+    let pat_username = null;
+    let phy_username = null;
+    let pat_mail = null;
+    let content = null;
+    let title = null;
+    let date = moment().format('YYYY-MM-DD HH:mm:ss');
     if (typeof nRepeats === 'undefined' || !nRepeats || nRepeats == "null") {
         nRepeats = null;
     }
@@ -369,11 +378,36 @@ app.post('/updateEXE', function(req, res) {
             .toString()
     );
     console.log(query);
-    sql.Update(query).then(function (ans) {
-        res.json({error_code:0,err_desc:null})
+    sql.Update(query).then(function (ans){
+
+        //let query = "select patient_username, physiotherapist_username from designated_programs where prog_id = (select prog_id from designated_exercises where exe_id =" + exe_id+")";
+        let queryNames = (
+            squel.select()
+                .from("designated_programs")
+                .field("patient_username")
+                .field("physiotherapist_username")
+                .where("prog_id = ?", squel.select().field('prog_id').from('designated_exercises').where("exe_id = ?",exe_id))
+                .toString()
+        );
+        console.log(queryNames);
+        sql.Select(queryNames).then(function (ans) {
+                    pat_username = ans[0].patient_username;
+                    phy_username = ans[0].physiotherapist_username;
+                     content = "התרגיל " + exe_title + " עודכן במערכת פיזיותר";
+                     title = "תרגיל במערכת פיזיותר עודכן";
+                     genNextCorId().then(function (anscor){
+        InsertMessage(anscor,pat_username,phy_username,date,title,content,"update").then(function (ansIn){
+                         res.json({error_code: 0, err_desc: null})
+                     }).catch(function(err){
+                    res.json({error_code: 1, err_desc: err.desc})
+                     })
     }).catch(function(err){
-        res.send(err)
-    })
+                     res.json({error_code: 1, err_desc: err.desc})
+    })}).catch(function(err){
+                    res.json({error_code: 1, err_desc: err.desc})
+            })}).catch(function(err){
+                res.json({error_code: 1, err_desc: err.desc})
+            })
 });
 
 //upload new video to the bank
@@ -462,13 +496,13 @@ function InsertMessage(cor_id,to,from,date,title,content,type) {
                     );
                     console.log("query");
                     sql.Insert(query).then(function (ans) {
-                        let subject = null;
-                        let content = null;
-                        if(type == "new" || type == "rep") {
+                        if(type == "new" || type == "rep" ||type == "update") {
                             let to_full = _fromName.first_name + " " + _fromName.last_name;
-                            subject = "התקבלה הודעה במערכת פיזיותר מאת: " + to_full;
-
-                            sendMailToUser(_toName.mail, subject, "נא היכנס למערכת על מנת לצפות בתוכן ההודעה").then(function (ans2) {
+                            if(type != "update") {
+                                title = "התקבלה הודעה במערכת פיזיותר מאת: " + to_full;
+                                content = "נא היכנס למערכת על מנת לצפות בתוכן ההודעה";
+                            }
+                            sendMailToUser(_toName.mail, title, content).then(function (ans2) {
                                 //res.send(ans);
                                 resolve(ans);
 
@@ -477,6 +511,7 @@ function InsertMessage(cor_id,to,from,date,title,content,type) {
                                 reject(err);
                             })
                         }
+
                         else {
                             resolve(ans);
                         }

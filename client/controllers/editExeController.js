@@ -38,6 +38,7 @@ angular.module("myApp")
      self.break = currExe.break_between_sets;
      self.breakUnits = currExe.break_between_sets_units;
      self.desc = currExe.description;
+     self.curr_exe_title = currExe.exe_title;
 
 
 
@@ -76,6 +77,7 @@ angular.module("myApp")
              url: "http://"+ipconfigService.getIP()+":"+ipconfigService.getPort() +'/updateEXE', //webAPI exposed to upload the file
              data:{
                  "exe_id":self.exerciseService.getExe().exe_id,
+                 "exe_title":self.exeName,
                  "onTime":self.onTime,
                  "timeInWeek":self.timeInWeek,
                  "timeInDay":self.timeInDay,

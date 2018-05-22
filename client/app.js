@@ -24,10 +24,63 @@ app.config(['$locationProvider', function($locationProvider) {
     $locationProvider.hashPrefix('');
 }]);
 
-app.controller('mainController', ['AuthenticationService','messagesService','$http', '$location', '$window','$rootScope','$scope','programService', function (AuthenticationService,messagesService,$http,$location, $window,$rootScope,$scope,programService) {
+app.controller('mainController', ['ipconfigService','AuthenticationService','messagesService','$http', '$location', '$window','$rootScope','$scope','programService','$timeout', function (ipconfigService,AuthenticationService,messagesService,$http,$location, $window,$rootScope,$scope,programService,$timeout) {
     let self = this;
     self.messageService = messagesService;
     self.authService = AuthenticationService;
+
+    var loadTime = 1000, //Load the data every second
+        errorCount = 0, //Counter for the server errors
+        loadPromise; //Pointer to the promise created by the Angular $timout service
+
+    var getData = function() {
+        let req = {
+            method: 'POST',
+            url: "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + '/api/getNumNewMessages',
+            headers: {
+                'Content-Type': "application/json"
+            },
+            data: {
+                "username": self.authService.userId,
+            }
+        };
+        $http(req).then(function (res) {
+            //messagesService.setNumNew(res.data[0]);
+            self.numnew = res.data[0];
+                //errorCount = 0;
+                nextLoad();
+            })
+
+            .catch(function(res) {
+                self.numnew = '0';
+                nextLoad(++errorCount * 2 * loadTime);
+            });
+    };
+
+    var cancelNextLoad = function() {
+        $timeout.cancel(loadPromise);
+    };
+
+    var nextLoad = function(mill) {
+        mill = mill || loadTime;
+
+        //Always make sure the last timeout is cleared before starting a new one
+        cancelNextLoad();
+        loadPromise = $timeout(getData, mill);
+    };
+
+
+    //Start polling the data from the server
+    getData();
+
+
+    //Always clear the timeout when the view is destroyed, otherwise it will keep polling
+    $scope.$on('$destroy', function() {
+        cancelNextLoad();
+    });
+
+    $scope.data = 'Loading...';
+
     //$window.alert("username: "+ self.authService.userId );
     self.logout = function()
     {
@@ -37,8 +90,12 @@ app.controller('mainController', ['AuthenticationService','messagesService','$ht
     }
     self.click = function()
     {
-        //alert("click");
-        $location.path('/messages');
+        if(self.isPatient()) {
+            $location.path('/messages');
+        }
+        else {
+            $location.path('/patients');
+        }
 
     }
     self.isPatient = function()
