@@ -539,6 +539,7 @@ app.post('/api/sendMessage', function (req, res) {
     let _orig_cor_id = parseInt(req.body.cor_id);
     let _title = req.body.msgtitle;
     let _content = req.body.content;
+    let from_name = "";
     let new_cor_id="";
     if(_isNew == true)
     {
@@ -559,7 +560,11 @@ app.post('/api/sendMessage', function (req, res) {
             })})
     }
     else {
-        InsertMessage(_orig_cor_id,_to,_from,_date,_title,_content,"rep").then(function (ans) {
+        getFullname(_from).then(function (ansFull){
+            from_name = ""+ ansFull[0].first_name + " " + ansFull[0].last_name;
+        InsertMessage(_orig_cor_id,_to,_from,_date,_title,_content,"rep")}).then(function (ans) {
+            let notifi_cntent = "התקבלה הודעה חדשה מאת " + from_name;
+            sendNotification(_to,notifi_cntent);
             res.send(ans)
         }).catch(function (err) {
             console.log("Error in inset: " + err);
@@ -2215,7 +2220,9 @@ app.post('/api/getDetForNoticfication', function (req, res) {
 });
 
 app.get('/api/testN', function (req, res) {
-    var notification = new pushpad.Notification({
+    sendNotification("u1","הייה מה קורה");
+    res.json({"error_code": 0});
+    /*var notification = new pushpad.Notification({
         project: project,
         body: 'התקבלה הודעה חדשה', // max 120 characters
         title: 'physiotherApp', // optional, defaults to your project name, max 30 characters
@@ -2227,14 +2234,6 @@ app.get('/api/testN', function (req, res) {
         //customData: '123', // optional, a string that is passed as an argument to action button callbacks
         // optional, add some action buttons to the notification
         // see https://pushpad.xyz/docs/action_buttons
-        /*actions: [
-            {
-                title: 'My Button 1', // max length is 20 characters
-                targetUrl: 'http://example.com/button-link', // optional
-                icon: 'http://example.com/assets/button-icon.png', // optional
-                action: 'myActionName' // optional
-            }
-        ],*/
         starred: true, // optional, bookmark the notification in the Pushpad dashboard (e.g. to highlight manual notifications)
         // optional, use this option only if you need to create scheduled notifications (max 5 days)
         // see https://pushpad.xyz/docs/schedule_notifications
@@ -2253,7 +2252,7 @@ app.get('/api/testN', function (req, res) {
     }).catch(function(err){
         res.json({error_code: 1, err_desc: err.message});
     }
-    )
+    )*/
 });
 
 
@@ -2302,10 +2301,10 @@ function sendNotification(username,content)
     getFullname(username).then(function (ans) {
         notification.deliverTo(ans[0].mail, function (err, result) {
             //console.log(calcSig("noasch4@gmail.com"));
-            res.send(result);
+            console.log(result);
         })
     }).catch(function(err){
-            res.json({error_code: 1, err_desc: err.message});
+        console.log("error" + err.message);
         }
     )
 }
