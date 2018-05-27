@@ -18,7 +18,12 @@ let passwordValidator = require('password-validator');
 let nodemailer = require('nodemailer');
 let crypto = require('crypto');
 
+var pushpad = require('pushpad');
 
+var project = new pushpad.Pushpad({
+    authToken: '9ab7ab5e151578b7dd49a76550957a3f',
+    projectId: 5527
+});
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(bodyParser.json());
@@ -1253,6 +1258,8 @@ function checkdiff(dbTime)
     return false;
 };
 
+
+
 //check if user's have a temp pass
 function  checkIfTempExist(username) {
     return new Promise(function(resolve,reject) {
@@ -1528,6 +1535,8 @@ app.post('/api/getTempPass', function (req, res) {
 
 
 });
+
+
 
 
 //update messages that read by patient
@@ -2127,7 +2136,7 @@ function changeToMP4Extention(path)
     let withoutExt = path.substring(0, idx);
     let new_path = withoutExt + ".mp4";
     return new_path;
-}
+};
 
 //return the file
 function showFile(path2,req,res){
@@ -2166,5 +2175,175 @@ function showFile(path2,req,res){
         resolve("DoneChange Ext");
     })
 }
+
+app.post('/api/getDetForNoticfication', function (req, res) {
+    let _username = req.body.username;
+    let isPhysio = req.body.isPhysio;
+    let query = null;
+    let _mail = null;
+    if(isPhysio == 1)
+    {
+        query = (
+            squel.select()
+                .from("physiotherapists")
+                .field("mail")
+                .where("username = ?", _username)
+                .toString()
+        );
+    }
+    else
+    {
+         query = (
+            squel.select()
+                .from("patients")
+                .field("mail")
+                .where("username = ?", _username)
+                .toString()
+        );
+    }
+    sql.Select(query)
+        .then(function (ans){
+            _mail = ans[0].mail;
+            //calc the signature for the mail
+            let sig = calcSig(_mail);
+            ans[0].sig = sig;
+            res.send(ans);
+        }).catch(function(err){
+            res.json({error_code: 1, err_desc: err.message});
+        }
+            )
+});
+
+app.get('/api/testN', function (req, res) {
+    var notification = new pushpad.Notification({
+        project: project,
+        body: 'התקבלה הודעה חדשה', // max 120 characters
+        title: 'physiotherApp', // optional, defaults to your project name, max 30 characters
+        targetUrl: 'http://132.72.23.155:3000', // optional, defaults to your project website
+        //iconUrl: 'http://example.com/assets/icon.png', // optional, defaults to the project icon
+        //imageUrl: 'http://example.com/assets/image.png', // optional, an image to display in the notification content
+        ttl: 604800, // optional, drop the notification after this number of seconds if a device is offline
+        requireInteraction: true, // optional, prevent Chrome on desktop from automatically closing the notification after a few seconds
+        //customData: '123', // optional, a string that is passed as an argument to action button callbacks
+        // optional, add some action buttons to the notification
+        // see https://pushpad.xyz/docs/action_buttons
+        /*actions: [
+            {
+                title: 'My Button 1', // max length is 20 characters
+                targetUrl: 'http://example.com/button-link', // optional
+                icon: 'http://example.com/assets/button-icon.png', // optional
+                action: 'myActionName' // optional
+            }
+        ],*/
+        starred: true, // optional, bookmark the notification in the Pushpad dashboard (e.g. to highlight manual notifications)
+        // optional, use this option only if you need to create scheduled notifications (max 5 days)
+        // see https://pushpad.xyz/docs/schedule_notifications
+        sendAt: new Date(Date.UTC(2016, 7 - 1, 25, 10, 9)), // 2016-07-25 10:09 UTC
+        // optional, add the notification to custom categories for stats aggregation
+        // see https://pushpad.xyz/docs/monitoring
+        //customMetrics: ['examples', 'another_metric'] // up to 3 metrics per notification
+    });
+
+    // deliver to a user
+    getFullname("u1").then(function (ans) {
+        notification.deliverTo(ans[0].mail, function (err, result) {
+            //console.log(calcSig("noasch4@gmail.com"));
+            res.send(result);
+        })
+    }).catch(function(err){
+        res.json({error_code: 1, err_desc: err.message});
+    }
+    )
+});
+
+
+
+
+
+function calcSig(input)
+{
+    return project.signatureFor(input)
+
+}
+
+
+function sendNotification(username,content)
+{
+    var notification = new pushpad.Notification({
+        project: project,
+        body: content, // max 120 characters
+        title: 'physiotherApp', // optional, defaults to your project name, max 30 characters
+        targetUrl: 'http://132.72.23.155:3000', // optional, defaults to your project website
+        //iconUrl: 'http://example.com/assets/icon.png', // optional, defaults to the project icon
+        //imageUrl: 'http://example.com/assets/image.png', // optional, an image to display in the notification content
+        ttl: 604800, // optional, drop the notification after this number of seconds if a device is offline
+        requireInteraction: true, // optional, prevent Chrome on desktop from automatically closing the notification after a few seconds
+        //customData: '123', // optional, a string that is passed as an argument to action button callbacks
+        // optional, add some action buttons to the notification
+        // see https://pushpad.xyz/docs/action_buttons
+        /*actions: [
+         {
+         title: 'My Button 1', // max length is 20 characters
+         targetUrl: 'http://example.com/button-link', // optional
+         icon: 'http://example.com/assets/button-icon.png', // optional
+         action: 'myActionName' // optional
+         }
+         ],*/
+        starred: true, // optional, bookmark the notification in the Pushpad dashboard (e.g. to highlight manual notifications)
+        // optional, use this option only if you need to create scheduled notifications (max 5 days)
+        // see https://pushpad.xyz/docs/schedule_notifications
+        sendAt: new Date(Date.UTC(2016, 7 - 1, 25, 10, 9)), // 2016-07-25 10:09 UTC
+        // optional, add the notification to custom categories for stats aggregation
+        // see https://pushpad.xyz/docs/monitoring
+        //customMetrics: ['examples', 'another_metric'] // up to 3 metrics per notification
+    });
+
+    // deliver to a user
+    getFullname(username).then(function (ans) {
+        notification.deliverTo(ans[0].mail, function (err, result) {
+            //console.log(calcSig("noasch4@gmail.com"));
+            res.send(result);
+        })
+    }).catch(function(err){
+            res.json({error_code: 1, err_desc: err.message});
+        }
+    )
+}
+
+
+/*
+ var notification = new pushpad.Notification({
+ project: project,
+ body: 'Hello world!', // max 120 characters
+ title: 'Website Name', // optional, defaults to your project name, max 30 characters
+ targetUrl: 'http://example.com', // optional, defaults to your project website
+ iconUrl: 'http://example.com/assets/icon.png', // optional, defaults to the project icon
+ imageUrl: 'http://example.com/assets/image.png', // optional, an image to display in the notification content
+ ttl: 604800, // optional, drop the notification after this number of seconds if a device is offline
+ requireInteraction: true, // optional, prevent Chrome on desktop from automatically closing the notification after a few seconds
+ customData: '123', // optional, a string that is passed as an argument to action button callbacks
+ // optional, add some action buttons to the notification
+ // see https://pushpad.xyz/docs/action_buttons
+ actions: [
+ {
+ title: 'My Button 1', // max length is 20 characters
+ targetUrl: 'http://example.com/button-link', // optional
+ icon: 'http://example.com/assets/button-icon.png', // optional
+ action: 'myActionName' // optional
+ }
+ ],
+ starred: true, // optional, bookmark the notification in the Pushpad dashboard (e.g. to highlight manual notifications)
+ // optional, use this option only if you need to create scheduled notifications (max 5 days)
+ // see https://pushpad.xyz/docs/schedule_notifications
+ sendAt: new Date(Date.UTC(2016, 7 - 1, 25, 10, 9)), // 2016-07-25 10:09 UTC
+ // optional, add the notification to custom categories for stats aggregation
+ // see https://pushpad.xyz/docs/monitoring
+ customMetrics: ['examples', 'another_metric'] // up to 3 metrics per notification
+ });
+
+ // deliver to a user
+ notification.deliverTo(user1, function(err, result));
+
+ */
 
 

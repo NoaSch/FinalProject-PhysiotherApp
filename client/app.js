@@ -28,11 +28,50 @@ app.controller('mainController', ['ipconfigService','AuthenticationService','mes
     let self = this;
     self.messageService = messagesService;
     self.authService = AuthenticationService;
+    //let mail  = "noasch4@gmail.com";
+    //let sig = "0831a3d8b0255609a35f8e8fe358d3c2400bccd6";
+    if(self.authService.loggedIn) {
+        let reqForSig = {
+            method: 'POST',
+            url: "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + '/api/getDetForNoticfication',
+            headers: {
+                'Content-Type': "application/json"
+            },
+            data: {
+                "username": self.authService.userId,
+                "isPhysio": self.authService.isPhysio
+            }
+        };
+        $http(reqForSig).then(function (res) {
+            if (res.data.hasOwnProperty('error_code')) {
+                alert("שגיאה");
+            }
+            else {
+                let mail = res.data[0].mail;
+                let sig = res.data[0].sig;
+                self.url = "https://pushpad.xyz/projects/5527/subscription/edit?uid=" + mail + "&uid_signature=" + sig;
+            }
+        }).catch(function (err) {
+            alert("שגיאה");
+        });
+    }
+
+    //alert (self.url);
+
+
+    /*self.subscribe = function()
+    {
+        pushpadpushpad('subscribe', function () {}, {
+            tags: ['t1', 't2'], // add tags 't1' and 't2'
+            uid: '33', // keep track of the current user ID
+            uidSignature: '4b9503324d1c97ecfc551dbb377452c85da8ebb9'
+        });
+    }*/
+
 
     var loadTime = 1000, //Load the data every second
         errorCount = 0, //Counter for the server errors
         loadPromise; //Pointer to the promise created by the Angular $timout service
-
     var getData = function() {
         let req = {
             method: 'POST',
@@ -71,7 +110,7 @@ app.controller('mainController', ['ipconfigService','AuthenticationService','mes
 
 
     //Start polling the data from the server
-    getData();
+    //getData();
 
 
     //Always clear the timeout when the view is destroyed, otherwise it will keep polling

@@ -1,11 +1,21 @@
 
-<div ng-controller="mainController as mainController">
+    <div class="scrollable"ng-controller="mainController as mainController">
+        <div class="scrollable-content">
 
     <h3 align="right" ng-hide="mainController.authService.loggedIn" class="rtlH3" > שלום אורח</h3>
     <h3 ng-show="mainController.authService.loggedIn" class="rtlH3" align="right">    שלום {{mainController.authService.userFirstName}}  </h3>
 
 
+
+    <br>
+    <div ng-show="mainController.authService.loggedIn" align="right">
+    <!--<a href="https://pushpad.xyz/projects/5527/subscription/edit?uid=noasch4@gmail.com&uid_signature=0831a3d8b0255609a35f8e8fe358d3c2400bccd6">Push notifications2</a>-->
+        <a class="btn btn-warning"href={{mainController.url}}>הירשם לקבלת התראות</a>
+    </div>
         </div>
+    </div>
+
+
 </div>
 
 </div>

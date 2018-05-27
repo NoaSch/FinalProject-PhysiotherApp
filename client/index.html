@@ -112,10 +112,10 @@
             </div>
         </div>
         <div class="btn-group pull-right">
-            <!--<div class="btn" ng-show="mainCtrl.isPatient()">-->
-            <div class="btn" ng-hide="!mainCtrl.authService.loggedIn ||mainCtrl.authService.isAdmin">
+            <div class="btn" ng-show="mainCtrl.isPatient()">
+            <!--<div class="btn" ng-hide="!mainCtrl.authService.loggedIn ||mainCtrl.authService.isAdmin">-->
             <button class="fa fa-envelope" ng-click="mainCtrl.click()"></button> חדשות
-                <span><label>{{mainCtrl.numnew}}</label></span>
+                <span><label>{{mainCtrl.messagesService.getNumNew()}}</label></span>
             </div>
         </div>
     </div>
