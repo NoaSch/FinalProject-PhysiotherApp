@@ -1,17 +1,21 @@
 
     <div class="scrollable"ng-controller="mainController as mainController">
-        <div class="scrollable-content">
+        <div class="scrollable-content" align="right">
+<span>
 
-    <h3 align="right" ng-hide="mainController.authService.loggedIn" class="rtlH3" > שלום אורח</h3>
-    <h3 ng-show="mainController.authService.loggedIn" class="rtlH3" align="right">    שלום {{mainController.authService.userFirstName}}  </h3>
+    <label class="bigLabel" align="right" ng-hide="mainController.authService.loggedIn" class="rtlH3" > שלום אורח</label>
+    <label class="bigLabel" align="right" ng-show="mainController.authService.isAdmin" class="rtlH3" > שלום מנהל</label>
 
+    <div ng-show="mainController.authService.loggedIn && !mainController.authService.isAdmin" align="right">
+        <span>
+                    <a class="btn btn-warning"href={{mainController.url}}>הירשם לקבלת התראות</a>
 
+            <label class="bigLabel" ng-show="mainController.authService.loggedIn" class="rtlH3" align="right">    שלום {{mainController.authService.userFirstName}}  </label>
 
-    <br>
-    <div ng-show="mainController.authService.loggedIn" align="right">
-    <!--<a href="https://pushpad.xyz/projects/5527/subscription/edit?uid=noasch4@gmail.com&uid_signature=0831a3d8b0255609a35f8e8fe358d3c2400bccd6">Push notifications2</a>-->
-        <a class="btn btn-warning"href={{mainController.url}}>הירשם לקבלת התראות</a>
+        <!--<a href="https://pushpad.xyz/projects/5527/subscription/edit?uid=noasch4@gmail.com&uid_signature=0831a3d8b0255609a35f8e8fe358d3c2400bccd6">Push notifications2</a>-->
+            </span>
     </div>
+    </span>
         </div>
     </div>
 

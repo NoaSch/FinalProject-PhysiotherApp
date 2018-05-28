@@ -30,7 +30,7 @@ app.controller('mainController', ['ipconfigService','AuthenticationService','mes
     self.authService = AuthenticationService;
     //let mail  = "noasch4@gmail.com";
     //let sig = "0831a3d8b0255609a35f8e8fe358d3c2400bccd6";
-    if(self.authService.loggedIn) {
+    if(self.authService.loggedIn && self.authService.isAdmin == false) {
         let reqForSig = {
             method: 'POST',
             url: "http://" + ipconfigService.getIP() + ":" + ipconfigService.getPort() + '/api/getDetForNoticfication',

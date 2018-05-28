@@ -132,20 +132,6 @@ app.post('/api/validate', function (req, res) {
                 res.json({err: "שם משתמש או סיסמא לא נכונים"})
             }
             else {
-                let querySalt = (
-                    squel.select()
-                        .from("users")
-                        .where("username = ?", username)
-                        .toString()
-                );
-                sql.Select(query)
-                    .then(function (ans2) {
-                        if (ans.length == 0) {
-
-                            // var pathes = ans[0].path.toString();
-                            res.json({err: "שם משתמש או סיסמא לא נכונים"})
-                        }
-                        else {
                             let dbSalt = ans[0].salt;
                             console.log(dbSalt);
 
@@ -216,18 +202,11 @@ app.post('/api/validate', function (req, res) {
 
                         }
 
-
                     }).catch(function (reason) {
                     console.log(reason);
                     res.json({err: "שם משתמש או סיסמא לא נכונים"});
 
                 })
-            }
-        }).catch(function (reason) {
-        console.log(reason);
-        res.json({err: "שם משתמש או סיסמא לא נכונים"});
-
-    })
 
 });
 
@@ -264,6 +243,7 @@ app.post('/upload', function(req, res) {
     console.log("in upload");
 
     upload(req, res, function (err) {
+        let pat_username = null;
         if (err) {
             console.log(err);
             res.json({error_code: 1, err_desc: err});
@@ -281,32 +261,46 @@ app.post('/upload', function(req, res) {
 
             }
             else {
-                if (req.file.mimetype == "video/quicktime") {
-                    console.log(req.body.time);
+                let query4 = (
+                    squel.select()
+                        .field("patient_username")
+                        .from("designated_programs")
+                        .where("prog_id = ?", req.body.prog_id)
+                        .toString()
+                );
+                sql.Select(query4).then(function (ans) {
+                    pat_username = ans[0].pat_username;
+                    if (req.file.mimetype == "video/quicktime") {
+                        console.log(req.body.time);
 
-                    let newPath = changeToMP4Extention(req.file.path);
-                    convertTomp4(req.file.path, newPath)
-                    // insertVideoToDB(new_Path,prog_id,exetitle,tInWeek,nSets,nRepeats,dur,breakBet)
-                        .then(insertVideoToDB(false, newPath, req.body.prog_id, req.body.exeTitle, req.body.onTime, req.body.timeInWeek, req.body.timeInDay, req.body.nSets, req.body.nRepeats, req.body.setDuration, req.body.setDurationUnits, req.body.break, req.body.breakUnits, req.body.description, req.body.tags, req.body.videoName))
-                        .then(function (ans) {
-                            //res.send("Done WithConvert!!!!")
-                            res.json({error_code: 0, err_desc: null})
-                        })
-                        .catch(function (err) {
+                        let newPath = changeToMP4Extention(req.file.path);
+                        convertTomp4(req.file.path, newPath)
+                        // insertVideoToDB(new_Path,prog_id,exetitle,tInWeek,nSets,nRepeats,dur,breakBet)
+                            .then(insertVideoToDB(false, newPath, req.body.prog_id, req.body.exeTitle, req.body.onTime, req.body.timeInWeek, req.body.timeInDay, req.body.nSets, req.body.nRepeats, req.body.setDuration, req.body.setDurationUnits, req.body.break, req.body.breakUnits, req.body.description, req.body.tags, req.body.videoName))
+                            .then(function (ans) {
+                               // let content = "הוקצה לך תרגיל חדש";
+                               // sendNotification(pat_username,content);
+                                res.json({error_code: 0, err_desc: null})
+                            })
+                            .catch(function (err) {
+                                res.json({error_code: 1, err_desc: err})
+                            })
+                    }
+                    else {
+                        console.log(req.body.timeInWeek);
+                        //insertVideoToDB(req.file.path)
+                        insertVideoToDB(false, req.file.path, req.body.prog_id, req.body.exeTitle, req.body.onTime, req.body.timeInWeek, req.body.timeInDay, req.body.nSets, req.body.nRepeats, req.body.setDuration, req.body.setDurationUnits, req.body.break, req.body.breakUnits, req.body.description, req.body.tags, req.body.videoName)
+                            .then(function (ans) {
+                                //let content = "הוקצה לך תרגיל חדש";
+                                //sendNotification(pat_username,content);
+                                res.json({error_code: 0, err_desc: null})
+                            }).catch(function (err) {
                             res.json({error_code: 1, err_desc: err})
-                        })
-                }
-                else {
-                    console.log(req.body.timeInWeek);
-                    //insertVideoToDB(req.file.path)
-                    insertVideoToDB(false, req.file.path, req.body.prog_id, req.body.exeTitle, req.body.onTime, req.body.timeInWeek, req.body.timeInDay, req.body.nSets, req.body.nRepeats, req.body.setDuration, req.body.setDurationUnits, req.body.break, req.body.breakUnits, req.body.description, req.body.tags, req.body.videoName)
-                        .then(function (ans) {
-                            res.json({error_code: 0, err_desc: null})
-                            res.json({error_code: 0, err_desc: null})
-                        }).catch(function (err) {
-                        res.json({error_code: 1, err_desc: err})
-                    });
-                }
+                        });
+                    }
+                }).catch(function (err) {
+                    res.json({error_code: 1, err_desc: err})
+                })
             }
             //res.json({error_code:0,err_desc:null});
 //        insertVideoToDB(req.file.path);
@@ -322,6 +316,8 @@ app.post('/upload', function(req, res) {
 app.post('/uploadNoVideo', function(req, res2) {
     console.log("enter to uploadNoVideo");
     insertVideoToDB(req.body.bank,req.body.path,req.body.prog_id,req.body.exeTitle,req.body.onTime,req.body.timeInWeek,req.body.timeInDay,req.body.nSets,req.body.nRepeats,req.body.setDuration,req.body.setDurationUnits,req.body.break,req.body.breakUnits,req.body.description,null,null).then(function(ans){
+       // let content = "הוקצה לך תרגיל חדש";
+        //sendNotification(pat_username,content);
         res2.json({error_code:0,err_desc:null})
     }).catch(function(err){
         res2.send(err)
@@ -399,19 +395,18 @@ app.post('/updateEXE', function(req, res) {
                     pat_username = ans[0].patient_username;
                     phy_username = ans[0].physiotherapist_username;
                      content = "התרגיל " + exe_title + " עודכן במערכת פיזיותר";
-                     title = "תרגיל במערכת פיזיותר עודכן";
-                     genNextCorId().then(function (anscor){
-        InsertMessage(anscor,pat_username,phy_username,date,title,content,"update").then(function (ansIn){
-                         res.json({error_code: 0, err_desc: null})
-                     }).catch(function(err){
-                    res.json({error_code: 1, err_desc: err.desc})
-                     })
+                     sendNotification(pat_username,content);
+                     //title = "תרגיל במערכת פיזיותר עודכן";
+                     //genNextCorId().then(function (anscor){
+        //InsertMessage(anscor,pat_username,phy_username,date,title,content,"update").then(function (ansIn){
+                         //res.json({error_code: 0, err_desc: null})
+                     //}).catch(function(err){
+                    //res.json({error_code: 1, err_desc: err.desc})
+                     //})
     }).catch(function(err){
                      res.json({error_code: 1, err_desc: err.desc})
     })}).catch(function(err){
                     res.json({error_code: 1, err_desc: err.desc})
-            })}).catch(function(err){
-                res.json({error_code: 1, err_desc: err.desc})
             })
 });
 
@@ -507,14 +502,14 @@ function InsertMessage(cor_id,to,from,date,title,content,type) {
                                 title = "התקבלה הודעה במערכת פיזיותר מאת: " + to_full;
                                 content = "נא היכנס למערכת על מנת לצפות בתוכן ההודעה";
                             }
-                            sendMailToUser(_toName.mail, title, content).then(function (ans2) {
+                            //sendMailToUser(_toName.mail, title, content).then(function (ans2) {
                                 //res.send(ans);
                                 resolve(ans);
 
-                            }).catch(function (err) {
+                           /* }).catch(function (err) {
                                 console.log("Error in inset: " + err);
                                 reject(err);
-                            })
+                            })*/
                         }
 
                         else {
@@ -539,37 +534,46 @@ app.post('/api/sendMessage', function (req, res) {
     let _orig_cor_id = parseInt(req.body.cor_id);
     let _title = req.body.msgtitle;
     let _content = req.body.content;
+    let notifi_content = "";
     let from_name = "";
     let new_cor_id="";
-    if(_isNew == true)
-    {
-        genNextCorId().then(function (ans) {
-            new_cor_id = ans;
-            InsertMessage(new_cor_id,_to,_from,_date,_title,_content,"new").then(function (ans) {
-
-                //sendMailToUser(ansPhysio[0].mail,"התקבלה הודעה במערכת פיזיותר מאת: " + patient_name, "נא היכנס למערכת על מנת לצפות בתוכן ההודעה").then(function (ans2) {
+    getFullname(_from).then(function (ansFull) {
+        from_name = "" + ansFull[0].first_name + " " + ansFull[0].last_name;
+        if (_isNew == true) {
+            genNextCorId().then(function (ans) {
+                new_cor_id = ans;
+                InsertMessage(new_cor_id, _to, _from, _date, _title, _content, "new").then(function (ans) {
+                    notifi_content = "התקבלה הודעה חדשה מאת " + from_name;
+                    sendNotification(_to, notifi_content);
+                    //sendMailToUser(ansPhysio[0].mail,"התקבלה הודעה במערכת פיזיותר מאת: " + patient_name, "נא היכנס למערכת על מנת לצפות בתוכן ההודעה").then(function (ans2) {
                     res.send(ans);
-                /*}).catch(function (err) {
+                    /*}).catch(function (err) {
+                     console.log("Error in inset: " + err);
+                     res.send(err);
+                     })*/
+
+                }).catch(function (err) {
                     console.log("Error in inset: " + err);
                     res.send(err);
-                })*/
-
+                })
+            })
+        }
+        else {
+            //getFullname(_from).then(function (ansFull){
+            //from_name = ""+ ansFull[0].first_name + " " + ansFull[0].last_name;
+            InsertMessage(_orig_cor_id, _to, _from, _date, _title, _content, "rep").then(function (ans) {
+                notifi_content = "התקבלה הודעה חדשה מאת " + from_name;
+                sendNotification(_to, notifi_content);
+                res.send(ans)
             }).catch(function (err) {
                 console.log("Error in inset: " + err);
                 res.send(err);
-            })})
-    }
-    else {
-        getFullname(_from).then(function (ansFull){
-            from_name = ""+ ansFull[0].first_name + " " + ansFull[0].last_name;
-        InsertMessage(_orig_cor_id,_to,_from,_date,_title,_content,"rep")}).then(function (ans) {
-            let notifi_cntent = "התקבלה הודעה חדשה מאת " + from_name;
-            sendNotification(_to,notifi_cntent);
-            res.send(ans)
-        }).catch(function (err) {
-            console.log("Error in inset: " + err);
-            res.send(err);
-        })}
+            })
+        }
+    }).catch(function (err) {
+        console.log("Error in inset: " + err);
+        res.send(err);
+    })
 });
 
 //get next free correspondence id
@@ -660,12 +664,15 @@ app.post('/api/setPatientFeedback', function (req, res) {
                         );
                         sql.Select(query)
                             .then(function (ansPhysio) {
-                                sendMailToUser(ansPhysio[0].mail,"התקבל פידבק מאת:  " + patient_name, _content).then(function (ans2) {
+                               /* sendMailToUser(ansPhysio[0].mail,"התקבל פידבק מאת:  " + patient_name, _content).then(function (ans2) {
                                     res.send(ans2);
                                 }).catch(function (err) {
                                     console.log("Error in send: " + err);
                                     res.send(err);
-                                })
+                                })*/
+                                let notifi_content = "התקבל פידבק מאת " + patient_name;
+                                sendNotification(physio_username,notifi_content);
+                                res.send(ansPhysio);
                             }).catch(function (err) {
                             console.log("Error in inset: " + err);
                             res.send(err);
@@ -888,25 +895,43 @@ app.post('/api/register', function (req, res) {
         sql.Select(query)
             .then(function (ans) {
                 if (ans.length === 0) {//the username not exist
-                    insertToUsers(_username,_password,_isPhysio)
-                        .then(function (ansUsers) {
-                            let queryInsertPhysio = (//insert to the users table
-                                squel.insert()
-                                    .into("[dbo].[physiotherapists]")
-                                    .set("[username]", _username)
-                                    .set("[first_name]", _firstName)
-                                    .set("[last_name]", _lastName)
-                                    .set("[mail]", _mail)
-                                    .set("[phone]", _phone)
-                                    .toString()
-                            );
-                            console.log(queryInsertPhysio);
-                            sql.Insert(queryInsertPhysio).then(function (ansIn) {
-                                res.send(ansIn);
-                            }).catch(function(err){
-                                res.json({err: err});
-                            })
-                        }).catch(function(err){
+                    //check mail
+                    let querymail = (
+                        squel.select()
+                            .from("physiotherapists")
+                            .where("mail = ?", _mail)
+                            .toString()
+                    );
+                    sql.Select(querymail)
+                        .then(function (ansmail) {
+                            if(ansmail.length === 0) {
+                                insertToUsers(_username, _password, _isPhysio)
+                                    .then(function (ansUsers) {
+                                        let queryInsertPhysio = (//insert to the users table
+                                            squel.insert()
+                                                .into("[dbo].[physiotherapists]")
+                                                .set("[username]", _username)
+                                                .set("[first_name]", _firstName)
+                                                .set("[last_name]", _lastName)
+                                                .set("[mail]", _mail)
+                                                .set("[phone]", _phone)
+                                                .toString()
+                                        );
+                                        console.log(queryInsertPhysio);
+                                        sql.Insert(queryInsertPhysio).then(function (ansIn) {
+                                            res.send(ansIn);
+                                        }).catch(function (err) {
+                                            res.json({err: err});
+                                        })
+                                    }).catch(function (err) {
+                                    res.json({err: err});
+                                })
+                            }
+                            else
+                            {
+                                res.json({err: "mail exists"});
+                            }
+                        }).catch(function (err) {
                         res.json({err: err});
                     })
                 }
@@ -954,33 +979,50 @@ app.post('/api/register', function (req, res) {
             sql.Select(query)
                 .then(function (ans) {
                     if (ans.length === 0) {
-                        insertToUsers( _username,_password,0).then(function (ansUsers) {
-                            queryInsertPatient = (//insert to the users table
-                                squel.insert()
-                                    .into("[dbo].[patients]")
-                                    .set("[username]", _username)
-                                    .set("[first_name]", _firstName)
-                                    .set("[last_name]", _lastName)
-                                    .set("[physiotherapist_username]", _physio_username)
-                                    .set("[mail]", _mail)
-                                    .set("[phone]", _phone)
-                                    .set("[age]", _age)
-                                    .set("[diagnosis]", _diagnosis)
-                                    .set("[pic_url]", _newFilePath)
-                                    //.set("[mail]",_mail)
-                                    //.set("[phone]",_phone)
-                                    .toString()
-                            );
-                            console.log(queryInsertPatient);
-                            sql.Insert(queryInsertPatient).then(function (ansIn) {
-                                res.send(ansIn);
+                        let querymail = (
+                            squel.select()
+                                .from("patients")
+                                .where("mail = ?", _mail)
+                                .toString()
+                        );
+                        sql.Select(querymail)
+                            .then(function (ansmail) {
+                                if (ansmail.length === 0) {
+                                    insertToUsers(_username, _password, 0).then(function (ansUsers) {
+                                        queryInsertPatient = (//insert to the users table
+                                            squel.insert()
+                                                .into("[dbo].[patients]")
+                                                .set("[username]", _username)
+                                                .set("[first_name]", _firstName)
+                                                .set("[last_name]", _lastName)
+                                                .set("[physiotherapist_username]", _physio_username)
+                                                .set("[mail]", _mail)
+                                                .set("[phone]", _phone)
+                                                .set("[age]", _age)
+                                                .set("[diagnosis]", _diagnosis)
+                                                .set("[pic_url]", _newFilePath)
+                                                //.set("[mail]",_mail)
+                                                //.set("[phone]",_phone)
+                                                .toString()
+                                        );
+                                        console.log(queryInsertPatient);
+                                        sql.Insert(queryInsertPatient).then(function (ansIn) {
+                                            res.send(ansIn);
+                                        }).catch(function (err) {
+                                            res.json({err: err});
+                                        })
+                                    }).catch(function (err) {
+                                        res.json({err: err});
+                                    })
+
+                                }
+                                else {
+                                    res.json({err: "mail exists"});
+
+                                }
                             }).catch(function (err) {
-                                res.json({err: err});
-                            })
-                        }).catch(function (err) {
                             res.json({err: err});
                         })
-
                     }
                     else {
                         res.json({err: "username exists"});
@@ -1025,34 +1067,52 @@ app.post('/api/registerNoPhoto', function (req, res) {
     sql.Select(query)
         .then(function (ans) {
             if (ans.length === 0) {
-                insertToUsers(_username,_password,_isPhysio).then(function (ansUsers) {
-                    let queryInsertPatient = (//insert to the users table
-                        squel.insert()
-                            .into("[dbo].[patients]")
-                            .set("[username]", _username)
-                            .set("[first_name]", _firstName)
-                            .set("[last_name]", _lastName)
-                            .set("[physiotherapist_username]", _physio_username)
-                            .set("[mail]", _mail)
-                            .set("[phone]", _phone)
-                            .set("[age]", _age)
-                            .set("[diagnosis]", _diagnosis)
-                            .set("[pic_url]", null)
-                            //.set("[mail]",_mail)
-                            //.set("[phone]",_phone)
-                            .toString()
-                    );
-                    console.log(queryInsertPatient);
-                    sql.Insert(queryInsertPatient).then(function (ansIn) {
-                        res.send(ansIn);
+                let querymail = (
+                    squel.select()
+                        .from("patients")
+                        .where("mail = ?", _mail)
+                        .toString()
+                );
+                sql.Select(querymail)
+                    .then(function (ansmail) {
+                        if (ansmail.length === 0) {
+                            insertToUsers(_username, _password, _isPhysio).then(function (ansUsers) {
+                                let queryInsertPatient = (//insert to the users table
+                                    squel.insert()
+                                        .into("[dbo].[patients]")
+                                        .set("[username]", _username)
+                                        .set("[first_name]", _firstName)
+                                        .set("[last_name]", _lastName)
+                                        .set("[physiotherapist_username]", _physio_username)
+                                        .set("[mail]", _mail)
+                                        .set("[phone]", _phone)
+                                        .set("[age]", _age)
+                                        .set("[diagnosis]", _diagnosis)
+                                        .set("[pic_url]", null)
+                                        //.set("[mail]",_mail)
+                                        //.set("[phone]",_phone)
+                                        .toString()
+                                );
+                                console.log(queryInsertPatient);
+                                sql.Insert(queryInsertPatient).then(function (ansIn) {
+                                    res.send(ansIn);
+                                }).catch(function (err) {
+                                    res.json({err: err});
+                                })
+                            }).catch(function (err) {
+                                res.json({err: err});
+                            })
+
+                        }
+                        else {
+                            res.json({err: "mail exists"});
+
+                        }
                     }).catch(function (err) {
-                        res.json({err: err});
-                    })
-                }).catch(function (err) {
                     res.json({err: err});
                 })
-
             }
+
             else {
                 res.json({err: "username exists"});
 
@@ -1997,7 +2057,6 @@ function insertVideoToDB(isBank,new_Path,prog_id,exetitle,onTime,tInWeek,tInDay,
             }).catch(function (err) {
                 console.log("Error in inset: " + err)
                 reject(err)})
-
         }
     })
 };
