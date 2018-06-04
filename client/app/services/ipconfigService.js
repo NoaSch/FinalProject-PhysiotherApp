@@ -3,8 +3,8 @@
  */
 //service that stores the ip of the server
 angular.module("myApp").service('ipconfigService', function() {
-     var ip = '192.168.1.15';
-    //var ip = '192.168.1.154';
+var ip = '192.168.1.15';
+    //var ip = '192.168.1.7';
   //var ip = '192.168.43.106';
     //var ip = '10.100.102.13';
   // var ip ='132.73.195.149';
