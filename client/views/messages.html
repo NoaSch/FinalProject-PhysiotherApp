@@ -15,6 +15,9 @@
         <br>
 
         <button class="btn btn-primary btn-block" ng-click="messagesController.sendNewMsgClick()">שלח הודעה חדשה לפיזיותרפיסט</button>
+        <div align="center">
+            <label ng-show="messagesController.messages.length == 0">אין הודעות</label>
+        </div>
         <div class="form-group has-success has-feedback" align="center" ng-show="messagesController.isNewewClicked">
             <label>נושא</label>
             <textarea name="desc" ng-model="messagesController.msgTitle" cols="30" rows="1" ng-pattern="messagesController.regexService.getNotInjection()"
@@ -30,50 +33,50 @@
             <!--</div>-->
         </div>
         <!--<div class="section">-->
-            <div class="panel-group paddClass"
-                 ui-shared-state="myAccordion"
-                 ui-default='1'>
-                <div class="panel panel-default" ng-repeat="cor in messagesController.correspondences">
-                    <div class="panel-heading" ui-set="{'myAccordion': cor}">
-                        <h4 class="panel-title">
-                            {{cor[0].title}}
-                        </h4>
-                    </div>
+        <div class="panel-group paddClass"
+             ui-shared-state="myAccordion"
+             ui-default='1'>
+            <div class="panel panel-default" ng-repeat="cor in messagesController.correspondences">
+                <div class="panel-heading" ui-set="{'myAccordion': cor}">
+                    <h4 class="panel-title">
+                        {{cor[0].title}}
+                    </h4>
+                </div>
 
+                <div class="panel-body">
+                    {{cor[0].date|date :  'dd.MM.yyyy H:mm':'+00' }}<br>
                     <div class="panel-body">
-                        {{cor[0].date|date :  'dd.MM.yyyy H:mm':'+00' }}<br>
-                        <div class="panel-body">
-                            <label>מאת</label>
-                            {{cor[0].from_first_name}}
-                            {{cor[0].from_last_name}}
-                            <br>
-                            <label>אל</label>
-                            {{cor[0].to_first_name}}
-                            {{cor[0].to_last_name}}
-                        </div>
-                        <pre>{{cor[0].msg_content}}</pre>
-                    </div>
-
-                    <div class="form-group has-success has-feedback" align="center" ng-show="messagesController.rep[cor[0].correspondence_id]">
-
-                        <!-- <div class="panel panel-default" >-->
-                            <textarea name="desc" ng-model="messagesController.repMsg" cols="30" rows="5" ng-pattern="messagesController.regexService.getNotInjection()"></textarea>
+                        <label>מאת</label>
+                        {{cor[0].from_first_name}}
+                        {{cor[0].from_last_name}}
                         <br>
-                        <br>
-                        <button class="btn btn-warning" ng-click="messagesController.sendRep(cor[0])">שלח</button>
-                        <!--</div>-->
+                        <label>אל</label>
+                        {{cor[0].to_first_name}}
+                        {{cor[0].to_last_name}}
                     </div>
-                    <div class="panel-body">
-                        <button ng-click="messagesController.reply(cor[0])">השב</button>
+                    <pre>{{cor[0].msg_content}}</pre>
+                </div>
 
-                        <button ng-click="messagesController.more(cor[0].correspondence_id)">הודעות קודמות</button>
+                <div class="form-group has-success has-feedback" align="center" ng-show="messagesController.rep[cor[0].correspondence_id]">
 
-                    </div>
-                    <div class="panel-group paddClass" ng-show="messagesController.moreMsgInCor[cor[0].correspondence_id]"
-                         ui-shared-state="myAccordion2"
-                         ui-default='1'>
-                        <div class="panel panel-default" ng-repeat="msg in cor">
-                            <div ng-show = "messagesController.notFirst(msg,cor)">
+                    <!-- <div class="panel panel-default" >-->
+                    <textarea name="desc" ng-model="messagesController.repMsg" cols="30" rows="5" ng-pattern="messagesController.regexService.getNotInjection()"></textarea>
+                    <br>
+                    <br>
+                    <button class="btn btn-warning" ng-click="messagesController.sendRep(cor[0])">שלח</button>
+                    <!--</div>-->
+                </div>
+                <div class="panel-body">
+                    <button ng-click="messagesController.reply(cor[0])">השב</button>
+
+                    <button ng-click="messagesController.more(cor[0].correspondence_id)">הודעות קודמות</button>
+
+                </div>
+                <div class="panel-group paddClass" ng-show="messagesController.moreMsgInCor[cor[0].correspondence_id]"
+                     ui-shared-state="myAccordion2"
+                     ui-default='1'>
+                    <div class="panel panel-default" ng-repeat="msg in cor">
+                        <div ng-show = "messagesController.notFirst(msg,cor)">
                             <div class="panel-body" ui-set="{'myAccordion2': patient}">
                                 {{msg.date | date :  'dd.MM.yyyy H:mm':'+00' }}<br>
                             </div>
@@ -92,10 +95,10 @@
                         </div>
                     </div>
 
+                </div>
+            </div>
         </div>
     </div>
-</div>
-</div>
 </div>
 
 

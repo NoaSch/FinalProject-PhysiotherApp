@@ -1721,33 +1721,39 @@ app.post('/api/getAllMessagesOfUser', function (req, res) {
     );
     sql.Select(query)
         .then(function (ans) {
-            let query2 = (
-                squel.select()
-                    .from("messages")
-                    //.where("to_username = ?", _username)
-                    .where("to_username = ?", _username)
-                    .where("was_read = ?", 0)
-                    .toString()
-            );
-            console.log(query2);
-            sql.Select(query2)
-                .then(function (ans2) {
-                    let size = ans2.length;
-                    ans[0].notRead = size;
-                    res.send(ans);
+            if (ans.length == 0) {
+                res.send(ans);
 
-                }).catch(function (reason) {
-                console.log(reason);
-                res.send(reason);
+            }
+            else
+            {
+                let query2 = (
+                    squel.select()
+                        .from("messages")
+                        //.where("to_username = ?", _username)
+                        .where("to_username = ?", _username)
+                        .where("was_read = ?", 0)
+                        .toString()
+                );
+                console.log(query2);
+                sql.Select(query2)
+                    .then(function (ans2) {
+                        let size = ans2.length;
+                        ans[0].notRead = size;
+                        res.send(ans);
 
-            })
+                    }).catch(function (reason) {
+                    console.log(reason);
+                    res.send(reason);
+
+                })
+            }
         }).catch(function (reason) {
         console.log(reason);
         res.send(reason);
     })
 
 });
-
 //get number of unreaded messages by specific user
 app.post('/api/getNumNewMessages', function (req, res) {
     let _username = req.body.username;
@@ -2331,7 +2337,8 @@ function sendNotification(username,content)
         project: project,
         body: content, // max 120 characters
         title: 'physiotherApp', // optional, defaults to your project name, max 30 characters
-        targetUrl: 'http://132.72.23.155:3000', // optional, defaults to your project website
+        //targetUrl: 'http://132.72.23.155:3000', // optional, defaults to your project website
+        targetUrl: 'http://192.168.1.15:3000',
         //iconUrl: 'http://example.com/assets/icon.png', // optional, defaults to the project icon
         //imageUrl: 'http://example.com/assets/image.png', // optional, an image to display in the notification content
         ttl: 604800, // optional, drop the notification after this number of seconds if a device is offline
